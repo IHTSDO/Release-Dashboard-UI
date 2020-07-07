@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.titleService.setTitle('SNOMED CT Release Automation Tool');
+        this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
 
         this.authoringService.getVersions().subscribe(versions => {
