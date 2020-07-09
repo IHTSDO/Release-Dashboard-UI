@@ -26,6 +26,7 @@
     "@types/jquery": "^3.3.36",
     "ajv": "^6.12.2",
     "bootstrap": "^4.4.1",
+    "chrome-launcher": "^0.13.4",
     "core-js": "^3.6.5",
     "guid-typescript": "^1.0.9",
     "hammerjs": "^2.0.8",
