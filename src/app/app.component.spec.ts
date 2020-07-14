@@ -1,6 +1,8 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SnomedNavbarComponent } from './components/snomed-navbar/snomed-navbar.component';
+import { SnomedFooterComponent } from './components/snomed-footer/snomed-footer.component';
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
@@ -9,7 +11,9 @@ describe('AppComponent', () => {
                 HttpClientTestingModule
             ],
             declarations: [
-                AppComponent
+                AppComponent,
+                SnomedNavbarComponent,
+                SnomedFooterComponent
             ],
         }).compileComponents();
     }));
