@@ -16,6 +16,8 @@ import { SnomedFooterComponent } from './components/snomed-footer/snomed-footer.
 // PIPE IMPORTS
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
+import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
+import { ProductViewerComponent } from './components/product-viewer/product-viewer.component';
 
 // SERVICE IMPORTS
 
@@ -24,7 +26,9 @@ import { AuthoringService } from './services/authoring/authoring.service';
     declarations: [
         AppComponent,
         SnomedNavbarComponent,
-        SnomedFooterComponent
+        SnomedFooterComponent,
+        LeftSidebarComponent,
+        ProductViewerComponent
     ],
     imports: [
         BrowserModule,

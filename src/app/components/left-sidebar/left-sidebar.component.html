@@ -1,0 +1,6 @@
+<nav id="sidebar" class="footer-margin">
+    <h3 class="p-3 mb-0">Release Centers</h3>
+    <div *ngFor="let center of releaseCenters" class="center py-2 px-3"
+         (click)="switchActiveReleaseCenter(center)"
+         [class.active]="activeReleaseCenter === center">{{center.name}}</div>
+</nav>

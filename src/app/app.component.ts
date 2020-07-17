@@ -3,6 +3,10 @@ import 'jquery';
 import { Title } from '@angular/platform-browser';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { BranchingService } from './services/branching/branching.service';
+import { ReleaseCenter, ReleaseCenterService } from './services/releaseCenter/release-center.service';
+import { ReleaseServerService } from './services/releaseServer/release-server.service';
+import { Subscription } from 'rxjs';
+import { ProductService } from './services/product/product.service';
 
 @Component({
     selector: 'app-root',
@@ -11,28 +15,32 @@ import { BranchingService } from './services/branching/branching.service';
 })
 export class AppComponent implements OnInit {
 
-    versions: object;
     environment: string;
+    activeReleaseCenter: ReleaseCenter;
+    activeReleaseCenterSubscription: Subscription;
 
     constructor(private authoringService: AuthoringService,
                 private branchingService: BranchingService,
-                private titleService: Title) {
-
+                private titleService: Title,
+                private releaseCenterService: ReleaseCenterService,
+                private releaseService: ReleaseServerService,
+                private productService: ProductService) {
+        this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
+            this.activeReleaseCenter = data;
+        });
     }
 
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
 
-        this.authoringService.getVersions().subscribe(versions => {
-            this.versions = versions;
+        this.releaseService.getCenters().subscribe(centers => {
+            this.releaseCenterService.setReleaseCenters(centers);
+            this.releaseCenterService.setActiveReleaseCenter(centers[0]);
+
+
         });
 
-        this.authoringService.getUIConfiguration().subscribe(config => {
-            this.authoringService.uiConfiguration = config;
-        });
-
-        this.branchingService.setBranchPath('MAIN');
         this.assignFavicon();
     }
 

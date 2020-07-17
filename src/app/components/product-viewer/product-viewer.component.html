@@ -1,0 +1,19 @@
+<div class="product-viewer text-center">
+    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
+    <div class="container">
+        <table class="table table-bordered">
+            <tr>
+                <th>Product</th>
+                <th>Status</th>
+                <th>User</th>
+                <th>Tag</th>
+            </tr>
+            <tr *ngFor="let product of products">
+                <td>{{product?.name}}</td>
+                <td>{{product?.status}}</td>
+                <td>{{product?.user}}</td>
+                <td>{{product?.tag}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
