@@ -1,0 +1,77 @@
+@import '~src/variables.scss';
+
+app-modal {
+    /* modals are hidden by default */
+    display: none;
+
+    div.modal-dialog-centered {
+        z-index: 1100;
+
+        div.modal-content {
+            border: none;
+            overflow: hidden;
+
+            div.modal-header {
+                background-color: $river-bed;
+                border-top-left-radius: initial;
+                border-top-right-radius: initial;
+
+                h3 {
+                    color: $white;
+                    font-weight: 300;
+                    line-height: inherit;
+                }
+
+                button > span {
+                    font-size: 2rem;
+                    color: $white;
+                    font-weight: 300;
+                    text-shadow: none;
+                    line-height: 0.8rem;
+                }
+            }
+
+            div.modal-body {
+                font-size: 1.5rem;
+                padding: 0;
+                max-height: 80vh;
+                overflow: scroll;
+            }
+
+            div.modal-footer {
+                overflow: hidden;
+
+                div {
+                    display: inline-block;
+                }
+
+                div.saved {
+                    color: $fruit-salad;
+                }
+
+                div.error {
+                    color: $mandy;
+                }
+
+                button {
+                    font-weight: 300;
+                }
+            }
+        }
+    }
+
+    div.app-modal-background {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0,0,0,0.6);
+        z-index: 1000;
+    }
+}
+
+//body.app-modal-open {
+//    /* body overflow is hidden to hide main scrollbar when modal window is open */
+//    overflow: hidden;
+//}

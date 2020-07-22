@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,16 @@ export class ReleaseServerService {
 
     getCenters(): Observable<object> {
         return this.http.get<object>('/release/centers');
+    }
+
+    postCenter(center) {
+        console.log('PostC: ', center);
+        return this.http.post('/release/centers', center);
+    }
+
+    putCenter(id, center) {
+        console.log('PutC: ', center);
+        return this.http.put('/release/centers/' + id, center);
     }
 
     getCenter(id): Observable<object> {

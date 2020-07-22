@@ -6,7 +6,6 @@ import { BranchingService } from './services/branching/branching.service';
 import { ReleaseCenter, ReleaseCenterService } from './services/releaseCenter/release-center.service';
 import { ReleaseServerService } from './services/releaseServer/release-server.service';
 import { Subscription } from 'rxjs';
-import { ProductService } from './services/product/product.service';
 
 @Component({
     selector: 'app-root',
@@ -23,8 +22,7 @@ export class AppComponent implements OnInit {
                 private branchingService: BranchingService,
                 private titleService: Title,
                 private releaseCenterService: ReleaseCenterService,
-                private releaseService: ReleaseServerService,
-                private productService: ProductService) {
+                private releaseService: ReleaseServerService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
             this.activeReleaseCenter = data;
         });

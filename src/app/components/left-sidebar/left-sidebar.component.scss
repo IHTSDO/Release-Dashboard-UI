@@ -3,7 +3,7 @@
 nav#sidebar {
     position: fixed;
     width: 24rem;
-    height: calc(100vh - 56px);
+    height: calc(100vh - 9rem);
     background: $alto-white;
 
     h3 {
@@ -28,5 +28,40 @@ nav#sidebar {
                 background-color: darken($anakiwa, 5%);
             }
         }
+    }
+
+    div.sidebar-buttons {
+        position: absolute;
+        bottom: 0;
+
+        button {
+            width: 12rem;
+            height: 3rem;
+            position: relative;
+
+            &.add {
+                background-color: $anakiwa;
+                border-top: 1px $ghost-grey solid;
+
+                &:hover {
+                    background-color: darken($anakiwa, 5%);
+                }
+            }
+
+            &.edit {
+                background-color: lighten($fruit-salad, 30%);
+                border-top: 1px $ghost-grey solid;
+
+                &:hover {
+                   background-color: lighten($fruit-salad, 20%);
+                }
+            }
+        }
+    }
+}
+
+app-modal.add-modal, app-modal.edit-modal {
+    input {
+        border: 1px $ghost-grey solid;
     }
 }

@@ -3,4 +3,37 @@
     <div *ngFor="let center of releaseCenters" class="center py-2 px-3"
          (click)="switchActiveReleaseCenter(center)"
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
+    <div class="sidebar-buttons">
+        <button class="add text-center float-left" (click)="openModal('add-modal')">ADD</button>
+        <button class="edit text-center float-right" (click)="openModal('edit-modal')">EDIT</button>
+    </div>
 </nav>
+
+<!-- ADD MODAL -->
+<app-modal id="add-modal" class="modal add-modal">
+    <h3 header class="mb-0">Create New Release Center</h3>
+    <div body class="text-center p-5">
+        <p>Please enter the details for the new Release Center</p>
+        <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">
+        <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name">
+    </div>
+
+    <div footer>
+        <button type="button" class="btn btn" (click)="closeModal('add-modal')">CANCEL</button>
+        <button type="button" class="btn btn-primary" (click)="addReleaseCenter(addName.value, addShortName.value)">SAVE</button>
+    </div>
+</app-modal>
+
+<!-- EDIT MODAL -->
+<app-modal id="edit-modal" class="modal edit-modal">
+    <h3 header class="mb-0">Edit Current Release Center</h3>
+    <div body class="text-center p-5">
+        <p>Would you like to edit this release center?</p>
+        <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
+        <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
+    </div>
+    <div footer>
+        <button type="button" class="btn btn" (click)="closeModal('edit-modal')">CANCEL</button>
+        <button type="button" class="btn btn-primary" (click)="saveReleaseCenter(editName.value, editShortName.value)">SAVE</button>
+    </div>
+</app-modal>

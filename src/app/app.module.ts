@@ -18,6 +18,10 @@ import { AuthenticationService } from './services/authentication/authentication.
 import { AuthoringService } from './services/authoring/authoring.service';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
 import { ProductViewerComponent } from './components/product-viewer/product-viewer.component';
+import { ModalComponent } from './components/modal/modal.component';
+import { ModalService } from './services/modal/modal.service';
+import { ReleaseCenterService } from './services/releaseCenter/release-center.service';
+import { ReleaseServerService } from './services/releaseServer/release-server.service';
 
 // SERVICE IMPORTS
 
@@ -28,7 +32,8 @@ import { ProductViewerComponent } from './components/product-viewer/product-view
         SnomedNavbarComponent,
         SnomedFooterComponent,
         LeftSidebarComponent,
-        ProductViewerComponent
+        ProductViewerComponent,
+        ModalComponent
     ],
     imports: [
         BrowserModule,
@@ -40,6 +45,9 @@ import { ProductViewerComponent } from './components/product-viewer/product-view
     providers: [
         AuthenticationService,
         AuthoringService,
+        ReleaseCenterService,
+        ReleaseServerService,
+        ModalService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HeaderInterceptor,
