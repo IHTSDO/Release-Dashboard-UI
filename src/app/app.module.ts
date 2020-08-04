@@ -22,6 +22,8 @@ import { ModalComponent } from './components/modal/modal.component';
 import { ModalService } from './services/modal/modal.service';
 import { ReleaseCenterService } from './services/releaseCenter/release-center.service';
 import { ReleaseServerService } from './services/releaseServer/release-server.service';
+import { AppRoutingModule } from './app-routing.module';
+import { BuildViewerComponent } from './components/build-viewer/build-viewer.component';
 
 // SERVICE IMPORTS
 
@@ -33,14 +35,16 @@ import { ReleaseServerService } from './services/releaseServer/release-server.se
         SnomedFooterComponent,
         LeftSidebarComponent,
         ProductViewerComponent,
-        ModalComponent
+        ModalComponent,
+        BuildViewerComponent
     ],
     imports: [
         BrowserModule,
         FormsModule,
         HttpClientModule,
         BrowserAnimationsModule,
-        NgbTypeaheadModule
+        NgbTypeaheadModule,
+        AppRoutingModule
     ],
     providers: [
         AuthenticationService,

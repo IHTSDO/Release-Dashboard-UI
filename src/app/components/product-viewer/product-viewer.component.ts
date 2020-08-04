@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ReleaseCenter, ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ProductService } from '../../services/product/product.service';
@@ -11,7 +11,7 @@ import { ReleaseServerService } from '../../services/releaseServer/release-serve
 })
 export class ProductViewerComponent implements OnInit {
 
-    @Input() activeReleaseCenter: ReleaseCenter;
+    activeReleaseCenter: ReleaseCenter;
     private activeReleaseCenterSubscription: Subscription;
     products: object;
     private productsSubscription: Subscription;
@@ -31,9 +31,13 @@ export class ProductViewerComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.releaseService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
-            this.productService.setProducts(products);
+        this.releaseService.getCenters().subscribe(centers => {
+            this.releaseCenterService.setReleaseCenters(centers);
+            this.releaseCenterService.setActiveReleaseCenter(centers[0]);
+
+            this.releaseService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
+                this.productService.setProducts(products);
+            });
         });
     }
-
 }

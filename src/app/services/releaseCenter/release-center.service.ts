@@ -7,7 +7,7 @@ export class ReleaseCenter {
     products_url: string;
     published_url: string;
     removed: string;
-    shortName: string;
+    shortname: string;
     url: string;
 }
 

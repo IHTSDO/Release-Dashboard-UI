@@ -1,3 +1,4 @@
+<app-left-sidebar></app-left-sidebar>
 <div class="product-viewer text-center">
     <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
     <div class="container">
@@ -8,7 +9,7 @@
                 <th>User</th>
                 <th>Tag</th>
             </tr>
-            <tr *ngFor="let product of products">
+            <tr *ngFor="let product of products" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
                 <td>{{product?.name}}</td>
                 <td>{{product?.status}}</td>
                 <td>{{product?.user}}</td>

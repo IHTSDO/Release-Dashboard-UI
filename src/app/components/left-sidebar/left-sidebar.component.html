@@ -2,6 +2,7 @@
     <h3 class="p-3 mb-0">Release Centers</h3>
     <div *ngFor="let center of releaseCenters" class="center py-2 px-3"
          (click)="switchActiveReleaseCenter(center)"
+         routerLink="/{{center.id}}"
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
     <div class="sidebar-buttons">
         <button class="add text-center float-left" (click)="openModal('add-modal')">ADD</button>
@@ -30,7 +31,7 @@
     <div body class="text-center p-5">
         <p>Would you like to edit this release center?</p>
         <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
-        <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
+        <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" [value]="activeReleaseCenter?.shortname">
     </div>
     <div footer>
         <button type="button" class="btn btn" (click)="closeModal('edit-modal')">CANCEL</button>

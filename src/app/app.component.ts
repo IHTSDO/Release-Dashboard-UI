@@ -3,9 +3,6 @@ import 'jquery';
 import { Title } from '@angular/platform-browser';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { BranchingService } from './services/branching/branching.service';
-import { ReleaseCenter, ReleaseCenterService } from './services/releaseCenter/release-center.service';
-import { ReleaseServerService } from './services/releaseServer/release-server.service';
-import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -15,29 +12,15 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnInit {
 
     environment: string;
-    activeReleaseCenter: ReleaseCenter;
-    activeReleaseCenterSubscription: Subscription;
 
     constructor(private authoringService: AuthoringService,
                 private branchingService: BranchingService,
-                private titleService: Title,
-                private releaseCenterService: ReleaseCenterService,
-                private releaseService: ReleaseServerService) {
-        this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
-            this.activeReleaseCenter = data;
-        });
+                private titleService: Title) {
     }
 
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
-
-        this.releaseService.getCenters().subscribe(centers => {
-            this.releaseCenterService.setReleaseCenters(centers);
-            this.releaseCenterService.setActiveReleaseCenter(centers[0]);
-
-
-        });
 
         this.assignFavicon();
     }

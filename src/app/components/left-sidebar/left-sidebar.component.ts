@@ -40,13 +40,13 @@ export class LeftSidebarComponent implements OnInit {
         this.releaseCenterService.setActiveReleaseCenter(center);
     }
 
-    addReleaseCenter(name, shortName) {
+    addReleaseCenter(name, shortname) {
         this.modalService.close('add-modal');
-        this.releaseServer.postCenter({name: name, shortName: shortName});
+        this.releaseServer.postCenter({name: name, shortname: shortname});
     }
 
-    saveReleaseCenter(name, shortName) {
+    saveReleaseCenter(name, shortname) {
         this.modalService.close('edit-modal');
-        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortName: shortName});
+        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortname: shortname});
     }
 }
