@@ -3,12 +3,14 @@ import { AppComponent } from './app.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SnomedNavbarComponent } from './components/snomed-navbar/snomed-navbar.component';
 import { SnomedFooterComponent } from './components/snomed-footer/snomed-footer.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
-                HttpClientTestingModule
+                HttpClientTestingModule,
+                BrowserAnimationsModule
             ],
             declarations: [
                 AppComponent,

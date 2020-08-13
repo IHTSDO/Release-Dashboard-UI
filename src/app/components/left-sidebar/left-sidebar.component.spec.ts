@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LeftSidebarComponent } from './left-sidebar.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('LeftSidebarComponent', () => {
   let component: LeftSidebarComponent;
@@ -8,7 +9,8 @@ describe('LeftSidebarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LeftSidebarComponent ]
+      declarations: [ LeftSidebarComponent ],
+      imports: [BrowserAnimationsModule]
     })
     .compileComponents();
   }));

@@ -21,6 +21,7 @@ export class ProductViewerComponent implements OnInit {
                 private releaseService: ReleaseServerService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
             this.activeReleaseCenter = data;
+            this.products = [];
             this.releaseService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
                 this.productService.setProducts(products);
             });
@@ -34,10 +35,6 @@ export class ProductViewerComponent implements OnInit {
         this.releaseService.getCenters().subscribe(centers => {
             this.releaseCenterService.setReleaseCenters(centers);
             this.releaseCenterService.setActiveReleaseCenter(centers[0]);
-
-            this.releaseService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
-                this.productService.setProducts(products);
-            });
         });
     }
 }

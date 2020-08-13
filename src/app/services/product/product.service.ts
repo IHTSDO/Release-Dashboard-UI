@@ -13,7 +13,6 @@ export class ProductService {
 
     // Setters & Getters: Products
     setProducts(products) {
-        console.log('PRODUCTS: ', products);
         this.products.next(products);
     }
 

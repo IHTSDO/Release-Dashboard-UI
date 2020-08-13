@@ -7,7 +7,7 @@ export class ReleaseCenter {
     products_url: string;
     published_url: string;
     removed: string;
-    shortname: string;
+    shortName: string;
     url: string;
 }
 
@@ -24,7 +24,6 @@ export class ReleaseCenterService {
 
     // Setters & Getters: Release Centers
     setReleaseCenters(releaseCenters) {
-        console.log('RELEASE CENTERS: ', releaseCenters);
         this.releaseCenters.next(releaseCenters);
     }
 

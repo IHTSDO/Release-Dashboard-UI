@@ -6,14 +6,12 @@
             <tr>
                 <th>Product</th>
                 <th>Status</th>
-                <th>User</th>
                 <th>Tag</th>
             </tr>
             <tr *ngFor="let product of products" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
                 <td>{{product?.name}}</td>
-                <td>{{product?.status}}</td>
-                <td>{{product?.user}}</td>
-                <td>{{product?.tag}}</td>
+                <td>{{product?.latestBuildStatus}}</td>
+                <td>{{product?.latestTag}}</td>
             </tr>
         </table>
     </div>

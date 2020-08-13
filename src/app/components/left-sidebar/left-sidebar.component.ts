@@ -3,11 +3,26 @@ import { Subscription } from 'rxjs';
 import { ReleaseCenter, ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
     selector: 'app-left-sidebar',
     templateUrl: './left-sidebar.component.html',
-    styleUrls: ['./left-sidebar.component.scss']
+    styleUrls: ['./left-sidebar.component.scss'],
+    animations: [
+        trigger('slide', [
+            state('start', style({ opacity: 0, transform: 'translateY(200%)'})),
+            state('end', style({ opacity: 0, transform: 'translateY(-200%)'})),
+            transition('start <=> end', [
+                animate('2000ms ease-in', keyframes([
+                    style({opacity: 0, transform: 'translateY(200%)', offset: 0}),
+                    style({opacity: 1, transform: 'translateY(0)', offset: 0.1}),
+                    style({opacity: 1, transform: 'translateY(0)', offset: .8}),
+                    style({opacity: 0, transform: 'translateY(-200%)', offset: 1.0})
+                ]))
+            ])
+        ])
+    ]
 })
 export class LeftSidebarComponent implements OnInit {
 
@@ -15,6 +30,11 @@ export class LeftSidebarComponent implements OnInit {
     releaseCentersSubscription: Subscription;
     activeReleaseCenter: ReleaseCenter;
     activeReleaseCenterSubscription: Subscription;
+
+    // animations
+    saved = 'start';
+    saveResponse: string;
+    savingCenter = false;
 
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
@@ -40,13 +60,35 @@ export class LeftSidebarComponent implements OnInit {
         this.releaseCenterService.setActiveReleaseCenter(center);
     }
 
-    addReleaseCenter(name, shortname) {
-        this.modalService.close('add-modal');
-        this.releaseServer.postCenter({name: name, shortname: shortname});
+    addReleaseCenter(name, shortName) {
+        this.savingCenter = true;
+        this.releaseServer.postCenter({name: name, shortName: shortName}).subscribe(
+            (response) => {
+                this.savingCenter = false;
+                this.releaseCenters.push(response);
+                this.modalService.close('add-modal');
+            },
+            (errorResponse) => {
+                this.savingCenter = false;
+                this.saveResponse = errorResponse.error.errorMessage;
+                this.saved = (this.saved === 'start' ? 'end' : 'start');
+            });
     }
 
-    saveReleaseCenter(name, shortname) {
-        this.modalService.close('edit-modal');
-        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortname: shortname});
+    saveReleaseCenter(name, shortName) {
+        this.savingCenter = true;
+        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortName: shortName}).subscribe(
+            (response) => {
+                this.savingCenter = false;
+                const currentIndex = this.releaseCenters.indexOf(this.activeReleaseCenter);
+                this.releaseCenters[currentIndex] = response;
+                this.activeReleaseCenter = response;
+                this.modalService.close('edit-modal');
+            },
+            (errorResponse) => {
+                this.savingCenter = false;
+                this.saveResponse = errorResponse.error.errorMessage;
+                this.saved = (this.saved === 'start' ? 'end' : 'start');
+            });
     }
 }
