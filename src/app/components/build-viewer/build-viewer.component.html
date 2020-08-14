@@ -1,11 +1,11 @@
-<div class="build-viewer text-center">
-    <a class="p-3 float-left" routerLink="/{{releaseCenterKey}}">
-        Back To Release Center
-      </a>
-    <h1 class="p-3">{{product?.name}}</h1>
+<div class="build-viewer text-center">    
     <div class="container">
-        <div class="text-right"><button type="button text-right" class="btn-re-run ml-3 my-1 mr-1">Run New Build</button></div>
-        <div class="panel-top mb-3">            
+        <h2 class="mt-3 text-left">{{product?.name}}</h2>
+        <div class="text-right"><button type="button text-right" class="btn-edit ml-3 my-1 mr-1">Run New Build</button></div>
+        <div class="panel-top mb-3">
+            <a class="position-absolute link-back" routerLink="/{{releaseCenterKey}}">
+                <span class="font-weight-bold">&lt;&lt;&nbsp;</span> Back To Release Center
+            </a>            
             <div class="panel-header text-left pl-2 pt-3"><span class="font-weight-bold">{{buildLoading ? 'Loading...' : activeBuild.id}}</span></div>
             <div>
                 <div class="row mx-0">
@@ -34,23 +34,23 @@
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-view-process" [disabled]="buildLoading">View Process</button>
-                            <button type="button" class="btn-stop-build ml-3" [disabled]="activeBuild.status !== 'BUILD' || buildLoading">Stop Build</button>
+                            <button type="button" class="btn-add" [disabled]="buildLoading">View Process</button>
+                            <button type="button" class="btn-delete ml-3" [disabled]="activeBuild.status !== 'BUILD' || buildLoading">Stop Build</button>
                         </div>                        
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>                            
-                            <button type="button" class="btn-publish-build" [disabled]="buildLoading">Publish Build</button>
-                            <button type="button" class="btn-delete-build ml-3" [disabled]="buildLoading">Delete Build</button>
+                            <button type="button" class="btn-edit" [disabled]="buildLoading">Publish Build</button>
+                            <button type="button" class="btn-delete ml-3" [disabled]="buildLoading">Delete Build</button>
                         </div>
                     </div>
                 </div>
                 
             </div>    
             <div class="panel-footer text-right">
-                <button type="button" class="btn-download" [disabled]="buildLoading">Download</button>
-                <button type="button" class="btn-view-log ml-3 my-1" [disabled]="buildLoading">View Log</button>
-                <button type="button" class="btn-view-all ml-3 my-1">View All</button>
-                <button type="button" class="btn-re-run ml-3 my-1 mr-1" [disabled]="buildLoading">Re-Run</button>
+                <button type="button" class="btn-add" [disabled]="buildLoading">Download</button>
+                <button type="button" class="btn-cancel ml-3 my-1" [disabled]="buildLoading">View Log</button>
+                <button type="button" class="btn-add ml-3 my-1">View All</button>
+                <button type="button" class="btn-edit ml-3 my-1 mr-1" [disabled]="buildLoading">Re-Run</button>
             </div>
         </div>    
         <table class="table table-bordered">

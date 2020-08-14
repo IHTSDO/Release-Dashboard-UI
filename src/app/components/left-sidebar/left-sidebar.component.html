@@ -4,9 +4,11 @@
          (click)="switchActiveReleaseCenter(center)"
          routerLink="/{{center.id}}"
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
-    <div class="sidebar-buttons">
-        <button class="add text-center float-left" (click)="addName.value = ''; addShortName.value = ''; openModal('add-modal')">Add</button>
-        <button class="edit text-center float-right" (click)="openModal('edit-modal')">Edit</button>
+    <div class="sidebar-buttons w-100">
+        <div class="row justify-content-center align-items-center mb-2">
+            <button class="btn-add text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
+            <button class="btn-edit text-center float-right" title="Edit Release Center" (click)="openModal('edit-modal')">Edit</button>
+        </div>        
     </div>
 </nav>
 
@@ -21,8 +23,8 @@
 
     <div footer>
         <div [@slide]="saved" class="px-3 error">{{saveResponse}}</div>
-        <button type="button" class="btn btn" [disabled]="savingCenter" (click)="closeModal('add-modal')">CANCEL</button>
-        <button type="button" class="btn btn-primary" [disabled]="savingCenter" (click)="addReleaseCenter(addName.value, addShortName.value)">SAVE</button>
+        <button type="button" class="btn-cancel" [disabled]="savingCenter" (click)="closeModal('add-modal')">Cancel</button>
+        <button type="button" class="btn-add" [disabled]="savingCenter" (click)="addReleaseCenter(addName.value, addShortName.value)">Save</button>
     </div>
 </app-modal>
 
@@ -36,7 +38,7 @@
     </div>
     <div footer>
         <div [@slide]="saved" class="px-3 error">{{saveResponse}}</div>
-        <button type="button" class="btn btn" [disabled]="savingCenter" (click)="closeModal('edit-modal')">CANCEL</button>
-        <button type="button" class="btn btn-primary" [disabled]="savingCenter" (click)="saveReleaseCenter(editName.value, editShortName.value)">SAVE</button>
+        <button type="button" class="btn-cancel" [disabled]="savingCenter" (click)="closeModal('edit-modal')">Cancel</button>
+        <button type="button" class="btn-add" [disabled]="savingCenter" (click)="saveReleaseCenter(editName.value, editShortName.value)">Save</button>
     </div>
 </app-modal>

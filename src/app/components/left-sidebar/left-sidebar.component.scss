@@ -35,27 +35,8 @@ nav#sidebar {
         bottom: 0;
 
         button {
-            width: 12rem;
+            width: 10rem;
             height: 3rem;
-            position: relative;
-
-            &.add {
-                background-color: $anakiwa;
-                border-top: 1px $ghost-grey solid;
-
-                &:hover {
-                    background-color: darken($anakiwa, 5%);
-                }
-            }
-
-            &.edit {
-                background-color: lighten($fruit-salad, 30%);
-                border-top: 1px $ghost-grey solid;
-
-                &:hover {
-                   background-color: lighten($fruit-salad, 20%);
-                }
-            }
         }
     }
 }

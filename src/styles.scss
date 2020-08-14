@@ -1,4 +1,5 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
+@import '~material-design-icons/iconfont/material-icons.css';
 @import '~src/variables.scss';
 
 html {
@@ -48,6 +49,78 @@ div, p, a, select, label {
     font-weight: 300;
 }
 
+button {
+    border-radius: 0.4rem;
+    color: $white;
+    height: 3rem;    
+        
+    &:disabled {
+        color: $grey;
+    }
+
+    &.btn-circle {
+        width: 3rem;
+        height: 3rem;
+        padding: 0.3rem 0rem;
+        border-radius: 1.5rem;
+        text-align: center;
+        color: $white;
+        font-weight: 500;
+    }
+    &.btn-add {            
+        background-color: $blue;
+        font-weight: 500;
+        &:hover {
+            background-color: darken($blue, 5%);
+        }
+        &:disabled {
+            background-color: lighten($blue, 30%);
+            &:hover {
+                background-color: lighten($blue, 30%);
+            } 
+        }
+    }
+    &.btn-edit {
+        background-color: $green;
+        font-weight: 500;
+        &:hover {
+            background-color: darken($green, 5%);
+        }
+        &:disabled {
+            background-color: lighten($green, 30%);
+            &:hover {
+                background-color: lighten($green, 30%);
+            }
+        }
+    }
+    &.btn-delete {
+        background-color: $mandy;
+        font-weight: 500; 
+        &:hover {
+           background-color: darken($mandy, 5%);
+        }
+        &:disabled {
+            background-color: lighten($mandy, 20%);
+            &:hover {
+                background-color: lighten($mandy, 20%);
+            } 
+        }
+    }
+    &.btn-cancel {
+        background-color: $sea-buckthorn;
+        font-weight: 500;
+        &:hover {
+            background-color: darken($sea-buckthorn, 5%);
+        }
+        &:disabled {
+            background-color: lighten($sea-buckthorn, 20%);
+            &:hover {
+                background-color: lighten($sea-buckthorn, 20%);
+            } 
+        }
+    }
+}
+
 button, input, textarea {
     font-size: 1.2rem;
     font-weight: 300;
@@ -65,13 +138,8 @@ button, input, textarea {
 
     &.btn {
         font-size: 1.2rem;
-        font-weight: 300;
         letter-spacing: 1.5px;
     }
-}
-
-.footer-margin {
-    //margin-bottom: 4rem;
 }
 
 ngb-typeahead-window.dropdown-menu {
