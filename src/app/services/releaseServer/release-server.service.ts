@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ReleaseCenter } from '../releaseCenter/release-center.service';
+import { ReleaseCenter } from '../../models/releaseCenter';
 
 @Injectable({
     providedIn: 'root'
@@ -12,8 +12,8 @@ export class ReleaseServerService {
 
     }
 
-    getCenters(): Observable<object> {
-        return this.http.get<object>('/release/centers');
+    getCenters(): Observable<ReleaseCenter[]> {
+        return this.http.get<ReleaseCenter[]>('/release/centers');
     }
 
     postCenter(center): Observable<ReleaseCenter> {
@@ -24,11 +24,7 @@ export class ReleaseServerService {
         return this.http.put<ReleaseCenter>('/release/centers/' + id, center);
     }
 
-    getCenter(id): Observable<object> {
-        return this.http.get<object>('/release/centers/' + id);
-    }
-
-    getProducts(id): Observable<object> {
-        return this.http.get<object>('/release/centers/' + id + '/products');
+    getCenter(id): Observable<ReleaseCenter> {
+        return this.http.get<ReleaseCenter>('/release/centers/' + id);
     }
 }

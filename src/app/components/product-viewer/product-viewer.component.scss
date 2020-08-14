@@ -1,3 +1,36 @@
+@import '~src/variables.scss';
+
 div.product-viewer {
     margin-left: 24rem;
+    button {        
+        height: 3rem;
+        position: relative;
+
+        &.add {
+            width: 12rem;
+            background-color: $anakiwa;
+            border-top: 1px $ghost-grey solid;
+
+            &:hover {
+                background-color: darken($anakiwa, 5%);
+            }
+        }
+        &.edit {
+            background-color: lighten($fruit-salad, 30%);
+            border-top: 1px $ghost-grey solid;
+
+            &:hover {
+               background-color: lighten($fruit-salad, 20%);
+            }
+        }
+        &.delete {
+            background-color: lighten($mandy, 30%); 
+            border-top: 1px $ghost-grey solid;
+
+            &:hover {
+               background-color: lighten($mandy, 20%);
+            }
+        }
+        
+    }
 }

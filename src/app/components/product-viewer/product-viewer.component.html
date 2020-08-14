@@ -1,18 +1,38 @@
 <app-left-sidebar></app-left-sidebar>
 <div class="product-viewer text-center">
-    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
+    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>    
     <div class="container">
+        <button class="add text-center mb-3 float-right" (click)="openModal('add-product-modal')">Add Product</button>
         <table class="table table-bordered">
             <tr>
                 <th>Product</th>
                 <th>Status</th>
                 <th>Tag</th>
+                <th></th>
             </tr>
             <tr *ngFor="let product of products" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
-                <td>{{product?.name}}</td>
+                <td class="text-left">{{product?.name}}</td>
                 <td>{{product?.latestBuildStatus}}</td>
                 <td>{{product?.latestTag}}</td>
+                <td><button class="edit text-center" (click)="openModal('add-product-modal'); $event.stopPropagation()">Edit</button>
+                    <button class="delete text-center ml-2" (click)="openModal('add-product-modal'); $event.stopPropagation()">Delete</button></td>
             </tr>
         </table>
     </div>
 </div>
+
+<!-- ADD MODAL -->
+<app-modal id="add-product-modal" class="modal add-modal" size="large">
+    <h3 header class="mb-0">Create New Product</h3>
+    <div body class="text-center p-5">
+        <p>Please enter the details for the new Product</p>
+        <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">
+        <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name">
+    </div>
+
+    <div footer>
+        <!--div [@slide]="saved" class="px-3 error">{{saveResponse}}</div-->
+        <button type="button" class="btn btn" (click)="closeModal('add-product-modal')">CANCEL</button>
+        <button type="button" class="btn btn-primary">SAVE</button>
+    </div>
+</app-modal>

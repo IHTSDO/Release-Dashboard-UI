@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProductViewerComponent } from './product-viewer.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProductViewerComponent', () => {
   let component: ProductViewerComponent;
@@ -8,7 +9,8 @@ describe('ProductViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductViewerComponent ]
+      declarations: [ ProductViewerComponent ],
+      imports: [ BrowserAnimationsModule ]
     })
     .compileComponents();
   }));

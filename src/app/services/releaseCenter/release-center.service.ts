@@ -1,15 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-
-export class ReleaseCenter {
-    id: string;
-    name: string;
-    products_url: string;
-    published_url: string;
-    removed: string;
-    shortName: string;
-    url: string;
-}
+import { ReleaseCenter } from '../../models/releaseCenter';
 
 @Injectable({
     providedIn: 'root'

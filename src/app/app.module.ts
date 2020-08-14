@@ -24,6 +24,8 @@ import { ReleaseCenterService } from './services/releaseCenter/release-center.se
 import { ReleaseServerService } from './services/releaseServer/release-server.service';
 import { AppRoutingModule } from './app-routing.module';
 import { BuildViewerComponent } from './components/build-viewer/build-viewer.component';
+import { ProductService } from './services/product/product.service';
+import { ProductDataService } from './services/product/product-data.service';
 
 // SERVICE IMPORTS
 
@@ -51,6 +53,8 @@ import { BuildViewerComponent } from './components/build-viewer/build-viewer.com
         AuthoringService,
         ReleaseCenterService,
         ReleaseServerService,
+        ProductService,
+        ProductDataService,
         ModalService,
         {
             provide: HTTP_INTERCEPTORS,

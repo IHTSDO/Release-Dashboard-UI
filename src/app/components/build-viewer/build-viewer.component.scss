@@ -1,0 +1,130 @@
+@import '~src/variables.scss';
+
+div.build-viewer {    
+    a {
+        text-decoration: underline;
+    }
+
+    button {        
+        height: 3rem;
+        position: relative;
+        border-top: 1px $ghost-grey solid;
+                
+        &.btn-view-process {
+            background-color: lighten($blumine, 30%);            
+
+            &:hover {
+               background-color: lighten($blumine, 20%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: lighten($blumine, 30%);
+                } 
+            }
+        }
+        &.btn-stop-build {
+            background-color: lighten($candlelight, 30%);            
+
+            &:hover {
+               background-color: lighten($candlelight, 20%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: lighten($candlelight, 30%);
+                } 
+            }
+        }
+        &.btn-publish-build {
+            background-color: lighten($fruit-salad, 30%);           
+
+            &:hover {
+               background-color: lighten($fruit-salad, 20%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: lighten($fruit-salad, 30%);
+                } 
+            }
+        }
+        &.btn-delete-build {
+            background-color: lighten($mandy, 30%);            
+
+            &:hover {
+               background-color: lighten($mandy, 20%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: lighten($mandy, 20%);
+                } 
+            }
+        }
+        &.btn-re-run {
+            background-color: lighten($fruit-salad, 30%);           
+
+            &:hover {
+               background-color: lighten($fruit-salad, 20%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: lighten($fruit-salad, 30%);
+                } 
+            }
+        }
+        &.btn-view-all {
+            background-color: darken($ghost-grey, 20%);
+
+            &:hover {
+               background-color: darken($ghost-grey, 10%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: darken($ghost-grey, 20%);
+                } 
+            }
+        }
+        &.btn-view-log {
+            background-color: darken($ghost-grey, 30%);
+
+            &:hover {
+               background-color: darken($ghost-grey, 20%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: darken($ghost-grey, 30%);
+                } 
+            }
+        }
+        &.btn-download {
+            background-color: lighten($slate-grey, 10%);
+
+            &:hover {
+               background-color: lighten($slate-grey, 25%);
+            }
+            &:disabled {
+                &:hover {
+                    background-color: lighten($slate-grey, 10%);
+                } 
+            }
+        }
+    }
+
+    div.panel-top {
+        border: 1px solid #dee2e6;
+
+        div.panel-header,
+        div.panel-footer {
+            height: 3.5rem;
+            background: #E0E0E0;            
+        }
+    }
+
+    table {
+        tr.active {
+            background-color: $anakiwa;
+    
+            &:hover {
+                background-color: darken($anakiwa, 5%);
+            }
+        }
+    }    
+}
