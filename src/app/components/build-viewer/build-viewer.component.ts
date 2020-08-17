@@ -148,4 +148,17 @@ export class BuildViewerComponent implements OnInit {
           }
         );
     }
+
+    stopBuild(build: Build) {
+      this.buildService.stopBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
+        () => {
+          this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
+              this.builds = response;
+        });
+        },
+        errorResponse => {
+            this.errorMsg = errorResponse.error.errorMessage;
+        }
+      );
+    }
 }

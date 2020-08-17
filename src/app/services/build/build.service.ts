@@ -45,4 +45,8 @@ export class BuildService {
   publishBuild(releaseCenterKey, productKey, buildId) {
       return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/publish', {});
   }
+
+  stopBuild(releaseCenterKey, productKey, buildId) {
+    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
+  }
 }
