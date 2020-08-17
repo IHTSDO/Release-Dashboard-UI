@@ -47,7 +47,7 @@
                 
             </div>    
             <div class="panel-footer text-right">
-                <button type="button" class="btn-blue" [disabled]="buildLoading">Download</button>
+                <button type="button" class="btn-blue" [disabled]="buildLoading || activeBuild.downloadingBuildPackage" (click)="downloadBuildPackage(activeBuild)">{{activeBuild.downloadingBuildPackage ? 'Downloading...' : 'Download'}}</button>
                 <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="buildLoading">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1">View All</button>
                 <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="buildLoading">Re-Run</button>
@@ -66,8 +66,8 @@
                 <td>{{build?.id}}</td>
                 <td>{{build?.status}}</td>
                 <td>{{build?.buildUser}}</td>
-                <td></td>
-                <td></td>
+                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildLog" [disabled]="build.downloadingBuildLog" (click)="downloadBuildLog(build); $event.stopPropagation()">{{build.downloadingBuildLog ? 'Downloading...' : 'Download'}}</button></td>
+                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildPackage" [disabled]="build.downloadingBuildPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()">{{build.downloadingBuildPackage ? 'Downloading...' : 'Download'}}</button></td>
                 <td>{{build?.tag}}</td>
             </tr>
         </table>

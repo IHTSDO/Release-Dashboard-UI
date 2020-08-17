@@ -55,19 +55,6 @@ export class BuildViewerComponent implements OnInit {
         });
     }
 
-    setActiveBuild(build) {
-        this.buildLoading = true;
-        this.activeBuild = build;
-        forkJoin([this.buildService.getBuildConfiguration(this.releaseCenterKey, this.productKey, build.id),
-                  this.buildService.getQAConfiguration(this.releaseCenterKey, this.productKey, build.id)])
-          .subscribe((response) => {
-                this.buildLoading = false;
-                this.activeBuild.configuration = response[0];
-                this.activeBuild.qaTestConfig = response[1];
-            }
-        );
-    }
-
     // find product from cache, other from server
     loadProduct(productService, productDataService, releaseCenterKey, productKey) {
         const promise = new Promise(function(resolve, reject) {
@@ -81,4 +68,67 @@ export class BuildViewerComponent implements OnInit {
 
         return promise;
     }
+
+    setActiveBuild(build) {
+        this.buildLoading = true;
+        this.activeBuild = build;
+        forkJoin([this.buildService.getBuildConfiguration(this.releaseCenterKey, this.productKey, build.id),
+                  this.buildService.getQAConfiguration(this.releaseCenterKey, this.productKey, build.id)])
+          .subscribe((response) => {
+                this.buildLoading = false;
+                this.activeBuild.configuration = response[0];
+                this.activeBuild.qaTestConfig = response[1];
+            }
+        );
+  }
+
+    downloadBuildLog(build: Build) {
+        build.downloadingBuildLog = true;
+        this.buildService.getBuildLog(this.releaseCenterKey, this.productKey, build.id).subscribe(data => {
+            this.downLoadFile(data, 'text/plain', build.id + '.txt');
+            build.downloadingBuildLog = false;
+        });
+    }
+
+    downloadBuildPackage(build: Build) {
+        build.downloadingBuildPackage = true;
+        this.buildService.listPackageOutputFiles(this.releaseCenterKey, this.productKey, build.id).subscribe(response  => {
+            if (response) {
+                const outputFiles = <object[]> response;
+                let buildPackageFound = false;
+                outputFiles.forEach( (element) => {
+                    const url = <string> element['url'];
+                    if (url.endsWith('.zip')) {
+                        buildPackageFound = true;
+                        const filename = url.split('/').pop();
+                        this.buildService.getBuildPackage(this.releaseCenterKey, this.productKey, build.id, filename).subscribe(data => {
+                            this.downLoadFile(data, 'application/zip', filename);
+                            build.downloadingBuildPackage = false;
+                        });
+                        return;
+                    }
+                });
+
+                if (!buildPackageFound) {
+                    build.downloadingBuildPackage = false;
+                }
+            } else {
+                build.downloadingBuildPackage = false;
+            }
+        });
+    }
+
+    /**
+     * Method is use to download file.
+     * @param data - Array Buffer data
+     * @param type - type of the document.
+     */
+    downLoadFile(data: any, type: string, fileName: string) {
+      const blob = new Blob([data], { type: type});
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+  }
 }

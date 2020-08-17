@@ -8,4 +8,8 @@ export class Build {
     tag: string;
     configuration: BuildConfiguration;
     qaTestConfig: QAConfiguration;
+
+    // UI controls
+    downloadingBuildLog: boolean;
+    downloadingBuildPackage: boolean;
 }

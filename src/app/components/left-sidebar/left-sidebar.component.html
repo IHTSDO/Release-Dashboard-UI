@@ -7,7 +7,7 @@
     <div class="sidebar-buttons w-100">
         <div class="row justify-content-center align-items-center mb-2">
             <button class="btn-blue text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
-            <button class="btn-green text-center float-right" title="Edit Release Center" (click)="openModal('edit-modal')">Edit</button>
+            <button class="btn-green text-center float-right" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="openModal('edit-modal')">Edit</button>
         </div>        
     </div>
 </nav>

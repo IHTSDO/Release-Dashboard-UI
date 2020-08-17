@@ -32,5 +32,19 @@ div.build-viewer {
                 background-color: darken($anakiwa, 5%);
             }
         }
-    }    
+        td {
+            padding: .8rem;
+
+            &.btn-download {
+                padding: .2rem;
+            }
+        }
+        button {
+            width: 8rem;
+
+            &.downloading {
+                width: 12rem;
+            }
+        }
+    }   
 }
