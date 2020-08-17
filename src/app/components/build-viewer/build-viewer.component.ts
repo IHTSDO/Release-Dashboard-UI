@@ -26,6 +26,8 @@ export class BuildViewerComponent implements OnInit {
     // control properties
     buildLoading = false;
 
+    errorMsg: string;
+
     constructor(private route: ActivatedRoute,
                 private productService: ProductService,
                 private productDataService: ProductDataService,
@@ -124,11 +126,26 @@ export class BuildViewerComponent implements OnInit {
      * @param type - type of the document.
      */
     downLoadFile(data: any, type: string, fileName: string) {
-      const blob = new Blob([data], { type: type});
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      link.click();
-  }
+        const blob = new Blob([data], { type: type});
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+    }
+
+    publishBuild(build: Build) {
+        build.publishingBuild = true;
+        this.errorMsg = '';
+        this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
+          () => {
+              build.tag = 'PUBLISHED';
+              build.publishingBuild = false;
+          },
+          errorResponse => {
+              this.errorMsg = errorResponse.error.errorMessage;
+              build.publishingBuild = false;
+          }
+        );
+    }
 }

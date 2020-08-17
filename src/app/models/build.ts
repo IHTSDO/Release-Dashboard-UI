@@ -12,4 +12,5 @@ export class Build {
     // UI controls
     downloadingBuildLog: boolean;
     downloadingBuildPackage: boolean;
+    publishingBuild: boolean;
 }

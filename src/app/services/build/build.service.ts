@@ -41,4 +41,8 @@ export class BuildService {
       const url = '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/outputfiles/' + fileName;
       return this.http.get(url, {responseType: 'arraybuffer'});
   }
+
+  publishBuild(releaseCenterKey, productKey, buildId) {
+      return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/publish', {});
+  }
 }

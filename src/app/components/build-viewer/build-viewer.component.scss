@@ -1,6 +1,11 @@
 @import '~src/variables.scss';
 
-div.build-viewer {   
+div.build-viewer {
+    div.error {
+        color: $mandy;
+        padding: .75rem;
+    }
+
     div.panel-top {
         border: 1px solid #dee2e6;
 
