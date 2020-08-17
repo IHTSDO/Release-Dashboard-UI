@@ -1,8 +1,8 @@
 <app-left-sidebar></app-left-sidebar>
-<div class="product-viewer text-center">
+<div *ngIf="activeReleaseCenter" class="product-viewer text-center">
     <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>    
     <div class="container">
-        <button class="btn-circle text-center mb-3 btn-add float-right" data-toggle="tooltip" title="Add New Product" (click)="openModal('add-product-modal')"><i class="material-icons">add</i></button>
+        <button class="btn-circle text-center mb-3 btn-blue float-right" data-toggle="tooltip" title="Add New Product" (click)="openModal('add-product-modal')"><i class="material-icons">add</i></button>
         <table class="table table-bordered">
             <tr>
                 <th>Product</th>
@@ -14,8 +14,8 @@
                 <td class="text-left">{{product?.name}}</td>
                 <td>{{product?.latestBuildStatus}}</td>
                 <td>{{product?.latestTag}}</td>
-                <td><button class="btn-edit text-center" (click)="openModal('add-product-modal'); $event.stopPropagation()">Edit</button>
-                    <button class="btn-delete text-center ml-2" (click)="openModal('add-product-modal'); $event.stopPropagation()">Delete</button></td>
+                <td><button class="btn-green text-center" (click)="openModal('add-product-modal'); $event.stopPropagation()">Edit</button>
+                    <button class="btn-mandy text-center ml-2" (click)="openModal('add-product-modal'); $event.stopPropagation()">Delete</button></td>
             </tr>
         </table>
     </div>
@@ -32,7 +32,7 @@
 
     <div footer>
         <!--div [@slide]="saved" class="px-3 error">{{saveResponse}}</div-->
-        <button type="button" class="btn-cancel" (click)="closeModal('add-product-modal')">Cancel</button>
-        <button type="button" class="btn-add">Save</button>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('add-product-modal')">Cancel</button>
+        <button type="button" class="btn-blue">Save</button>
     </div>
 </app-modal>

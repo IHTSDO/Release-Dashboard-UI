@@ -1,7 +1,7 @@
-<div class="build-viewer text-center">    
+<div *ngIf="activeProduct" class="build-viewer text-center">    
     <div class="container">
-        <h2 class="mt-3 text-left">{{product?.name}}</h2>
-        <div class="text-right"><button type="button text-right" class="btn-edit ml-3 my-1 mr-1">Run New Build</button></div>
+        <h2 class="mt-3 text-left">{{activeProduct?.name}}</h2>
+        <div class="text-right"><button type="button text-right" class="btn-green ml-3 my-1 mr-1">Run New Build</button></div>
         <div class="panel-top mb-3">
             <a class="position-absolute link-back" routerLink="/{{releaseCenterKey}}">
                 <span class="font-weight-bold">&lt;&lt;&nbsp;</span> Back To Release Center
@@ -34,23 +34,23 @@
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-add" [disabled]="buildLoading">View Process</button>
-                            <button type="button" class="btn-delete ml-3" [disabled]="activeBuild.status !== 'BUILD' || buildLoading">Stop Build</button>
+                            <button type="button" class="btn-blue" [disabled]="buildLoading">View Process</button>
+                            <button type="button" class="btn-mandy ml-3" [disabled]="activeBuild.status !== 'BUILD' || buildLoading">Stop Build</button>
                         </div>                        
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>                            
-                            <button type="button" class="btn-edit" [disabled]="buildLoading">Publish Build</button>
-                            <button type="button" class="btn-delete ml-3" [disabled]="buildLoading">Delete Build</button>
+                            <button type="button" class="btn-green" [disabled]="buildLoading">Publish Build</button>
+                            <button type="button" class="btn-mandy ml-3" [disabled]="buildLoading">Delete Build</button>
                         </div>
                     </div>
                 </div>
                 
             </div>    
             <div class="panel-footer text-right">
-                <button type="button" class="btn-add" [disabled]="buildLoading">Download</button>
-                <button type="button" class="btn-cancel ml-3 my-1" [disabled]="buildLoading">View Log</button>
-                <button type="button" class="btn-add ml-3 my-1">View All</button>
-                <button type="button" class="btn-edit ml-3 my-1 mr-1" [disabled]="buildLoading">Re-Run</button>
+                <button type="button" class="btn-blue" [disabled]="buildLoading">Download</button>
+                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="buildLoading">View Log</button>
+                <button type="button" class="btn-blue ml-3 my-1">View All</button>
+                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="buildLoading">Re-Run</button>
             </div>
         </div>    
         <table class="table table-bordered">
@@ -62,7 +62,7 @@
                 <th>Release</th>
                 <th>Tag</th>
             </tr>
-            <tr *ngFor="let build of builds" (click)="selectBuild(build)" [class.active]="activeBuild === build">
+            <tr *ngFor="let build of builds" (click)="setActiveBuild(build)" [class.active]="activeBuild === build">
                 <td>{{build?.id}}</td>
                 <td>{{build?.status}}</td>
                 <td>{{build?.buildUser}}</td>

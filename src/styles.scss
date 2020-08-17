@@ -52,7 +52,8 @@ div, p, a, select, label {
 button {
     border-radius: 0.4rem;
     color: $white;
-    height: 3rem;    
+    height: 3rem;
+    font-weight: 500;    
         
     &:disabled {
         color: $grey;
@@ -64,12 +65,10 @@ button {
         padding: 0.3rem 0rem;
         border-radius: 1.5rem;
         text-align: center;
-        color: $white;
-        font-weight: 500;
+        color: $white;        
     }
-    &.btn-add {            
-        background-color: $blue;
-        font-weight: 500;
+    &.btn-blue {            
+        background-color: $blue;        
         &:hover {
             background-color: darken($blue, 5%);
         }
@@ -80,9 +79,8 @@ button {
             } 
         }
     }
-    &.btn-edit {
-        background-color: $green;
-        font-weight: 500;
+    &.btn-green {
+        background-color: $green;        
         &:hover {
             background-color: darken($green, 5%);
         }
@@ -93,9 +91,8 @@ button {
             }
         }
     }
-    &.btn-delete {
-        background-color: $mandy;
-        font-weight: 500; 
+    &.btn-mandy {
+        background-color: $mandy;         
         &:hover {
            background-color: darken($mandy, 5%);
         }
@@ -106,9 +103,8 @@ button {
             } 
         }
     }
-    &.btn-cancel {
-        background-color: $sea-buckthorn;
-        font-weight: 500;
+    &.btn-sea-buckthorn {
+        background-color: $sea-buckthorn;        
         &:hover {
             background-color: darken($sea-buckthorn, 5%);
         }
@@ -120,10 +116,12 @@ button {
         }
     }
 }
+input, textarea {
+    font-weight: 300;
+}
 
 button, input, textarea {
-    font-size: 1.2rem;
-    font-weight: 300;
+    font-size: 1.2rem;    
     letter-spacing: 0.5px;
     border: none;
     resize: none;

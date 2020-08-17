@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
+import { Product } from 'src/app/models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -8,18 +9,25 @@ export class ProductDataService {
 
   constructor() { }
 
-  private products = new Subject<any>();
+  private products: Product[];
 
-  // Setters & Getters: Products
-  setProducts(products) {
-      this.products.next(products);
+  cacheProducts(products) {
+      this.products = products;
   }
 
-  clearProducts() {
-      this.products.next();
+  clearCachedProducts() {
+    this.products = [];
   }
 
-  getProducts(): Observable<any> {
-      return this.products.asObservable();
+  getCachedProducts() {
+      return this.products;
+  }
+
+  findByKey(productkey) {
+    if (this.products) {
+      return this.products.find(product => product.id === productkey);
+    }
+
+    return null;
   }
 }

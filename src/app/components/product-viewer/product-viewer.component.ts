@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ProductService } from '../../services/product/product.service';
@@ -6,6 +6,7 @@ import { ReleaseCenter } from '../../models/releaseCenter';
 import { ProductDataService } from '../../services/product/product-data.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { trigger, state, style, keyframes, transition, animate } from '@angular/animations';
+import { Product } from 'src/app/models/product';
 
 @Component({
     selector: 'app-product-viewer',
@@ -26,12 +27,12 @@ import { trigger, state, style, keyframes, transition, animate } from '@angular/
         ])
     ]
 })
-export class ProductViewerComponent implements OnInit {
+export class ProductViewerComponent implements OnInit, OnDestroy {
+
+    private activeReleaseCenterSubscription: Subscription;
 
     activeReleaseCenter: ReleaseCenter;
-    private activeReleaseCenterSubscription: Subscription;
-    products: object;
-    private productsSubscription: Subscription;
+    products: Product[];
 
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
@@ -39,17 +40,20 @@ export class ProductViewerComponent implements OnInit {
                 private productDataService: ProductDataService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
             this.activeReleaseCenter = data;
-            productDataService.clearProducts();
+            this.products = [];
+            this.productDataService.clearCachedProducts();
             this.productService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
-                this.productDataService.setProducts(products);
+                this.products = products;
+                this.productDataService.cacheProducts(products);
             });
-        });
-        this.productsSubscription = this.productDataService.getProducts().subscribe(data => {
-            this.products = data;
         });
     }
 
     ngOnInit(): void {
+    }
+
+    ngOnDestroy() {
+        this.activeReleaseCenterSubscription.unsubscribe();
     }
 
     openModal(name) {

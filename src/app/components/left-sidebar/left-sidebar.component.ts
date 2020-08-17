@@ -28,10 +28,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LeftSidebarComponent implements OnInit {
 
+    private activeReleaseCenterSubscription: Subscription;
+
     releaseCenters: ReleaseCenter[];
-    releaseCentersSubscription: Subscription;
     activeReleaseCenter: ReleaseCenter;
-    activeReleaseCenterSubscription: Subscription;
 
     // animations
     saved = 'start';
@@ -42,7 +42,6 @@ export class LeftSidebarComponent implements OnInit {
                 private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
                 private releaseServer: ReleaseServerService) {
-        this.releaseCentersSubscription = this.releaseCenterService.getReleaseCenters().subscribe(data => this.releaseCenters = data);
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
             this.activeReleaseCenter = data;
         });
@@ -54,19 +53,34 @@ export class LeftSidebarComponent implements OnInit {
             releaseCenterKey = paramMap['params']['releaseCenterKey'];
         });
 
-        this.releaseServer.getCenters().subscribe(centers => {
-            this.releaseCenterService.setReleaseCenters(centers);
+        this.loadReleaseCenters(this.releaseCenterService, this.releaseServer).then(data => {
+            this.releaseCenters = <ReleaseCenter[]> data;
+            this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
             if (releaseCenterKey) {
-                const activeReleaseCenter = centers.find(releaseCenter => releaseCenter.id === releaseCenterKey);
+                const activeReleaseCenter = this.releaseCenters.find(releaseCenter => releaseCenter.id === releaseCenterKey);
                 if (activeReleaseCenter) {
                     this.releaseCenterService.setActiveReleaseCenter(activeReleaseCenter);
                 } else {
-                    this.releaseCenterService.setActiveReleaseCenter(centers[0]);
+                    this.releaseCenterService.setActiveReleaseCenter(this.releaseCenters[0]);
                 }
             } else {
-                this.releaseCenterService.setActiveReleaseCenter(centers[0]);
+                this.releaseCenterService.setActiveReleaseCenter(this.releaseCenters[0]);
             }
         });
+    }
+
+    // load release centers from cache, other from server
+    loadReleaseCenters(releaseCenterService, releaseServer) {
+        const promise = new Promise(function(resolve, reject) {
+            const releaseCenters = releaseCenterService.getCachedReleaseCenters();
+            if (releaseCenters && releaseCenters.length !== 0) {
+                resolve(releaseCenters);
+                return;
+            }
+            releaseServer.getCenters().subscribe(data => resolve(data));
+        });
+
+        return promise;
     }
 
     openModal(name) {
@@ -87,13 +101,15 @@ export class LeftSidebarComponent implements OnInit {
             response => {
                 this.savingCenter = false;
                 this.releaseCenters.push(response);
+                this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
                 this.modalService.close('add-modal');
             },
             errorResponse => {
                 this.savingCenter = false;
                 this.saveResponse = errorResponse.error.errorMessage;
                 this.saved = (this.saved === 'start' ? 'end' : 'start');
-            });
+            }
+        );
     }
 
     saveReleaseCenter(name, shortName) {
@@ -104,12 +120,14 @@ export class LeftSidebarComponent implements OnInit {
                 const currentIndex = this.releaseCenters.indexOf(this.activeReleaseCenter);
                 this.releaseCenters[currentIndex] = response;
                 this.activeReleaseCenter = response;
+                this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
                 this.modalService.close('edit-modal');
             },
             errorResponse => {
                 this.savingCenter = false;
                 this.saveResponse = errorResponse.error.errorMessage;
                 this.saved = (this.saved === 'start' ? 'end' : 'start');
-            });
+            }
+        );
     }
 }

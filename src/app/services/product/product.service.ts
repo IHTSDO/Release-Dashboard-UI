@@ -15,8 +15,8 @@ export class ProductService {
         return this.http.get<Product>('/release/centers/' + releaseCenterKey + '/products/' + productKey);
     }
 
-    getProducts(releaseCenterKey): Observable<Product> {
-        return this.http.get<Product>('/release/centers/' + releaseCenterKey + '/products');
+    getProducts(releaseCenterKey): Observable<Product[]> {
+        return this.http.get<Product[]>('/release/centers/' + releaseCenterKey + '/products');
     }
 
     postProduct(releaseCenterKey, product): Observable<Product> {

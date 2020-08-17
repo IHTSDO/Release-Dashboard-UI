@@ -10,21 +10,9 @@ export class ReleaseCenterService {
     constructor() {
     }
 
-    private releaseCenters = new Subject<any>();
     private activeReleaseCenter = new Subject<any>();
 
-    // Setters & Getters: Release Centers
-    setReleaseCenters(releaseCenters) {
-        this.releaseCenters.next(releaseCenters);
-    }
-
-    clearReleaseCenters() {
-        this.releaseCenters.next();
-    }
-
-    getReleaseCenters(): Observable<ReleaseCenter[]> {
-        return this.releaseCenters.asObservable();
-    }
+    private releaseCenters: ReleaseCenter[];
 
     // Setters & Getters: Active Release Center
     setActiveReleaseCenter(releaseCenter) {
@@ -37,5 +25,17 @@ export class ReleaseCenterService {
 
     getActiveReleaseCenter(): Observable<ReleaseCenter> {
         return this.activeReleaseCenter.asObservable();
+    }
+
+    cacheReleaseCenters(releaseCenters) {
+        this.releaseCenters = releaseCenters;
+    }
+
+    clearCachedReleaseCenters() {
+        this.releaseCenters = [];
+    }
+
+    getCachedReleaseCenters() {
+        return this.releaseCenters;
     }
 }
