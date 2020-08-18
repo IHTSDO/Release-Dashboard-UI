@@ -28,6 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BuildViewerComponent } from './components/build-viewer/build-viewer.component';
 import { ProductService } from './services/product/product.service';
 import { ProductDataService } from './services/product/product-data.service';
+import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 
 // SERVICE IMPORTS
 
@@ -63,6 +64,11 @@ import { ProductDataService } from './services/product/product-data.service';
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HeaderInterceptor,
+            multi: true
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthenticationInterceptor,
             multi: true
         }
     ],

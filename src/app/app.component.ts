@@ -21,8 +21,19 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
-
+        this.getUIConfiguration();
         this.assignFavicon();
+    }
+
+    getUIConfiguration() {
+        this.authoringService.getUIConfiguration().subscribe(
+            data => {
+                this.authoringService.uiConfiguration = data;
+            },
+            error => {
+                console.error('ERROR: UI Config failed to load');
+            }
+        );
     }
 
     assignFavicon() {
