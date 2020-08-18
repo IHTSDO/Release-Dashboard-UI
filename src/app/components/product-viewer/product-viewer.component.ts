@@ -34,6 +34,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     activeReleaseCenter: ReleaseCenter;
     products: Product[];
 
+    productsLoading = false;
+
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
                 private productService: ProductService,
@@ -42,8 +44,10 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.activeReleaseCenter = data;
             this.products = [];
             this.productDataService.clearCachedProducts();
+            this.productsLoading = true;
             this.productService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
                 this.products = products;
+                this.productsLoading = false;
                 this.productDataService.cacheProducts(products);
             });
         });

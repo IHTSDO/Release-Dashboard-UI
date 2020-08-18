@@ -63,4 +63,8 @@ export class BuildService {
       };
       return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
   }
+
+  deleteBuild(releaseCenterKey, productKey, buildId) {
+    return this.http.delete('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId);
+  }
 }

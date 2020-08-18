@@ -10,7 +10,10 @@ export class Build {
     qaTestConfig: QAConfiguration;
 
     // UI controls
-    downloadingBuildLog: boolean;
-    downloadingBuildPackage: boolean;
-    publishingBuild: boolean;
+    buildDownloadingLog: boolean;
+    buildDownloadingPackage: boolean;
+    buildPublishing: boolean;
+    buildLoading: boolean;
+    buildDeleting: boolean;
+    buildCanceling: boolean;
 }

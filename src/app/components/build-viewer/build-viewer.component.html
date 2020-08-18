@@ -7,55 +7,55 @@
             <a class="position-absolute link-back" routerLink="/{{releaseCenterKey}}">
                 <span class="font-weight-bold">&lt;&lt;&nbsp;</span> Back To Release Center
             </a>            
-            <div class="panel-header text-left pl-2 pt-3"><span class="font-weight-bold">{{buildLoading ? 'Loading...' : activeBuild.id}}</span></div>
+            <div class="panel-header text-left pl-2 pt-3"><span class="font-weight-bold">{{activeBuild.buildLoading ? 'Loading...' : activeBuild.id}}</span></div>
             <div>
                 <div class="row mx-0">
                     <div class="col-6 text-left">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Effective Time:</label>
-                            <span class="font-weight-bold">{{buildLoading ? '' : activeBuild.configuration?.effectiveTime}}</span>
+                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.configuration?.effectiveTime}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Export Type:</label>
-                            <span class="font-weight-bold">{{buildLoading ? '' : activeBuild.configuration?.exportType}}</span>
+                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.configuration?.exportType}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Branch:</label>
-                            <span class="font-weight-bold">{{buildLoading ? '' : activeBuild.configuration?.branchPath}}</span>
+                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.configuration?.branchPath}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Failure Max:</label>
-                            <span class="font-weight-bold">{{buildLoading ? '' : activeBuild.qaTestConfig?.maxFailureExport}}</span>
+                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.qaTestConfig?.maxFailureExport}}</span>
                         </div>
                     </div>
                     <div class="col-6 text-left">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Status:</label>
-                            <span class="font-weight-bold">{{buildLoading ? '' : activeBuild.status}}</span>
+                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.status}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || buildLoading">View Process</button>
-                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || buildLoading" (click)="stopBuild(activeBuild)">Stop Build</button>
+                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting">View Process</button>
+                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">Stop Build</button>
                         </div>                        
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>                            
                             <button type="button" class="btn-green" 
-                                    [disabled]="!activeBuild.id || buildLoading || activeBuild.publishingBuild || activeBuild.status!== 'BUILT' ||  activeBuild.tag === 'PUBLISHED'" 
-                                    (click)="publishBuild(activeBuild)">{{activeBuild.publishingBuild ? 'Publishing...' : 'Publish Build'}}</button>
-                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || buildLoading">Delete Build</button>
+                                    [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'BUILT' ||  activeBuild.tag === 'PUBLISHED'" 
+                                    (click)="openModal('publish-build-confirmation-modal')">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
+                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
                     </div>
                 </div>                
             </div>    
             <div class="panel-footer text-right">
-                <button type="button" class="btn-blue" [disabled]="!activeBuild.id || buildLoading || activeBuild.downloadingBuildPackage" (click)="downloadBuildPackage(activeBuild)">{{activeBuild.downloadingBuildPackage ? 'Downloading...' : 'Download'}}</button>
-                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || buildLoading">View Log</button>
-                <button type="button" class="btn-blue ml-3 my-1" (click)="viewAll()">View All</button>
-                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id || buildLoading" (click)="openBuildModel()">Re-Run</button>
+                <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildDownloadingPackage" (click)="downloadBuildPackage(activeBuild)">{{activeBuild.buildDownloadingPackage ? 'Downloading...' : 'Download'}}</button>
+                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting">View Log</button>
+                <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
+                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id || activeBuild.buildLoading" (click)="openBuildModel()">Re-Run</button>
             </div>
-        </div>    
-        <table class="table table-bordered">
+        </div>
+        <table class="table table-bordered" *ngIf="buildsLoading">
             <tr>
                 <th>Build Date</th>
                 <th>Status</th>
@@ -64,12 +64,28 @@
                 <th>Release</th>
                 <th>Tag</th>
             </tr>
+            <tr >
+                <td colspan="6">Loading...</td>
+            </tr>            
+        </table>    
+        <table class="table table-bordered" *ngIf="!buildsLoading">
+            <tr>
+                <th>Build Date</th>
+                <th>Status</th>
+                <th>User</th>
+                <th>Log</th>
+                <th>Release</th>
+                <th>Tag</th>
+            </tr>
+            <tr *ngIf="builds?.length === 0">
+                <td colspan="6">No builds found.</td>
+            </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td>{{build?.id}}</td>
                 <td>{{build?.status}}</td>
                 <td>{{build?.buildUser}}</td>
-                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildLog" [disabled]="build.downloadingBuildLog" (click)="downloadBuildLog(build); $event.stopPropagation()">{{build.downloadingBuildLog ? 'Downloading...' : 'Download'}}</button></td>
-                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildPackage" [disabled]="build.downloadingBuildPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()">{{build.downloadingBuildPackage ? 'Downloading...' : 'Download'}}</button></td>
+                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildLog" [disabled]="build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()">{{build.buildDownloadingLog ? 'Downloading...' : 'Download'}}</button></td>
+                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildPackage" [disabled]="build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()">{{build.buildDownloadingPackage ? 'Downloading...' : 'Download'}}</button></td>
                 <td>{{build?.tag}}</td>
             </tr>
         </table>
@@ -80,7 +96,8 @@
                       autoHide="true"
                       responsive="true"
                       previousLabel="Previous"
-                      nextLabel="Next">
+                      nextLabel="Next"
+                      *ngIf="!buildsLoading">
         </pagination-controls>
     </div>
 </div>
@@ -103,5 +120,44 @@
     <div footer>
         <button type="button" class="btn-sea-buckthorn" [disabled]="buildTriggering" (click)="closeModal('build-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="buildTriggering" (click)="runBuild()">Run</button>
+    </div>
+</app-modal>
+
+<!--Build deletion confirmation-->
+<app-modal id="delete-confirmation-modal" class="modal build-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Are you sure you want to delete this build?</p>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('delete-confirmation-modal')">No</button>
+        <button type="button" class="btn-blue" (click)="deleteBuild(activeBuild)">Yes</button>
+    </div>
+</app-modal>
+
+<!--Build publishing confiramation-->
+<app-modal id="publish-build-confirmation-modal" class="modal build-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Are you sure you want to publish this build?</p>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('publish-build-confirmation-modal')">No</button>
+        <button type="button" class="btn-blue" (click)="publishBuild(activeBuild)">Yes</button>
+    </div>
+</app-modal>
+
+<!--Stop Build confiramation-->
+<app-modal id="stop-build-confirmation-modal" class="modal build-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Are you sure you want to cancel this build?</p>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('stop-build-confirmation-modal')">No</button>
+        <button type="button" class="btn-blue" (click)="stopBuild(activeBuild)">Yes</button>
     </div>
 </app-modal>

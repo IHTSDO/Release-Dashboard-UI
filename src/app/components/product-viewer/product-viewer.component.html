@@ -3,12 +3,26 @@
     <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>    
     <div class="container">
         <button class="btn-circle text-center mb-3 btn-blue float-right" data-toggle="tooltip" title="Add New Product" (click)="openModal('add-product-modal')"><i class="material-icons">add</i></button>
-        <table class="table table-bordered">
+        <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
                 <th>Product</th>
                 <th>Status</th>
                 <th>Tag</th>
                 <th></th>
+            </tr>
+            <tr>
+                <td colspan="4">Loading...</td>
+            </tr>           
+        </table>
+        <table class="table table-bordered" *ngIf="!productsLoading">
+            <tr>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Tag</th>
+                <th></th>
+            </tr>
+            <tr *ngIf="products?.length === 0">
+                <td colspan="4">No products found.</td>
             </tr>
             <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: 10, currentPage: p, totalItems: products?.length}" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
                 <td class="text-left">{{product?.name}}</td>
@@ -25,7 +39,8 @@
                       autoHide="true"
                       responsive="true"
                       previousLabel="Previous"
-                      nextLabel="Next">
+                      nextLabel="Next"
+                      *ngIf="!productsLoading">
         </pagination-controls>
     </div>
 </div>
