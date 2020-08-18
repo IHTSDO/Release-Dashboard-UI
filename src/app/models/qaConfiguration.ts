@@ -6,4 +6,5 @@ export class QAConfiguration {
     enableMRCMValidation: boolean;
     extensionDependencyRelease: string;
     previousExtensionRelease: string;
+    maxFailureExport: number;
 }

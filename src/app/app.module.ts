@@ -8,6 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderInterceptor } from './interceptors/header.interceptor';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 // COMPONENT IMPORTS
 import { SnomedNavbarComponent } from './components/snomed-navbar/snomed-navbar.component';
@@ -46,7 +48,9 @@ import { ProductDataService } from './services/product/product-data.service';
         HttpClientModule,
         BrowserAnimationsModule,
         NgbTypeaheadModule,
-        AppRoutingModule
+        AppRoutingModule,
+        NgxPaginationModule,
+        BsDatepickerModule.forRoot()
     ],
     providers: [
         AuthenticationService,

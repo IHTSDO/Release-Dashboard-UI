@@ -53,3 +53,9 @@ div.build-viewer {
         }
     }   
 }
+
+app-modal.build-modal {
+    input, select , select:focus{
+        border: 1px $ghost-grey solid;
+    }
+}

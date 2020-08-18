@@ -49,4 +49,18 @@ export class BuildService {
   stopBuild(releaseCenterKey, productKey, buildId) {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
   }
+
+  runBuild(releaseCenterKey, productKey, branch, exportType, maxFailureExport, effectiveDate) {
+      const data = {
+          effectiveDate: effectiveDate,
+          exportCategory: exportType,
+          branchPath: branch,
+          termServerUrl: 'https://dev-snowstorm.ihtsdotools.org',
+          maxFailuresExport: maxFailureExport,
+          trackerId: (new Date()).getTime(),
+          loadTermServerData: true,
+          loadExternalRefsetData: true
+      };
+      return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
+  }
 }

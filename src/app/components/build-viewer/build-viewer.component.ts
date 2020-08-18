@@ -6,6 +6,9 @@ import { BuildService } from '../../services/build/build.service';
 import { ProductService } from '../../services/product/product.service';
 import { Observable, forkJoin } from 'rxjs';
 import { ProductDataService } from '../../services/product/product-data.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { formatDate } from '@angular/common';
+import { BuildParameters } from '../../models/buildParameters';
 
 @Component({
   selector: 'app-build-viewer',
@@ -13,6 +16,7 @@ import { ProductDataService } from '../../services/product/product-data.service'
   styleUrls: ['./build-viewer.component.scss']
 })
 export class BuildViewerComponent implements OnInit {
+    RF2_DATE_FORMAT = 'yyyyMMdd';
 
     // params map
     releaseCenterKey: string;
@@ -25,10 +29,15 @@ export class BuildViewerComponent implements OnInit {
 
     // control properties
     buildLoading = false;
+    buildTriggering = false;
+
+    // Build properties
+    buildParams: BuildParameters;
 
     errorMsg: string;
 
     constructor(private route: ActivatedRoute,
+                private modalService: ModalService,
                 private productService: ProductService,
                 private productDataService: ProductDataService,
                 private buildService: BuildService) {
@@ -36,6 +45,7 @@ export class BuildViewerComponent implements OnInit {
 
     ngOnInit(): void {
         this.activeBuild = new Build();
+        this.buildParams = new BuildParameters();
 
         this.route.paramMap.subscribe(paramMap => {
             this.productKey = paramMap['params']['productKey'];
@@ -45,14 +55,8 @@ export class BuildViewerComponent implements OnInit {
                 data => this.activeProduct = <Product> data
             );
 
-            this.buildLoading = true;
             this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
                 this.builds = response;
-                if (this.builds.length !== 0) {
-                    this.setActiveBuild(this.builds[0]);
-                } else {
-                    this.buildLoading = false;
-                }
             });
         });
     }
@@ -82,7 +86,7 @@ export class BuildViewerComponent implements OnInit {
                 this.activeBuild.qaTestConfig = response[1];
             }
         );
-  }
+    }
 
     downloadBuildLog(build: Build) {
         build.downloadingBuildLog = true;
@@ -134,9 +138,13 @@ export class BuildViewerComponent implements OnInit {
         link.click();
     }
 
+    clearMessage() {
+        this.errorMsg = '';
+    }
+
     publishBuild(build: Build) {
         build.publishingBuild = true;
-        this.errorMsg = '';
+        this.clearMessage();
         this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
           () => {
               build.tag = 'PUBLISHED';
@@ -150,15 +158,67 @@ export class BuildViewerComponent implements OnInit {
     }
 
     stopBuild(build: Build) {
-      this.buildService.stopBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-        () => {
-          this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
-              this.builds = response;
-        });
-        },
-        errorResponse => {
-            this.errorMsg = errorResponse.error.errorMessage;
+        this.buildService.stopBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
+            () => {
+              this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
+                  this.builds = response;
+              });
+            },
+            errorResponse => {
+                this.errorMsg = errorResponse.error.errorMessage;
+            }
+        );
+    }
+
+    viewAll() {
+        this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => { this.builds = response; });
+    }
+
+    openBuildModel(isNewBuild) {
+        this.buildParams = new BuildParameters();
+        if (isNewBuild) {
+            this.buildParams.branch = 'MAIN';
+            this.buildParams.exportType = 'PUBLISHED';
+            this.buildParams.maxFailureExport = 100;
+        } else {
+            const buildConfiguration = this.activeBuild.configuration;
+            const qaTestConfig = this.activeBuild.qaTestConfig;
+            this.buildParams.effectiveDate = new Date(buildConfiguration.effectiveTime);
+            this.buildParams.branch = buildConfiguration.branchPath ? buildConfiguration.branchPath : 'MAIN';
+            this.buildParams.exportType = buildConfiguration.exportType ? buildConfiguration.exportType : 'PUBLISHED';
+            this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
         }
-      );
+        this.openModal('build-modal');
+    }
+
+    runBuild() {
+        this.buildTriggering = true;
+        const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
+        this.buildService.runBuild(this.releaseCenterKey,
+                                  this.productKey,
+                                  this.buildParams.branch,
+                                  this.buildParams.exportType,
+                                  this.buildParams.maxFailureExport,
+                                  formattedeffectiveDate).subscribe(
+            () => {
+                this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
+                    this.builds = response;
+                    this.closeModal('build-modal');
+                    this.buildTriggering = false;
+              });
+            },
+            errorResponse => {
+                this.buildTriggering = false;
+                this.errorMsg = errorResponse.error.errorMessage;
+            }
+        );
+    }
+
+    openModal(name) {
+        this.modalService.open(name);
+    }
+
+    closeModal(name) {
+        this.modalService.close(name);
     }
 }

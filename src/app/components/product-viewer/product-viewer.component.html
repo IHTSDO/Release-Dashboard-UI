@@ -10,7 +10,7 @@
                 <th>Tag</th>
                 <th></th>
             </tr>
-            <tr *ngFor="let product of products" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
+            <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: 10, currentPage: p, totalItems: products?.length}" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
                 <td class="text-left">{{product?.name}}</td>
                 <td>{{product?.latestBuildStatus}}</td>
                 <td>{{product?.latestTag}}</td>
@@ -18,6 +18,15 @@
                     <button class="btn-mandy text-center ml-2" (click)="openModal('add-product-modal'); $event.stopPropagation()">Delete</button></td>
             </tr>
         </table>
+        <pagination-controls id="products_table"
+                      (pageChange)="p = $event"
+                      maxSize="100"
+                      directionLinks="true"
+                      autoHide="true"
+                      responsive="true"
+                      previousLabel="Previous"
+                      nextLabel="Next">
+        </pagination-controls>
     </div>
 </div>
 

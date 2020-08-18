@@ -5,4 +5,6 @@ export class BuildConfiguration {
     createLegacyIds: boolean;
     dailyBuild: boolean;
     firstTimeRelease: boolean;
+    branchPath: string;
+    exportType: string;
 }
