@@ -50,7 +50,7 @@
             </div>    
             <div class="panel-footer text-right">
                 <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildDownloadingPackage" (click)="downloadBuildPackage(activeBuild)">{{activeBuild.buildDownloadingPackage ? 'Downloading...' : 'Download'}}</button>
-                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting">View Log</button>
+                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
                 <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id || activeBuild.buildLoading" (click)="openBuildModel()">Re-Run</button>
             </div>
@@ -84,8 +84,8 @@
                 <td>{{build?.id}}</td>
                 <td>{{build?.status}}</td>
                 <td>{{build?.buildUser}}</td>
-                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildLog" [disabled]="build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()">{{build.buildDownloadingLog ? 'Downloading...' : 'Download'}}</button></td>
-                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.downloadingBuildPackage" [disabled]="build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()">{{build.buildDownloadingPackage ? 'Downloading...' : 'Download'}}</button></td>
+                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.buildDownloadingLog" [disabled]="build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()">{{build.buildDownloadingLog ? 'Downloading...' : 'Download'}}</button></td>
+                <td class="btn-download"><button type="button" class="btn-blue" [class.downloading]="build.buildDownloadingPackage" [disabled]="build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()">{{build.buildDownloadingPackage ? 'Downloading...' : 'Download'}}</button></td>
                 <td>{{build?.tag}}</td>
             </tr>
         </table>
@@ -159,5 +159,17 @@
     <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('stop-build-confirmation-modal')">No</button>
         <button type="button" class="btn-blue" (click)="stopBuild(activeBuild)">Yes</button>
+    </div>
+</app-modal>
+
+<!--View Log Model-->
+<app-modal id="view-build-log-modal" class="modal view-build-log-modal" size="large">
+    <h3 header class="mb-0">Log</h3>
+    <div body class="text-left p-5" [class.text-center]="buildLogLoading">
+        <p>{{buildLogLoading ? 'Loading..' : buildLog}}</p>
+    </div>
+
+    <div footer>        
+        <button type="button" class="btn-blue" (click)="closeModal('view-build-log-modal')">Close</button>
     </div>
 </app-modal>

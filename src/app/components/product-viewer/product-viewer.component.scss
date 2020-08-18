@@ -2,6 +2,9 @@
 
 div.product-viewer {
     margin-left: 24rem;
+    height: calc(100vh - 12rem);
+    overflow: auto;
+    
     table {
         button {
             width: 6rem;

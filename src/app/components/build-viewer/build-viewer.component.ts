@@ -26,6 +26,7 @@ export class BuildViewerComponent implements OnInit {
 
     activeProduct: Product;
     activeBuild: Build;
+    buildLog: string;
 
     // Build properties
     buildParams: BuildParameters;
@@ -33,6 +34,7 @@ export class BuildViewerComponent implements OnInit {
     errorMsg: string;
     buildTriggering = false;
     buildsLoading = false;
+    buildLogLoading = false;
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -95,6 +97,25 @@ export class BuildViewerComponent implements OnInit {
                 this.activeBuild.qaTestConfig = response[1];
             }
         );
+    }
+
+    viewLog(build: Build) {
+        this.buildLogLoading = true;
+        this.buildLog = '';
+        this.buildService.getBuildLog(this.releaseCenterKey, this.productKey, build.id).subscribe(data => {
+            const blb = new Blob([data], {type: 'text/plain'});
+            const reader = new FileReader();
+
+            // This fires after the blob has been read/loaded.
+            reader.addEventListener('loadend', (e) => {
+                this.buildLogLoading = false;
+                this.buildLog = <string> e.target['result'];
+            });
+
+            // Start reading the blob as text.
+            reader.readAsText(blb);
+        });
+        this.openModal('view-build-log-modal');
     }
 
     downloadBuildLog(build: Build) {
