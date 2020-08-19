@@ -4,16 +4,31 @@ import { Product } from '../../models/product';
 import { Build } from '../../models/build';
 import { BuildService } from '../../services/build/build.service';
 import { ProductService } from '../../services/product/product.service';
-import { Observable, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { ProductDataService } from '../../services/product/product-data.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
+import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-build-viewer',
   templateUrl: './build-viewer.component.html',
-  styleUrls: ['./build-viewer.component.scss']
+  styleUrls: ['./build-viewer.component.scss'],
+  animations: [
+    trigger('slide', [
+        state('start', style({ opacity: 0, transform: 'translateY(200%)'})),
+        state('end', style({ opacity: 0, transform: 'translateY(-200%)'})),
+        transition('start <=> end', [
+            animate('2000ms ease-in', keyframes([
+                style({opacity: 0, transform: 'translateY(200%)', offset: 0}),
+                style({opacity: 1, transform: 'translateY(0)', offset: 0.1}),
+                style({opacity: 1, transform: 'translateY(0)', offset: .8}),
+                style({opacity: 0, transform: 'translateY(-200%)', offset: 1.0})
+            ]))
+        ])
+    ])
+]
 })
 export class BuildViewerComponent implements OnInit {
     RF2_DATE_FORMAT = 'yyyyMMdd';
@@ -27,6 +42,10 @@ export class BuildViewerComponent implements OnInit {
     activeProduct: Product;
     activeBuild: Build;
     buildLog: string;
+
+    // animations
+    saved = 'start';
+    saveResponse: string;
 
     // Build properties
     buildParams: BuildParameters;
@@ -212,6 +231,12 @@ export class BuildViewerComponent implements OnInit {
     }
 
     runBuild() {
+        const missingFields = this.missingFieldsCheck();
+        if (missingFields) {
+            this.saveResponse = 'Missing Fields';
+            this.saved = (this.saved === 'start' ? 'end' : 'start');
+            return;
+        }
         this.clearMessage();
         this.buildTriggering = true;
         const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
@@ -237,6 +262,11 @@ export class BuildViewerComponent implements OnInit {
         );
     }
 
+    missingFieldsCheck(): boolean {
+        return !this.buildParams.effectiveDate || !!this.buildParams.branch
+                || !this.buildParams.exportType || !this.buildParams.maxFailureExport;
+    }
+
     deleteBuild(build: Build) {
         this.clearMessage();
         this.closeModal('delete-confirmation-modal');
@@ -254,6 +284,7 @@ export class BuildViewerComponent implements OnInit {
     openBuildModel(isNewBuild) {
         this.buildParams = new BuildParameters();
         if (isNewBuild) {
+            this.buildParams.effectiveDate = null;
             this.buildParams.branch = 'MAIN';
             this.buildParams.exportType = 'PUBLISHED';
             this.buildParams.maxFailureExport = 100;

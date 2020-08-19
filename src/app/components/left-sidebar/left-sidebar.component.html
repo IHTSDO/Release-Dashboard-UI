@@ -6,8 +6,8 @@
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
     <div class="sidebar-buttons w-100">
         <div class="row justify-content-center align-items-center mb-2">
-            <button class="btn-blue text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
-            <button class="btn-green text-center float-right" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="openModal('edit-modal')">Edit</button>
+            <button class="btn-blue text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
+            <button class="btn-green text-center float-right" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')">Edit</button>
         </div>        
     </div>
 </nav>
@@ -22,7 +22,7 @@
     </div>
 
     <div footer>
-        <div [@slide]="saved" class="px-3 error">{{saveResponse}}</div>
+        <div [@slide]="saved" class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingCenter" (click)="closeModal('add-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="addReleaseCenter(addName.value, addShortName.value)">Save</button>
     </div>
@@ -37,7 +37,7 @@
         <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
     </div>
     <div footer>
-        <div [@slide]="saved" class="px-3 error">{{saveResponse}}</div>
+        <div [@slide]="saved" class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingCenter" (click)="closeModal('edit-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="saveReleaseCenter(editName.value, editShortName.value)">Save</button>
     </div>

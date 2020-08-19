@@ -4,10 +4,10 @@ div.product-viewer {
     margin-left: 24rem;
     height: calc(100vh - 12rem);
     overflow: auto;
-    
+
     table {
         button {
-            width: 6rem;
+            width: 15rem;
         }
 
         td {
@@ -16,6 +16,24 @@ div.product-viewer {
             &.btn-groups {
                 padding: .2rem;
             }
+        }
+    }
+}
+app-modal {
+    &.add-modal {
+        input, select , select:focus{
+            border: 1px $ghost-grey solid;
+        }
+    }
+    &.update-modal {
+        input, select , textarea, select:focus{
+            border: 1px $ghost-grey solid;
+        }
+        input[type=text], textarea {
+            width: 75%;
+        }
+        textarea {
+            white-space: pre-line;
         }
     }
 }

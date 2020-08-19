@@ -118,6 +118,7 @@
     </div>
 
     <div footer>
+        <div [@slide]="saved" class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
         <button type="button" class="btn-sea-buckthorn" [disabled]="buildTriggering" (click)="closeModal('build-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="buildTriggering" (click)="runBuild()">Run</button>
     </div>

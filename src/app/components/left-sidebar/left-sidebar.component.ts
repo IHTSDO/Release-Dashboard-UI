@@ -96,6 +96,12 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     addReleaseCenter(name, shortName) {
+        const missingFields = this.missingFieldsCheck(name, shortName);
+        if (missingFields) {
+            this.saveResponse = 'Missing Fields';
+            this.saved = (this.saved === 'start' ? 'end' : 'start');
+            return;
+        }
         this.savingCenter = true;
         this.releaseServer.postCenter({name: name, shortName: shortName}).subscribe(
             response => {
@@ -113,6 +119,13 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     saveReleaseCenter(name, shortName) {
+        const missingFields = this.missingFieldsCheck(name, shortName);
+        if (missingFields) {
+            this.saveResponse = 'Missing Fields';
+            this.saved = (this.saved === 'start' ? 'end' : 'start');
+            return;
+        }
+
         this.savingCenter = true;
         this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortName: shortName}).subscribe(
             response => {
@@ -129,5 +142,9 @@ export class LeftSidebarComponent implements OnInit {
                 this.saved = (this.saved === 'start' ? 'end' : 'start');
             }
         );
+    }
+
+    missingFieldsCheck(name, shortName): boolean {
+        return !name || !shortName;
     }
 }

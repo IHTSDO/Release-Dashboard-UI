@@ -1,5 +1,4 @@
 export class QAConfiguration {
-    maxFalure: string;
     assertionGroupNames: string;
     droolsRulesGroupNames: string;
     enableDrools: boolean;
@@ -7,4 +6,8 @@ export class QAConfiguration {
     extensionDependencyRelease: string;
     previousExtensionRelease: string;
     maxFailureExport: number;
+    jiraIssueCreationFlag: boolean;
+    previousInternationalRelease: string;
+    productName: string;
+    reportingStage: string;
 }
