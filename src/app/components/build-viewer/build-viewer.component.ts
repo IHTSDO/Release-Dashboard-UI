@@ -166,6 +166,7 @@ export class BuildViewerComponent implements OnInit {
 
                 if (!buildPackageFound) {
                     build.buildDownloadingPackage = false;
+                    this.errorMsg = 'The build package not found.';
                 }
             } else {
                 build.buildDownloadingPackage = false;
@@ -263,7 +264,7 @@ export class BuildViewerComponent implements OnInit {
     }
 
     missingFieldsCheck(): boolean {
-        return !this.buildParams.effectiveDate || !!this.buildParams.branch
+        return !this.buildParams.effectiveDate || !this.buildParams.branch
                 || !this.buildParams.exportType || !this.buildParams.maxFailureExport;
     }
 
