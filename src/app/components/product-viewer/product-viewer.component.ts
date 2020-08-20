@@ -80,7 +80,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     createProduct(productName) {
         this.savingProduct = true;
         this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(response => {
-            this.loadProducts();
+            this.products.unshift(response);
+            this.productDataService.cacheProducts(this.products);
             this.closeModal('add-product-modal');
             this.savingProduct = false;
         },
@@ -111,7 +112,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     loadProducts() {
         this.productsLoading = true;
         this.productService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
-            this.products = products;
+            this.products = products.reverse();
             this.productsLoading = false;
             this.productDataService.cacheProducts(this.products);
         });

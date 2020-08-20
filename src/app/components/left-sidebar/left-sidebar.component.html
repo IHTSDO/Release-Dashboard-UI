@@ -6,8 +6,8 @@
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
     <div class="sidebar-buttons w-100">
         <div class="row justify-content-center align-items-center mb-2">
-            <button class="btn-blue text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
-            <button class="btn-green text-center float-right" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')">Edit</button>
+            <button class="btn-circle btn-blue text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
+            <button class="btn-circle btn-green text-center float-right ml-5" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
         </div>        
     </div>
 </nav>

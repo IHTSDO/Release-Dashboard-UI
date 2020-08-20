@@ -96,6 +96,13 @@ export class BuildViewerComponent implements OnInit {
         this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
                 this.builds = response;
                 this.buildsLoading = false;
+                // Update Build Status in case the status has been changed
+                if (this.activeBuild.id) {
+                    const build = this.builds.find(b => b.id = this.activeBuild.id);
+                    if (build) {
+                        this.activeBuild.status = build.status;
+                    }
+                }
             },
             errorResponse => {
                 this.errorMsg = errorResponse.error.errorMessage;
@@ -197,30 +204,30 @@ export class BuildViewerComponent implements OnInit {
         this.closeModal('publish-build-confirmation-modal');
         build.buildPublishing = true;
         this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-          () => {
-              build.tag = 'PUBLISHED';
-              build.buildPublishing = false;
-          },
-          errorResponse => {
-              this.errorMsg = errorResponse.error.errorMessage;
-              build.buildPublishing = false;
-          }
+            () => {
+                this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
+                    build.tag = response.tag;
+                    build.buildPublishing = false;
+                });
+            },
+            errorResponse => {
+                this.errorMsg = errorResponse.error.errorMessage;
+                build.buildPublishing = false;
+            }
         );
     }
 
     stopBuild(build: Build) {
-        this.closeModal('stop-build-confirmation-modal');
         build.buildCanceling = true;
+        this.closeModal('stop-build-confirmation-modal');
         this.buildService.stopBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
             () => {
-                build.buildCanceling = false;
-                this.buildsLoading = true;
-                this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
-                    this.builds = response;
-                    this.buildsLoading = false;
+                this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
+                    build.buildCanceling = false;
                     const updatedBuild = this.builds.find(b => b.id = this.activeBuild.id);
                     if (updatedBuild) {
-                        this.activeBuild.status = updatedBuild.status;
+                        updatedBuild.status = response.status;
+                        this.activeBuild.status = response.status;
                     }
                 });
             },
