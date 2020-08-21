@@ -50,6 +50,11 @@ div, p, a, select, label {
     font-weight: 300;
 }
 
+table {
+    tr:first-child {
+        background-color: #E0E0E0;
+    }
+}
 button {
     border-radius: 0.4rem;
     color: $white;
@@ -219,7 +224,7 @@ div.badge {
     font-weight: 400;
     font-size: 13px;
     padding: 5px 7px;
-    margin: 3px;
+    margin: 5px;
     line-height: 12px;
 
     &.loading:after {

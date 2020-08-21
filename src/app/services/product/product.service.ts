@@ -67,4 +67,11 @@ export class ProductService {
         }
         return this.http.patch<Product>('/release/centers/' + releaseCenterKey + '/products/' + product.id, data);
     }
+
+    uploadManifest(releaseCenterKey, productKey, file: FormData) {
+        return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest', file, {
+                headers: {'Content-Type': 'multipart/form-data'}
+            }
+        );
+    }
 }

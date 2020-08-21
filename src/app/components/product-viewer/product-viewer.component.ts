@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ProductService } from '../../services/product/product.service';
@@ -34,6 +34,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     private activeReleaseCenterSubscription: Subscription;
 
+    @ViewChild('uploadManifestFileInput') uploadManifestFileInput: ElementRef<HTMLElement>;
+
     activeReleaseCenter: ReleaseCenter;
     products: Product[];
     selectedProduct: Product;
@@ -45,6 +47,9 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     saved = 'start';
     saveResponse: string;
     savingProduct = false;
+
+    // global error message
+    errorMessage: string;
 
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
@@ -151,6 +156,29 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         }
 
         this.openModal('update-product-modal');
+    }
+
+    openUploadManifestFileDialog(product: Product) {
+        this.selectedProduct = product;
+        const el: HTMLElement = this.uploadManifestFileInput.nativeElement;
+        el.click();
+    }
+
+    uploadManifestFile(event) {
+        const formData = new FormData();
+        this.selectedProduct.manifestFileUploading = true;
+        if (event.target.files.length > 0) {
+            formData.append('file', event.target.files[0]) ;
+            this.productService.uploadManifest(this.activeReleaseCenter.id, this.selectedProduct.id, formData).subscribe(
+                () => {
+                    this.selectedProduct.manifestFileUploading = false;
+                },
+                errorResponse => {
+                    this.errorMessage = 'Failed to upload the Manifest file. Error: ' + errorResponse.error.errorMessage;
+                    this.selectedProduct.manifestFileUploading = false;
+                }
+            );
+        }
     }
 
     openModal(name) {

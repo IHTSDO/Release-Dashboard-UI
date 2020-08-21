@@ -1,8 +1,9 @@
 <app-left-sidebar></app-left-sidebar>
 <div *ngIf="activeReleaseCenter" class="product-viewer text-center">
-    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>    
-    <div class="container">
-        <button class="btn-circle text-center mb-3 btn-blue float-right" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; saveResponse = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>
+    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>        
+    <div class="container">        
+        <button class="btn-circle ml-3 mb-3 btn-blue float-right" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; saveResponse = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>
+        <div class="text-left error pl-0" *ngIf="errorMessage">{{errorMessage}}</div>
         <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
                 <th>Product</th>
@@ -25,10 +26,16 @@
                 <td colspan="4">No products found.</td>
             </tr>
             <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: 10, currentPage: p, totalItems: products?.length}" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
-                <td class="text-left">{{product?.name}}</td>
-                <td>{{product?.latestBuildStatus}}</td>
-                <td>{{product?.latestTag}}</td>
-                <td class="btn-groups"><button class="btn-green text-center" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()">Update Configurations</button></td>
+                <td class="pb-0 text-left">{{product?.name}}</td>
+                <td class="pb-0">{{product?.latestBuildStatus}}</td>
+                <td class="pb-0">{{product?.latestTag}}</td>
+                <td class="pb-0 btn-groups ">
+                    <div class="input-group pl-4 justify-content-start">
+                        <button class="btn-circle btn-green" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>
+                        <button class="btn-circle btn-blue ml-3" *ngIf="!product.manifestFileUploading" (click)="openUploadManifestFileDialog(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>
+                        <div *ngIf="product.manifestFileUploading" class="badge loading">Uploading</div>
+                    </div>                                                            
+                </td>
             </tr>
         </table>
         <pagination-controls id="products_table"
@@ -41,6 +48,7 @@
                       nextLabel="Next"
                       *ngIf="!productsLoading">
         </pagination-controls>
+        <input class="d-none" #uploadManifestFileInput type="file" (change)="uploadManifestFile($event)">
     </div>
 </div>
 

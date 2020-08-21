@@ -5,16 +5,20 @@ div.product-viewer {
     height: calc(100vh - 12rem);
     overflow: auto;
 
+    div.error {
+        color: $mandy;
+        padding: .75rem;
+    }
+
     table {
-        button {
-            width: 15rem;
-        }
-
         td {
-            padding: .8rem;
+            padding: 1.1rem .8rem .8rem .8rem;
 
-            &.btn-groups {
-                padding: .2rem;
+            &.btn-groups{
+                padding: .3rem;
+            }
+            div.badge {
+                background-color: $blue;
             }
         }
     }

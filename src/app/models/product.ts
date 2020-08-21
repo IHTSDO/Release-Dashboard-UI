@@ -8,4 +8,7 @@ export class Product {
     latestTag: string;
     qaTestConfig: QAConfiguration;
     buildConfiguration: BuildConfiguration;
+
+    // UI Control flags
+    manifestFileUploading: boolean;
 }
