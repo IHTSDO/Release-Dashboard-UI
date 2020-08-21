@@ -39,6 +39,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     activeReleaseCenter: ReleaseCenter;
     products: Product[];
     selectedProduct: Product;
+    editedProduct: Product;
     customRefsetCompositeKeys: string;
 
     productsLoading = false;
@@ -58,28 +59,31 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
             this.products = [];
+            this.errorMessage = '';
             this.productDataService.clearCachedProducts();
+            this.customRefsetCompositeKeys = null;
+            this.initializeEditingProduct();
             this.loadProducts();
         });
     }
 
     ngOnInit(): void {
         this.customRefsetCompositeKeys = null;
-        this.initializeSelectedProduct();
+        this.initializeEditingProduct();
     }
 
     ngOnDestroy() {
         this.activeReleaseCenterSubscription.unsubscribe();
     }
 
-    initializeSelectedProduct() {
+    initializeEditingProduct() {
         const buildConfiguration = new BuildConfiguration();
         const qaTestConfiguration = new QAConfiguration();
         const extensionConfig = new ExtensionConfig();
         buildConfiguration.extensionConfig = extensionConfig;
-        this.selectedProduct = new Product();
-        this.selectedProduct.buildConfiguration = buildConfiguration;
-        this.selectedProduct.qaTestConfig = qaTestConfiguration;
+        this.editedProduct = new Product();
+        this.editedProduct.buildConfiguration = buildConfiguration;
+        this.editedProduct.qaTestConfig = qaTestConfiguration;
     }
 
     createProduct(productName) {
@@ -126,26 +130,26 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     openUpdateConfigurationsModal(product: Product) {
         this.saveResponse = '';
         this.customRefsetCompositeKeys = '';
-        this.selectedProduct = (JSON.parse(JSON.stringify(product)));
+        this.editedProduct = (JSON.parse(JSON.stringify(product)));
         if (!product.buildConfiguration) {
-            this.selectedProduct.buildConfiguration = new BuildConfiguration();
+            this.editedProduct.buildConfiguration = new BuildConfiguration();
         }
-        if (this.selectedProduct.buildConfiguration.effectiveTime) {
+        if (this.editedProduct.buildConfiguration.effectiveTime) {
             // Convert to Date
-            const effectiveTime = new Date(this.selectedProduct.buildConfiguration.effectiveTime);
-            this.selectedProduct.buildConfiguration.effectiveTime = effectiveTime;
+            const effectiveTime = new Date(this.editedProduct.buildConfiguration.effectiveTime);
+            this.editedProduct.buildConfiguration.effectiveTime = effectiveTime;
         }
         if (!product.qaTestConfig) {
-            this.selectedProduct.qaTestConfig = new QAConfiguration();
+            this.editedProduct.qaTestConfig = new QAConfiguration();
         }
-        if (!this.selectedProduct.buildConfiguration.extensionConfig) {
-            this.selectedProduct.buildConfiguration.extensionConfig = new ExtensionConfig();
+        if (!this.editedProduct.buildConfiguration.extensionConfig) {
+            this.editedProduct.buildConfiguration.extensionConfig = new ExtensionConfig();
         }
 
         // parse custom refset composite keys
-        if (this.selectedProduct.buildConfiguration.customRefsetCompositeKeys
-            && Object.keys(this.selectedProduct.buildConfiguration.customRefsetCompositeKeys).length !== 0) {
-            const customRefsetCompositeKeys = this.selectedProduct.buildConfiguration.customRefsetCompositeKeys;
+        if (this.editedProduct.buildConfiguration.customRefsetCompositeKeys
+            && Object.keys(this.editedProduct.buildConfiguration.customRefsetCompositeKeys).length !== 0) {
+            const customRefsetCompositeKeys = this.editedProduct.buildConfiguration.customRefsetCompositeKeys;
             const keys = Object.keys(customRefsetCompositeKeys);
             for (let index = 0; index < keys.length; index++) {
                 if (index !== 0) {
@@ -166,18 +170,20 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     uploadManifestFile(event) {
         const formData = new FormData();
-        this.selectedProduct.manifestFileUploading = true;
+        const product = this.products.find(p => p.id === this.selectedProduct.id);
+        product.manifestFileUploading = true;
         if (event.target.files.length > 0) {
             formData.append('file', event.target.files[0]) ;
             this.productService.uploadManifest(this.activeReleaseCenter.id, this.selectedProduct.id, formData).subscribe(
                 () => {
-                    this.selectedProduct.manifestFileUploading = false;
+                    product.manifestFileUploading = false;
                 },
                 errorResponse => {
                     this.errorMessage = 'Failed to upload the Manifest file. Error: ' + errorResponse.error.errorMessage;
-                    this.selectedProduct.manifestFileUploading = false;
+                    product.manifestFileUploading = false;
                 }
             );
+            event.target.value = '';
         }
     }
 

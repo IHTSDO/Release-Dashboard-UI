@@ -9,7 +9,7 @@
                 <th>Product</th>
                 <th>Status</th>
                 <th>Tag</th>
-                <th></th>
+                <th class="w-15"></th>
             </tr>
             <tr>
                 <td colspan="4"><div class="font-weight-bold loading">Loading</div></td>
@@ -20,7 +20,7 @@
                 <th>Product</th>
                 <th>Status</th>
                 <th>Tag</th>
-                <th></th>
+                <th class="mw-15"></th>
             </tr>
             <tr *ngIf="products?.length === 0">
                 <td colspan="4">No products found.</td>
@@ -71,56 +71,56 @@
 <app-modal id="update-product-modal" class="modal update-modal" size="large">
     <h3 header class="mb-0">Product Configurations</h3>
     <div body class="text-center p-5">
-        <h3 class="mb-4">{{selectedProduct.name}}</h3>
+        <h3 class="mb-4">{{editedProduct.name}}</h3>
         <div class="row mx-0">
             <div class="col-12 text-left">
                 <div class="form-group mx-sm-3 mb-0 mt-0">
                     <label class="w-25 font-weight-bold">Effective Time</label>
-                    <input type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="selectedProduct.buildConfiguration.effectiveTime" value="{{ selectedProduct.buildConfiguration.effectiveTime | date:'yyyy-MM-dd' }}">
+                    <input type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" value="{{ editedProduct.buildConfiguration.effectiveTime | date:'yyyy-MM-dd' }}">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold align-top">Readme Header</label>
-                    <textarea rows="5" [(ngModel)]="selectedProduct.buildConfiguration.readmeHeader"></textarea>
+                    <textarea rows="5" [(ngModel)]="editedProduct.buildConfiguration.readmeHeader"></textarea>
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-0">
                     <label class="w-25 font-weight-bold">Readme End Date</label>
-                    <input type="number" class="w-25 rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.readmeEndDate">
+                    <input type="number" class="w-25 rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.readmeEndDate">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">First Time Release</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.firstTimeRelease">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.firstTimeRelease">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-2">
                     <label class="w-25 font-weight-bold">Just Package</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.justPackage">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.justPackage">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Beta Release</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.betaRelease">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Workbench Data Fixes Required</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.workbenchDataFixesRequired">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.workbenchDataFixesRequired">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Input Files Fixes Required</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.inputFilesFixesRequired">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.inputFilesFixesRequired">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Create Lagacy Ids</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.createLegacyIds">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.createLegacyIds">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Use Classifier Precondition Checks</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.useClassifierPreConditionChecks">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.useClassifierPreConditionChecks">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Classify Output Files</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.classifyOutputFiles">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.classifyOutputFiles">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Release As An Edition</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition">
+                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-0">
                     <label class="w-25 font-weight-bold">Custom Refset Composite Keys</label>
@@ -128,79 +128,79 @@
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">New RF2 Input Files</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.newRF2InputFiles">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.newRF2InputFiles">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Previous Published Release</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.previousPublishedPackage">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.previousPublishedPackage">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Previous International Release</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.previousInternationalRelease">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.previousInternationalRelease">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Previous Extension Release</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.previousExtensionRelease">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.previousExtensionRelease">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Extension Dependency Release</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.extensionDependencyRelease">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.extensionDependencyRelease">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Dependency Release Package</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.extensionConfig.dependencyRelease">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Included Previous Release Files</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.includePrevReleaseFiles">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.includePrevReleaseFiles">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Namespace ID</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.extensionConfig.namespaceId">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.namespaceId">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Module ID</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.extensionConfig.moduleId">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.moduleId">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Assertion Groups</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.assertionGroupNames">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.assertionGroupNames">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Enable Drools</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.qaTestConfig.enableDrools">
+                    <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableDrools">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Drools Rules Group Names</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.droolsRulesGroupNames">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.droolsRulesGroupNames">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Enable MRCM</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.qaTestConfig.enableMRCMValidation">
+                    <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableMRCMValidation">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Enable JIRA</label>
-                    <input type="checkbox" [(ngModel)]="selectedProduct.qaTestConfig.jiraIssueCreationFlag">
+                    <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.jiraIssueCreationFlag">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">JIRA Product Name</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.productName">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.productName">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">JIRA Reporting Stage</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.qaTestConfig.reportingStage">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.reportingStage">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Release Information Fields</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.releaseInformationFields">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.releaseInformationFields">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Concept Preferred Terms</label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="selectedProduct.buildConfiguration.conceptPreferredTerms">
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.conceptPreferredTerms">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold align-top">License Statement</label>
-                    <textarea rows="5" [(ngModel)]="selectedProduct.buildConfiguration.licenceStatement"></textarea>
+                    <textarea rows="5" [(ngModel)]="editedProduct.buildConfiguration.licenceStatement"></textarea>
                 </div>
             </div>            
         </div>        
@@ -208,7 +208,7 @@
     <div footer>
         <div [@slide]="saved" class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingProduct" (click)="closeModal('update-product-modal')">Cancel</button>
-        <button type="button" class="btn-blue" [disabled]="savingProduct" (click)="updateProduct(selectedProduct, customRefsetCompositeKeys)">Save</button>
+        <button type="button" class="btn-blue" [disabled]="savingProduct" (click)="updateProduct(editedProduct, customRefsetCompositeKeys)">Save</button>
     </div>
 </app-modal>
 
