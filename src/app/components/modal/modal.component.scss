@@ -7,7 +7,9 @@ app-modal {
     div.modal-large {
         max-width: 100rem;
     }
-    
+    div.modal-small {
+        max-width: 25rem;
+    }
     div.modal-dialog-centered {
         z-index: 1100;
 

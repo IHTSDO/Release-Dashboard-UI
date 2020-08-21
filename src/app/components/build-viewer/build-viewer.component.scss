@@ -9,6 +9,17 @@ div.build-viewer {
         padding: .75rem;
     }
 
+    a.link-back {
+        width: 17rem;
+        height: 3rem;
+        text-decoration: none;
+        background-color: $blue;
+        color: $white;
+        border-radius: 0.4rem;
+        padding-top: 0.5rem;        
+        font-weight: 500;
+    }
+    
     div.panel-top {
         border: 1px solid #dee2e6;
 
@@ -16,20 +27,7 @@ div.build-viewer {
         div.panel-footer {
             height: 3.5rem;
             background: #E0E0E0;            
-        }
-
-        a.link-back {
-            left: 0;
-            margin-left: 3rem;
-            width: 17rem;
-            height: 3rem;
-            text-decoration: none;
-            background-color: $blue;
-            color: $white;
-            border-radius: 0.4rem;
-            padding-top: 0.5rem;
-            font-weight: 500;
-        }
+        }        
     }
 
     table {
@@ -46,12 +44,11 @@ div.build-viewer {
             &.btn-download {
                 padding: .2rem;
             }
-        }
-        button {
-            width: 8rem;
-
-            &.downloading {
-                width: 12rem;
+            div.btn-log-download {
+                background-color: $sea-buckthorn;
+            }
+            div.btn-package-download {
+                background-color: $blue;
             }
         }
     }   

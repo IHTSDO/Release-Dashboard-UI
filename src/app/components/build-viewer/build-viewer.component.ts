@@ -50,7 +50,10 @@ export class BuildViewerComponent implements OnInit {
     // Build properties
     buildParams: BuildParameters;
 
+    // Control flags and error handling flags
+    action: string;
     errorMsg: string;
+    buildLogErrorMsg: string;
     buildTriggering = false;
     buildsLoading = false;
     buildLogLoading = false;
@@ -128,28 +131,49 @@ export class BuildViewerComponent implements OnInit {
     viewLog(build: Build) {
         this.buildLogLoading = true;
         this.buildLog = '';
-        this.buildService.getBuildLog(this.releaseCenterKey, this.productKey, build.id).subscribe(data => {
-            const blb = new Blob([data], {type: 'text/plain'});
-            const reader = new FileReader();
+        this.buildLogErrorMsg = '';
+        this.buildService.getBuildLog(this.releaseCenterKey, this.productKey, build.id).subscribe(
+            data => {
+                const blb = new Blob([data], {type: 'text/plain'});
+                const reader = new FileReader();
 
-            // This fires after the blob has been read/loaded.
-            reader.addEventListener('loadend', (e) => {
+                // This fires after the blob has been read/loaded.
+                reader.addEventListener('loadend', (e) => {
+                    this.buildLogLoading = false;
+                    this.buildLog = <string> e.target['result'];
+                });
+
+                // Start reading the blob as text.
+                reader.readAsText(blb);
+            },
+            errorResponse => {
+                if (errorResponse.status === 404) {
+                    this.buildLogErrorMsg = 'The build log not found.';
+                } else {
+                    this.buildLogErrorMsg = errorResponse.error.errorMessage;
+                }
                 this.buildLogLoading = false;
-                this.buildLog = <string> e.target['result'];
-            });
-
-            // Start reading the blob as text.
-            reader.readAsText(blb);
-        });
+            }
+        );
         this.openModal('view-build-log-modal');
     }
 
     downloadBuildLog(build: Build) {
         build.buildDownloadingLog = true;
-        this.buildService.getBuildLog(this.releaseCenterKey, this.productKey, build.id).subscribe(data => {
-            this.downLoadFile(data, 'text/plain', build.id + '.txt');
-            build.buildDownloadingLog = false;
-        });
+        this.buildService.getBuildLog(this.releaseCenterKey, this.productKey, build.id).subscribe(
+            data => {
+                this.downLoadFile(data, 'text/plain', build.id + '.txt');
+                build.buildDownloadingLog = false;
+            },
+            errorResponse => {
+                if (errorResponse.status === 404) {
+                    this.errorMsg = 'The build log not found.';
+                } else {
+                    this.errorMsg = errorResponse.error.errorMessage;
+                }
+                build.buildDownloadingLog = false;
+            }
+        );
     }
 
     downloadBuildPackage(build: Build) {
@@ -181,38 +205,27 @@ export class BuildViewerComponent implements OnInit {
         });
     }
 
-    /**
-     * Method is use to download file.
-     * @param data - Array Buffer data
-     * @param type - type of the document.
-     */
-    downLoadFile(data: any, type: string, fileName: string) {
-        const blob = new Blob([data], { type: type});
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        link.click();
-    }
-
-    clearMessage() {
-        this.errorMsg = '';
-    }
-
     publishBuild(build: Build) {
         this.clearMessage();
         this.closeModal('publish-build-confirmation-modal');
         build.buildPublishing = true;
+        this.openWaitingModel();
         this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
             () => {
                 this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                     build.tag = response.tag;
                     build.buildPublishing = false;
+                    this.closeWaitingModel();
                 });
             },
             errorResponse => {
-                this.errorMsg = errorResponse.error.errorMessage;
+                if (errorResponse.error.HTTPStatus === 504) {
+                    this.errorMsg = 'Your publish operation is taking longer than expected, but will complete.';
+                } else {
+                    this.errorMsg = errorResponse.error.errorMessage;
+                }
                 build.buildPublishing = false;
+                this.closeWaitingModel();
             }
         );
     }
@@ -220,6 +233,7 @@ export class BuildViewerComponent implements OnInit {
     stopBuild(build: Build) {
         build.buildCanceling = true;
         this.closeModal('stop-build-confirmation-modal');
+        this.openWaitingModel();
         this.buildService.stopBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
             () => {
                 this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
@@ -229,11 +243,13 @@ export class BuildViewerComponent implements OnInit {
                         updatedBuild.status = response.status;
                         this.activeBuild.status = response.status;
                     }
+                    this.closeWaitingModel();
                 });
             },
             errorResponse => {
                 this.errorMsg = errorResponse.error.errorMessage;
                 build.buildCanceling = false;
+                this.closeWaitingModel();
             }
         );
     }
@@ -270,22 +286,20 @@ export class BuildViewerComponent implements OnInit {
         );
     }
 
-    missingFieldsCheck(): boolean {
-        return !this.buildParams.effectiveDate || !this.buildParams.branch
-                || !this.buildParams.exportType || !this.buildParams.maxFailureExport;
-    }
-
     deleteBuild(build: Build) {
         this.clearMessage();
-        this.closeModal('delete-confirmation-modal');
         build.buildDeleting = true;
+        this.openWaitingModel();
+        this.closeModal('delete-confirmation-modal');
         this.buildService.deleteBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(() => {
             this.activeBuild = new Build();
             this.loadBuilds();
+            this.closeWaitingModel();
         },
         errorResponse => {
             build.buildDeleting = false;
             this.errorMsg = errorResponse.error.errorMessage;
+            this.closeWaitingModel();
         });
     }
 
@@ -305,6 +319,46 @@ export class BuildViewerComponent implements OnInit {
             this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
         }
         this.openModal('build-modal');
+    }
+
+    /**
+     * Method is use to download file.
+     * @param data - Array Buffer data
+     * @param type - type of the document.
+     */
+    private downLoadFile(data: any, type: string, fileName: string) {
+        const blob = new Blob([data], { type: type});
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+    }
+
+    private missingFieldsCheck(): boolean {
+        return !this.buildParams.effectiveDate || !this.buildParams.branch
+                || !this.buildParams.exportType || !this.buildParams.maxFailureExport;
+    }
+
+    private clearMessage() {
+        this.errorMsg = '';
+    }
+
+    private openWaitingModel() {
+        if (this.activeBuild.buildDeleting) {
+            this.action = 'Deleting Build';
+        } else if (this.activeBuild.buildCanceling) {
+            this.action = 'Canceling Build';
+        } else if (this.activeBuild.buildPublishing) {
+            this.action = 'Publishing Build';
+        } else {
+            this.action = '';
+        }
+        this.openModal('waiting-modal');
+    }
+
+    private closeWaitingModel() {
+        this.closeModal('waiting-modal');
     }
 
     openModal(name) {

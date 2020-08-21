@@ -1,6 +1,6 @@
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header" *ngIf="!hideHeader">
             <ng-content select="[header]"></ng-content>
             <button type="button" class="close" (click)="close()">
                 <span aria-hidden="true">&times;</span>
@@ -10,9 +10,9 @@
         <div class="modal-body">
             <ng-content select="[body]"></ng-content>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer" *ngIf="!hideFooter">
             <ng-content select="[footer]"></ng-content>
         </div>
     </div>
 </div>
-<div class="app-modal-background" (click)="close()"></div>
+<div class="app-modal-background" (click)="!disableBackgroundClickEvent && close()"></div>
