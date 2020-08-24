@@ -13,12 +13,18 @@ export class HeaderInterceptor implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (!request.headers.has('Content-Type')) {
-            request = request.clone({
-                headers: request.headers.set('Content-Type', 'application/json'),
-            });
+        const ignore = typeof request.body === 'undefined'
+                        || request.body === null
+                        || request.body.toString() === '[object FormData]'
+                        || request.headers.has('Content-Type');
+
+        if (ignore) {
+            return next.handle(request);
         }
 
-        return next.handle(request);
+        const cloned = request.clone({
+            headers: request.headers.set('Content-Type', 'application/json')
+        });
+        return next.handle(cloned);
     }
 }

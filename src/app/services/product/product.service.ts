@@ -69,9 +69,6 @@ export class ProductService {
     }
 
     uploadManifest(releaseCenterKey, productKey, file: FormData) {
-        return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest', file, {
-                headers: {'Content-Type': 'multipart/form-data'}
-            }
-        );
+        return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest', file);
     }
 }

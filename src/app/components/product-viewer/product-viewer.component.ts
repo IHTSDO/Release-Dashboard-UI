@@ -169,10 +169,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     uploadManifestFile(event) {
-        const formData = new FormData();
+        this.errorMessage = '';
         const product = this.products.find(p => p.id === this.selectedProduct.id);
         product.manifestFileUploading = true;
         if (event.target.files.length > 0) {
+            const formData = new FormData();
             formData.append('file', event.target.files[0]) ;
             this.productService.uploadManifest(this.activeReleaseCenter.id, this.selectedProduct.id, formData).subscribe(
                 () => {
