@@ -18,7 +18,7 @@
     <div body class="text-center p-5">
         <p>Please enter the details for the new Release Center</p>
         <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">
-        <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name">
+        <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" title="Short Name must be unique across system and a single word">
     </div>
 
     <div footer>
@@ -34,7 +34,7 @@
     <div body class="text-center p-5">
         <p>Would you like to edit this release center?</p>
         <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
-        <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
+        <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" disabled placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
     </div>
     <div footer>
         <div [@slide]="saved" class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>

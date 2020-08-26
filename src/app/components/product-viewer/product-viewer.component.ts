@@ -162,8 +162,23 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.openModal('update-product-modal');
     }
 
-    openUploadManifestFileDialog(product: Product) {
+    checkManifestFile(product: Product) {
         this.selectedProduct = product;
+        this.productService.getManifest(this.activeReleaseCenter.id, product.id).subscribe(
+            data => {
+                if (data.hasOwnProperty('filename')) {
+                    this.openModal('manifest-confirmation-modal');
+                } else {
+                    this.openUploadManifestFileDialog();
+                }
+            },
+            () => {
+                this.openUploadManifestFileDialog();
+            }
+        );
+    }
+
+    openUploadManifestFileDialog() {
         const el: HTMLElement = this.uploadManifestFileInput.nativeElement;
         el.click();
     }

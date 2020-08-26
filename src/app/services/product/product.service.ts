@@ -71,4 +71,8 @@ export class ProductService {
     uploadManifest(releaseCenterKey, productKey, file: FormData) {
         return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest', file);
     }
+
+    getManifest(releaseCenterKey, productKey) {
+        return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest');
+    }
 }

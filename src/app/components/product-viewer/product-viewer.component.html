@@ -32,7 +32,7 @@
                 <td class="pb-0 btn-groups ">
                     <div class="input-group pl-4 justify-content-start">
                         <button class="btn-circle btn-green" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>
-                        <button class="btn-circle btn-blue ml-3" *ngIf="!product.manifestFileUploading" (click)="openUploadManifestFileDialog(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>
+                        <button class="btn-circle btn-blue ml-3" *ngIf="!product.manifestFileUploading" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>
                         <div *ngIf="product.manifestFileUploading" class="badge loading">Uploading</div>
                     </div>                                                            
                 </td>
@@ -67,11 +67,28 @@
     </div>
 </app-modal>
 
+<app-modal id="manifest-confirmation-modal" class="modal add-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>The manifest file already exists. Do you want to replace it?</p>
+    </div>
+    <div footer>
+        
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('manifest-confirmation-modal')">No</button>
+        <button type="button" class="btn-blue" (click)="openUploadManifestFileDialog(); closeModal('manifest-confirmation-modal')">Yes</button>
+    </div>
+</app-modal>
+
 <!-- UPDATE MODAL -->
 <app-modal id="update-product-modal" class="modal update-modal" size="large">
-    <h3 header class="mb-0">Product Configurations</h3>
+    <h3 header class="mb-0">Product Configurations</h3>    
     <div body class="text-center p-5">
         <h3 class="mb-4">{{editedProduct.name}}</h3>
+        <div class="row mx-0 mb-2">
+            <div class="col-12 text-left">
+                <p class="mx-sm-3 font-italic">See&nbsp;<a href="https://confluence.ihtsdotools.org/pages/viewpage.action?spaceKey=RMT&title=SRS+Script+Client+parameter+documentation">confluence</a>&nbsp;page for more information about these prarmeters.</p>
+            </div>
+        </div>   
         <div class="row mx-0">
             <div class="col-12 text-left">
                 <div class="form-group mx-sm-3 mb-0 mt-0">
@@ -97,10 +114,6 @@
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Beta Release</label>
                     <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
-                </div>                
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="w-25 font-weight-bold">Workbench Data Fixes Required</label>
-                    <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.workbenchDataFixesRequired">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Input Files Fixes Required</label>
