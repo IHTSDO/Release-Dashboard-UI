@@ -83,6 +83,7 @@
                 <th>User</th>
                 <th class="w-10">Log</th>
                 <th class="w-10">Release</th>
+                <th class="w-10">Configurations</th>
                 <th class="w-10">Tag</th>
             </tr>
             <tr *ngIf="builds?.length === 0">
@@ -94,6 +95,7 @@
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0 btn-download"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
                 <td class="pb-0">{{build?.tag}}</td>
             </tr>
         </table>
@@ -190,4 +192,153 @@
     <div body class="text-left p-5 text-center">
         <div class="font-weight-bold loading">{{action}}</div>
     </div>    
+</app-modal>
+
+<app-modal id="view-build-configuration-modal" class="modal view-build-configuration-modal" size="large">
+    <h3 header class="mb-0">Build Configurations</h3>    
+    <div body class="text-center p-5">         
+        <div class="row mx-0" *ngIf="selectedBuild">
+            <div class="col-12 text-left">
+                <div class="mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Effective Time</label>
+                    <div class="d-inline">{{selectedBuild.configuration?.effectiveTime}}</div>                    
+                </div>
+                <div class="mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Export Type</label>
+                    <div class="d-inline">{{selectedBuild.configuration?.exportType}}</div>                    
+                </div>
+                <div class="mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Branch</label>
+                    <div class="d-inline">{{selectedBuild.configuration?.branchPath}}</div>                    
+                </div>
+                <div class="mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Failure Max</label>
+                    <div class="d-inline">{{selectedBuild.qaTestConfig?.maxFailureExport}}</div>                    
+                </div>
+                <div class="mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold align-top">Readme Header</label>
+                    <textarea rows="5" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.readmeHeader"></textarea>               
+                </div>
+                <div class="mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Readme End Date</label>
+                    <div class="d-inline">{{selectedBuild.configuration?.readmeEndDate}}</div>                    
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">First Time Release</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.firstTimeRelease">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-2">
+                    <label class="w-25 font-weight-bold">Just Package</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.justPackage">
+                </div>                
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Beta Release</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.betaRelease">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Input Files Fixes Required</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.inputFilesFixesRequired">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Create Lagacy Ids</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.createLegacyIds">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Use Classifier Precondition Checks</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.useClassifierPreConditionChecks">
+                </div>                
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Classify Output Files</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.classifyOutputFiles">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Release As An Edition</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Custom Refset Composite Keys</label>
+                    <input #customRefsetCompositeKeys type="text" disabled class="rounded-lg p-2">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">New RF2 Input Files</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.newRF2InputFiles">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Previous Published Release</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.previousPublishedPackage">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Previous International Release</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousInternationalRelease">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Previous Extension Release</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousExtensionRelease">
+                </div>                
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Extension Dependency Release</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.extensionDependencyRelease">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Dependency Release Package</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.dependencyRelease">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Included Previous Release Files</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.includePrevReleaseFiles">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Namespace ID</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.namespaceId">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Module ID</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.moduleId">
+                </div>                
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Assertion Groups</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.assertionGroupNames">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Enable Drools</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableDrools">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Drools Rules Group Names</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.droolsRulesGroupNames">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Enable MRCM</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableMRCMValidation">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Enable JIRA</label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.jiraIssueCreationFlag">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">JIRA Product Name</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.productName">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">JIRA Reporting Stage</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.reportingStage">
+                </div>                
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Release Information Fields</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.releaseInformationFields">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Concept Preferred Terms</label>
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.conceptPreferredTerms">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold align-top">License Statement</label>
+                    <textarea rows="5" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.licenceStatement"></textarea>
+                </div>
+            </div>            
+        </div>        
+    </div>
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('view-build-configuration-modal')">Close</button>
+    </div>
 </app-modal>

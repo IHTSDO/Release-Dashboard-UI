@@ -41,7 +41,8 @@ div.build-viewer {
         td {
             padding: .8rem;
 
-            &.btn-download {
+            &.btn-download, 
+            &.btn-setting {
                 padding: .2rem;
             }
             div.btn-log-download {
@@ -65,5 +66,14 @@ app-modal {
         white-space: pre-line;
         line-height: 2.4rem;
     }
+    &.view-build-configuration-modal {
+        input, select , textarea, select:focus{
+            border: 1px $ghost-grey solid;
+            cursor: default;
+        }
+        input[type=text], textarea {
+            width: 75%;
+        }
+    }    
 }
 

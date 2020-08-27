@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../models/product';
 import { Build } from '../../models/build';
@@ -31,6 +31,8 @@ import { trigger, state, style, transition, animate, keyframes } from '@angular/
 ]
 })
 export class BuildViewerComponent implements OnInit {
+    @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
+
     RF2_DATE_FORMAT = 'yyyyMMdd';
 
     // params map
@@ -41,6 +43,7 @@ export class BuildViewerComponent implements OnInit {
 
     activeProduct: Product;
     activeBuild: Build;
+    selectedBuild: Build;
     buildLog: string;
 
     // animations
@@ -156,6 +159,24 @@ export class BuildViewerComponent implements OnInit {
             }
         );
         this.openModal('view-build-log-modal');
+    }
+
+    viewBuildConfigurations(build: Build) {
+        this.selectedBuild = build;
+        forkJoin([this.buildService.getBuildConfiguration(this.releaseCenterKey, this.productKey, build.id),
+            this.buildService.getQAConfiguration(this.releaseCenterKey, this.productKey, build.id)])
+            .subscribe((response) => {
+                this.selectedBuild.configuration = response[0];
+                this.selectedBuild.qaTestConfig = response[1];
+                if (response[0].customRefsetCompositeKeys) {
+                    const value = this.convertCustomRefsetCompositeKeys(response[0].customRefsetCompositeKeys);
+                    this.customRefsetCompositeKeysInput.nativeElement.value = value;
+                } else {
+                    this.customRefsetCompositeKeysInput.nativeElement.value = '';
+                }
+                this.openModal('view-build-configuration-modal');
+            }
+        );
     }
 
     downloadBuildLog(build: Build) {
@@ -321,6 +342,21 @@ export class BuildViewerComponent implements OnInit {
         this.openModal('build-modal');
     }
 
+    private convertCustomRefsetCompositeKeys(customRefsetCompositeKeys) {
+        let result = '';
+        if (customRefsetCompositeKeys
+            && Object.keys(customRefsetCompositeKeys).length !== 0) {
+            const keys = Object.keys(customRefsetCompositeKeys);
+            for (let index = 0; index < keys.length; index++) {
+                if (index !== 0) {
+                    result += '|';
+                }
+                result += keys[index] + '=' + customRefsetCompositeKeys[keys[index]].join();
+            }
+        }
+
+        return result;
+    }
     /**
      * Method is use to download file.
      * @param data - Array Buffer data

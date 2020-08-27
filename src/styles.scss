@@ -129,6 +129,18 @@ button {
             } 
         }
     }
+    &.btn-grey {
+        background-color: $grey;        
+        &:hover {
+            background-color: darken($grey, 5%);
+        }
+        &:disabled {
+            background-color: lighten($grey, 20%);
+            &:hover {
+                background-color: lighten($grey, 20%);
+            } 
+        }
+    }
 }
 input, textarea {
     font-weight: 300;
