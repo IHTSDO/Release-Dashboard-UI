@@ -9,7 +9,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderInterceptor } from './interceptors/header.interceptor';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 // COMPONENT IMPORTS
 import { SnomedNavbarComponent } from './components/snomed-navbar/snomed-navbar.component';
@@ -30,8 +30,14 @@ import { ProductService } from './services/product/product.service';
 import { ProductDataService } from './services/product/product-data.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 
-// SERVICE IMPORTS
 
+
+export function getDatepickerConfig(): BsDatepickerConfig {
+  return Object.assign(new BsDatepickerConfig(), {
+    containerClass: 'theme-blue',
+    dateInputFormat: 'DD/MM/YYYY'
+  });
+}
 
 @NgModule({
     declarations: [

@@ -1,12 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
 import { ReleaseServerService } from './release-server.service';
 
 describe('ReleaseServerService', () => {
   let service: ReleaseServerService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule]
+      });
     service = TestBed.inject(ReleaseServerService);
   });
 
