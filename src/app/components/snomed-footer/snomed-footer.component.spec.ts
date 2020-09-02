@@ -11,7 +11,7 @@ describe('SnomedFooterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SnomedFooterComponent ],
-      imports: [ 
+      imports: [
         RouterTestingModule,
         HttpClientTestingModule
       ]

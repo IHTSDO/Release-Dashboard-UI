@@ -21,14 +21,14 @@ describe('ModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        ModalComponent, 
-        ProductViewerComponent, 
+      declarations: [
+        ModalComponent,
+        ProductViewerComponent,
         BuildViewerComponent,
         LeftSidebarComponent
       ],
-      imports: [ 
-        BrowserAnimationsModule, 
+      imports: [
+        BrowserAnimationsModule,
         AppRoutingModule,
         NgxPaginationModule,
         NgbTypeaheadModule,

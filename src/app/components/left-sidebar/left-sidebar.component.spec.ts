@@ -20,14 +20,14 @@ describe('LeftSidebarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-          LeftSidebarComponent, 
-          ProductViewerComponent, 
-          BuildViewerComponent, 
-          ModalComponent 
+      declarations: [
+          LeftSidebarComponent,
+          ProductViewerComponent,
+          BuildViewerComponent,
+          ModalComponent
         ],
-      imports: [ 
-        BrowserAnimationsModule, 
+      imports: [
+        BrowserAnimationsModule,
         AppRoutingModule,
         NgxPaginationModule,
         NgbTypeaheadModule,
