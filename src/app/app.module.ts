@@ -30,15 +30,6 @@ import { ProductService } from './services/product/product.service';
 import { ProductDataService } from './services/product/product-data.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 
-
-
-export function getDatepickerConfig(): BsDatepickerConfig {
-  return Object.assign(new BsDatepickerConfig(), {
-    containerClass: 'theme-blue',
-    dateInputFormat: 'DD/MM/YYYY'
-  });
-}
-
 @NgModule({
     declarations: [
         AppComponent,
