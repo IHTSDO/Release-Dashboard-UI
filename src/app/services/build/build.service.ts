@@ -55,9 +55,7 @@ export class BuildService {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
           branchPath: branch,
-          termServerUrl: 'https://dev-snowstorm.ihtsdotools.org',
           maxFailuresExport: maxFailureExport,
-          trackerId: (new Date()).getTime(),
           loadTermServerData: true,
           loadExternalRefsetData: true
       };

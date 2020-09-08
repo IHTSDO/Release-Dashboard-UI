@@ -44,7 +44,7 @@
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting">View Process</button>
+                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting" (click)="viewRunningLog(activeBuild)">View Process</button>
                             <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
                         </div>                        
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">

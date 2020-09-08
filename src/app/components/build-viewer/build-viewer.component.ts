@@ -34,6 +34,7 @@ export class BuildViewerComponent implements OnInit {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
 
     RF2_DATE_FORMAT = 'yyyyMMdd';
+    DATA_DOG_URL = 'https://app.datadoghq.com/dashboard/dm6-vs3-bz3/release-dashboard';
 
     // params map
     releaseCenterKey: string;
@@ -104,7 +105,7 @@ export class BuildViewerComponent implements OnInit {
                 this.buildsLoading = false;
                 // Update Build Status in case the status has been changed
                 if (this.activeBuild.id) {
-                    const build = this.builds.find(b => b.id = this.activeBuild.id);
+                    const build = this.builds.find(b => b.id === this.activeBuild.id);
                     if (build) {
                         this.activeBuild.status = build.status;
                     }
@@ -129,6 +130,12 @@ export class BuildViewerComponent implements OnInit {
                 this.activeBuild.qaTestConfig = response[1];
             }
         );
+    }
+
+    viewRunningLog(build: Build) {
+        const url = this.DATA_DOG_URL + '?live=true&from_ts=' + new Date(build.id).getTime()
+                                        + '&tpl_var_Release_Center=' + this.releaseCenterKey;
+        window.open(url);
     }
 
     viewLog(build: Build) {
@@ -259,7 +266,7 @@ export class BuildViewerComponent implements OnInit {
             () => {
                 this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                     build.buildCanceling = false;
-                    const updatedBuild = this.builds.find(b => b.id = this.activeBuild.id);
+                    const updatedBuild = this.builds.find(b => b.id === this.activeBuild.id);
                     if (updatedBuild) {
                         updatedBuild.status = response.status;
                         this.activeBuild.status = response.status;
