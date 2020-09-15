@@ -96,6 +96,10 @@
                     <input type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" value="{{ editedProduct.buildConfiguration.effectiveTime | date:'yyyy-MM-dd' }}">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">Default Branch</label>
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold align-top">Readme Header</label>
                     <textarea rows="5" [(ngModel)]="editedProduct.buildConfiguration.readmeHeader"></textarea>
                 </div>

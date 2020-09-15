@@ -334,15 +334,36 @@ export class BuildViewerComponent implements OnInit {
     openBuildModel(isNewBuild) {
         this.buildParams = new BuildParameters();
         if (isNewBuild) {
-            this.buildParams.effectiveDate = null;
-            this.buildParams.branch = 'MAIN';
+            if (this.activeProduct.buildConfiguration) {
+                if (this.activeProduct.buildConfiguration.effectiveTime) {
+                    this.buildParams.effectiveDate = this.activeProduct.buildConfiguration.effectiveTime;
+                } else {
+                    this.buildParams.effectiveDate = null;
+                }
+                if (this.activeProduct.buildConfiguration.defaultBranchPath) {
+                    this.buildParams.branch = this.activeProduct.buildConfiguration.defaultBranchPath;
+                } else {
+                    this.buildParams.branch = 'MAIN';
+                }
+            } else {
+                this.buildParams.effectiveDate = null;
+                this.buildParams.branch = 'MAIN';
+            }
             this.buildParams.exportType = 'PUBLISHED';
             this.buildParams.maxFailureExport = 100;
         } else {
             const buildConfiguration = this.activeBuild.configuration;
             const qaTestConfig = this.activeBuild.qaTestConfig;
             this.buildParams.effectiveDate = new Date(buildConfiguration.effectiveTime);
-            this.buildParams.branch = buildConfiguration.branchPath ? buildConfiguration.branchPath : 'MAIN';
+            if (buildConfiguration.branchPath) {
+                this.buildParams.branch = buildConfiguration.branchPath;
+            } else {
+                if (this.activeProduct.buildConfiguration.defaultBranchPath) {
+                    this.buildParams.branch = this.activeProduct.buildConfiguration.defaultBranchPath;
+                } else {
+                    this.buildParams.branch = 'MAIN';
+                }
+            }
             this.buildParams.exportType = buildConfiguration.exportType ? buildConfiguration.exportType : 'PUBLISHED';
             this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
         }

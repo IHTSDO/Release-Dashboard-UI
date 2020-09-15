@@ -31,6 +31,7 @@ export class ProductService {
     patchProduct(releaseCenterKey: string, product: Product, customRefsetCompositeKeys: string): Observable<Product> {
         const data = {
             effectiveTime : formatDate(product.buildConfiguration.effectiveTime, 'yyyy-MM-dd', 'en-US') ,
+            defaultBranchPath: product.buildConfiguration.defaultBranchPath,
             readmeHeader: product.buildConfiguration.readmeHeader,
             justPackage: product.buildConfiguration.justPackage,
             firstTimeRelease: product.buildConfiguration.firstTimeRelease,

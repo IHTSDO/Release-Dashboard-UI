@@ -22,5 +22,6 @@ export class BuildConfiguration {
     releaseInformationFields: string;
     workbenchDataFixesRequired: boolean;
     branchPath: string;
+    defaultBranchPath: string;
     exportType: string;
 }
