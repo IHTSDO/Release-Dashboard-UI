@@ -10,6 +10,7 @@ import { Product } from '../../models/product';
 import { BuildConfiguration } from '../../models/buildConfiguration';
 import { QAConfiguration } from '../../models/qaConfiguration';
 import { ExtensionConfig } from '../../models/extensionConfig';
+import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 
 @Component({
     selector: 'app-product-viewer',
@@ -49,17 +50,25 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     saveResponse: string;
     savingProduct = false;
 
+    // pagination
+    pageSize: Number;
+    pageNumber: Number;
+    totalProduct: Number;
+
     // global error message
     errorMessage: string;
 
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
                 private productService: ProductService,
-                private productDataService: ProductDataService) {
+                private productDataService: ProductDataService,
+                private paginationService: ProductPaginationService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
             this.products = [];
             this.errorMessage = '';
+            this.pageNumber = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
+            this.totalProduct = this.paginationService.EMPTY_ITEMS;
             this.productDataService.clearCachedProducts();
             this.customRefsetCompositeKeys = null;
             this.initializeEditingProduct();
@@ -69,6 +78,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.customRefsetCompositeKeys = null;
+        this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
+        this.totalProduct = this.paginationService.EMPTY_ITEMS;
         this.initializeEditingProduct();
     }
 
@@ -86,11 +97,15 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.editedProduct.qaTestConfig = qaTestConfiguration;
     }
 
+    onSelectProduct() {
+        this.paginationService.cacheSelectedPage(this.activeReleaseCenter.id, this.pageNumber);
+    }
+
     createProduct(productName) {
         this.savingProduct = true;
-        this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(response => {
-            this.products.unshift(response);
-            this.productDataService.cacheProducts(this.products);
+        this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(() => {
+            this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
+            this.loadProducts();
             this.closeModal('add-product-modal');
             this.savingProduct = false;
         },
@@ -120,11 +135,17 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     loadProducts() {
         this.productsLoading = true;
-        this.productService.getProducts(this.activeReleaseCenter.id).subscribe(products => {
-            this.products = products.reverse();
+        this.productService.getProducts(this.activeReleaseCenter.id, this.pageNumber, this.pageSize).subscribe(response => {
+            this.products = response['content'];
+            this.totalProduct = response['totalElements'];
             this.productsLoading = false;
             this.productDataService.cacheProducts(this.products);
         });
+    }
+
+    handlePageChange(event) {
+        this.pageNumber = event;
+        this.loadProducts();
     }
 
     openUpdateConfigurationsModal(product: Product) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Product } from '../../models/product';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 
 @Injectable({
@@ -16,8 +16,11 @@ export class ProductService {
         return this.http.get<Product>('/release/centers/' + releaseCenterKey + '/products/' + productKey);
     }
 
-    getProducts(releaseCenterKey): Observable<Product[]> {
-        return this.http.get<Product[]>('/release/centers/' + releaseCenterKey + '/products');
+    getProducts(releaseCenterKey, pageNumber, pageSize): Observable<object> {
+        const params = new HttpParams()
+                    .set('pageNumber', (pageNumber - 1).toString())
+                    .set('pageSize', pageSize);
+        return this.http.get<object>('/release/centers/' + releaseCenterKey + '/products', {params: params});
     }
 
     postProduct(releaseCenterKey, product): Observable<Product> {

@@ -6,6 +6,7 @@ import { ReleaseServerService } from '../../services/releaseServer/release-serve
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { ReleaseCenter } from '../../models/releaseCenter';
 import { ActivatedRoute } from '@angular/router';
+import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 
 @Component({
     selector: 'app-left-sidebar',
@@ -41,7 +42,8 @@ export class LeftSidebarComponent implements OnInit {
     constructor(private route: ActivatedRoute,
                 private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
-                private releaseServer: ReleaseServerService) {
+                private releaseServer: ReleaseServerService,
+                private paginationService: ProductPaginationService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
             this.activeReleaseCenter = data;
         });
@@ -92,6 +94,10 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     switchActiveReleaseCenter(center) {
+        // Clear the selected page number for previous active release center
+        this.paginationService.clearSelectedPage(this.activeReleaseCenter.id);
+
+        // Set current active release center
         this.releaseCenterService.setActiveReleaseCenter(center);
     }
 

@@ -25,7 +25,7 @@
             <tr *ngIf="products?.length === 0">
                 <td colspan="4">No products found.</td>
             </tr>
-            <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: 10, currentPage: p, totalItems: products?.length}" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
+            <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalProduct}" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
                 <td class="pb-0 text-left">{{product?.name}}</td>
                 <td class="pb-0">{{product?.latestBuildStatus}}</td>
                 <td class="pb-0">{{product?.latestTag}}</td>
@@ -39,14 +39,14 @@
             </tr>
         </table>
         <pagination-controls id="products_table"
-                      (pageChange)="p = $event"
-                      maxSize="100"
+                      (pageChange)="handlePageChange($event)"
+                      maxSize="1000"
                       directionLinks="true"
                       autoHide="true"
                       responsive="true"
                       previousLabel="Previous"
                       nextLabel="Next"
-                      *ngIf="!productsLoading">
+                      *ngIf="totalProduct !== 0">
         </pagination-controls>
         <input class="d-none" #uploadManifestFileInput type="file" (change)="uploadManifestFile($event)">
     </div>
