@@ -60,7 +60,7 @@
             <div class="panel-footer text-right">                
                 <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
-                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id || activeBuild.buildLoading" (click)="openBuildModel()">Re-Run</button>
+                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id || activeBuild.buildLoading" (click)="openBuildModel()">Clone</button>
             </div>
         </div>
         <table class="table table-bordered" *ngIf="buildsLoading">
@@ -101,7 +101,6 @@
         </table>
         <pagination-controls id="builds_table"
                       (pageChange)="p = $event"
-                      maxSize="100"
                       directionLinks="true"
                       autoHide="true"
                       responsive="true"
