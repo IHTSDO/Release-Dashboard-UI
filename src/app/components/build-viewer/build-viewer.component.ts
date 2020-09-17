@@ -10,6 +10,7 @@ import { ModalService } from '../../services/modal/modal.service';
 import { formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
 import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { ExtensionConfig } from '../../models/extensionConfig';
 
 @Component({
   selector: 'app-build-viewer',
@@ -175,6 +176,9 @@ export class BuildViewerComponent implements OnInit {
             .subscribe((response) => {
                 this.selectedBuild.configuration = response[0];
                 this.selectedBuild.qaTestConfig = response[1];
+                if (!this.selectedBuild.configuration.extensionConfig) {
+                    this.selectedBuild.configuration.extensionConfig = new ExtensionConfig();
+                }
                 if (response[0].customRefsetCompositeKeys) {
                     const value = this.convertCustomRefsetCompositeKeys(response[0].customRefsetCompositeKeys);
                     this.customRefsetCompositeKeysInput.nativeElement.value = value;
