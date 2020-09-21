@@ -3,4 +3,5 @@ export class BuildParameters {
     exportType: string;
     maxFailureExport: number;
     effectiveDate: Date;
+    buildName: String;
 }

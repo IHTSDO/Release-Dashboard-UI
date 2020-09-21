@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Build } from '../../models/build';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BuildConfiguration } from '../../models/buildConfiguration';
 import { QAConfiguration } from '../../models/qaConfiguration';
@@ -17,15 +17,10 @@ export class BuildService {
   }
 
   getBuilds(releaseCenterKey, productKey): Observable<Build[]> {
-      return this.http.get<Build[]>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds');
-  }
-
-  getBuildConfiguration(releaseCenterKey, productKey, buildId): Observable<BuildConfiguration> {
-      return this.http.get<BuildConfiguration>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/configuration');
-  }
-
-  getQAConfiguration(releaseCenterKey, productKey, buildId): Observable<QAConfiguration> {
-      return this.http.get<QAConfiguration>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/qaTestConfig');
+        const params = new HttpParams()
+            .set('includeBuildConfiguration', 'true')
+            .set('includeQAConfiguration', 'true');
+      return this.http.get<Build[]>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', {params: params});
   }
 
   getBuildLog(releaseCenterKey, productKey, buildId) {
@@ -50,10 +45,11 @@ export class BuildService {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
   }
 
-  runBuild(releaseCenterKey, productKey, branch, exportType, maxFailureExport, effectiveDate) {
+  runBuild(releaseCenterKey, productKey, buildName, branch, exportType, maxFailureExport, effectiveDate) {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
+          buildName: buildName,
           branchPath: branch,
           maxFailuresExport: maxFailureExport,
           loadTermServerData: true,

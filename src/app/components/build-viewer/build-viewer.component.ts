@@ -72,6 +72,7 @@ export class BuildViewerComponent implements OnInit {
 
     ngOnInit(): void {
         this.activeBuild = new Build();
+        this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
 
         this.route.paramMap.subscribe(paramMap => {
@@ -122,15 +123,6 @@ export class BuildViewerComponent implements OnInit {
     setActiveBuild(build) {
         this.clearMessage();
         this.activeBuild = build;
-        this.activeBuild.buildLoading = true;
-        forkJoin([this.buildService.getBuildConfiguration(this.releaseCenterKey, this.productKey, build.id),
-                  this.buildService.getQAConfiguration(this.releaseCenterKey, this.productKey, build.id)])
-          .subscribe((response) => {
-                this.activeBuild.buildLoading = false;
-                this.activeBuild.configuration = response[0];
-                this.activeBuild.qaTestConfig = response[1];
-            }
-        );
     }
 
     viewRunningLog(build: Build) {
@@ -171,23 +163,21 @@ export class BuildViewerComponent implements OnInit {
 
     viewBuildConfigurations(build: Build) {
         this.selectedBuild = build;
-        forkJoin([this.buildService.getBuildConfiguration(this.releaseCenterKey, this.productKey, build.id),
-            this.buildService.getQAConfiguration(this.releaseCenterKey, this.productKey, build.id)])
-            .subscribe((response) => {
-                this.selectedBuild.configuration = response[0];
-                this.selectedBuild.qaTestConfig = response[1];
-                if (!this.selectedBuild.configuration.extensionConfig) {
-                    this.selectedBuild.configuration.extensionConfig = new ExtensionConfig();
-                }
-                if (response[0].customRefsetCompositeKeys) {
-                    const value = this.convertCustomRefsetCompositeKeys(response[0].customRefsetCompositeKeys);
-                    this.customRefsetCompositeKeysInput.nativeElement.value = value;
-                } else {
-                    this.customRefsetCompositeKeysInput.nativeElement.value = '';
-                }
-                this.openModal('view-build-configuration-modal');
-            }
-        );
+        if (!this.selectedBuild.configuration.extensionConfig) {
+            this.selectedBuild.configuration.extensionConfig = new ExtensionConfig();
+        }
+        if (this.selectedBuild.configuration.customRefsetCompositeKeys
+            && Object.keys(this.selectedBuild.configuration.customRefsetCompositeKeys).length !== 0) {
+            const value = this.convertCustomRefsetCompositeKeys(this.selectedBuild.configuration.customRefsetCompositeKeys);
+            setTimeout(() => {
+                this.customRefsetCompositeKeysInput.nativeElement.value = value;
+            }, 0);
+        } else {
+            setTimeout(() => {
+                this.customRefsetCompositeKeysInput.nativeElement.value = '';
+            }, 0);
+        }
+        this.openModal('view-build-configuration-modal');
     }
 
     downloadBuildLog(build: Build) {
@@ -298,6 +288,7 @@ export class BuildViewerComponent implements OnInit {
         const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
         this.buildService.runBuild(this.releaseCenterKey,
                                   this.productKey,
+                                  this.buildParams.buildName,
                                   this.buildParams.branch,
                                   this.buildParams.exportType,
                                   this.buildParams.maxFailureExport,
@@ -405,7 +396,8 @@ export class BuildViewerComponent implements OnInit {
 
     private missingFieldsCheck(): boolean {
         return !this.buildParams.effectiveDate || !this.buildParams.branch
-                || !this.buildParams.exportType || !this.buildParams.maxFailureExport;
+                || !this.buildParams.exportType || !this.buildParams.maxFailureExport
+                || !this.buildParams.buildName;
     }
 
     private clearMessage() {

@@ -38,6 +38,13 @@ div.build-viewer {
                 background-color: darken($anakiwa, 5%);
             }
         }
+        td:first-child {
+            text-overflow: ellipsis;
+            max-width: 31ch;
+            width: 31ch;
+            overflow: hidden;
+            white-space: nowrap;
+        }
         td {
             padding: .8rem;
 

@@ -13,7 +13,6 @@ export class Build {
     buildDownloadingLog: boolean;
     buildDownloadingPackage: boolean;
     buildPublishing: boolean;
-    buildLoading: boolean;
     buildDeleting: boolean;
     buildCanceling: boolean;
 }

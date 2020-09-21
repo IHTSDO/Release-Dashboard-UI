@@ -14,57 +14,57 @@
         <div class="text-left error pl-0" *ngIf="errorMsg">{{errorMsg}}</div>
         <div class="panel-top mb-3">                       
             <div class="panel-header text-left pl-2 pt-3">
-                <div class="font-weight-bold loading" *ngIf="activeBuild.buildLoading">Loading</div>
-                <div class="font-weight-bold" *ngIf="!activeBuild.buildLoading">{{activeBuild.id}}</div>
+                <div class="font-weight-bold">{{activeBuild.id}}</div>
             </div>
             <div>
                 <div class="row mx-0">
                     <div class="col-7 text-left">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Effective Time:</label>
-                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.configuration?.effectiveTime}}</span>
+                            <span class="font-weight-bold">{{activeBuild.configuration?.effectiveTime}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Export Type:</label>
-                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.configuration?.exportType}}</span>
+                            <span class="font-weight-bold">{{activeBuild.configuration?.exportType}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Branch:</label>
-                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.configuration?.branchPath}}</span>
+                            <span class="font-weight-bold">{{activeBuild.configuration?.branchPath}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Failure Max:</label>
-                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.qaTestConfig?.maxFailureExport}}</span>
+                            <span class="font-weight-bold">{{activeBuild.qaTestConfig?.maxFailureExport}}</span>
                         </div>
                     </div>
                     <div class="col-5 text-left">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Status:</label>
-                            <span class="font-weight-bold">{{activeBuild.buildLoading ? '' : activeBuild.status}}</span>
+                            <span class="font-weight-bold">{{activeBuild.status}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting" (click)="viewRunningLog(activeBuild)">View Process</button>
-                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
+                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting" (click)="viewRunningLog(activeBuild)">View Process</button>
+                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
                         </div>                        
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>                            
                             <button type="button" class="btn-green" 
-                                    [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'BUILT' ||  activeBuild.tag === 'PUBLISHED'" 
+                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'BUILT' ||  activeBuild.tag === 'PUBLISHED'" 
                                     (click)="openModal('publish-build-confirmation-modal')">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
-                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
+                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
                     </div>
                 </div>                
             </div>    
             <div class="panel-footer text-right">                
-                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildLoading || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
+                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
-                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id || activeBuild.buildLoading" (click)="openBuildModel()">Clone</button>
+                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id" (click)="openBuildModel()">Clone</button>
             </div>
         </div>
         <table class="table table-bordered" *ngIf="buildsLoading">
             <tr>
+                <th>Build Name</th>
                 <th>Build Date</th>
                 <th>Status</th>
                 <th>User</th>
@@ -73,11 +73,12 @@
                 <th class="w-10">Tag</th>
             </tr>
             <tr >
-                <td colspan="6"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="7"><div class="font-weight-bold loading">Loading</div></td>
             </tr>            
         </table>    
         <table class="table table-bordered" *ngIf="!buildsLoading">
             <tr>
+                <th>Build Name</th>
                 <th>Build Date</th>
                 <th>Status</th>
                 <th>User</th>
@@ -90,6 +91,7 @@
                 <td colspan="6">No builds found.</td>
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
+                <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0">{{build?.status}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
@@ -115,7 +117,8 @@
 <app-modal id="build-modal" class="modal build-modal">
     <h3 header class="mb-0">Build Configurations</h3>
     <div body class="text-center p-5">
-        <p>Please enter the details for the Build</p>        
+        <p>Please enter the details for the Build</p>             
+        <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.buildName" placeholder="Build Name">
         <input [disabled]="buildTriggering" type="text" placeholder="Effective Time"class="w-75 rounded-lg p-3 m-3" bsDatepicker [(bsValue)]="buildParams.effectiveDate" value="{{ buildParams.effectiveDate | date:'yyyy-MM-dd' }}">
         <select [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" [(ngModel)]="buildParams.exportType">
             <option value="PUBLISHED">Published</option>
@@ -198,6 +201,10 @@
     <div body class="text-center p-5">         
         <div class="row mx-0" *ngIf="selectedBuild">
             <div class="col-12 text-left">
+                <div class="mx-sm-3 mb-0 mt-0">
+                    <label class="w-25 font-weight-bold">Build Name</label>
+                    <div class="d-inline">{{selectedBuild.configuration?.buildName}}</div>                    
+                </div>
                 <div class="mx-sm-3 mb-0 mt-0">
                     <label class="w-25 font-weight-bold">Effective Time</label>
                     <div class="d-inline">{{selectedBuild.configuration?.effectiveTime}}</div>                    

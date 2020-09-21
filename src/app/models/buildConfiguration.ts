@@ -24,4 +24,5 @@ export class BuildConfiguration {
     branchPath: string;
     defaultBranchPath: string;
     exportType: string;
+    buildName: String;
 }
