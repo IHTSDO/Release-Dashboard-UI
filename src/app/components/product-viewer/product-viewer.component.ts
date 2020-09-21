@@ -199,6 +199,20 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         );
     }
 
+    loadManifestFile(product: Product) {
+        this.selectedProduct = product;
+        this.productService.loadManifestFile(this.activeReleaseCenter.id, product.id).subscribe(
+            data => {
+                const blob = new Blob([data], { type: 'application/xml'});
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            },
+            () => {
+                this.errorMessage = 'The manifest does not exist for product ' + this.selectedProduct.name;
+            }
+        );
+    }
+
     openUploadManifestFileDialog() {
         const el: HTMLElement = this.uploadManifestFileInput.nativeElement;
         el.click();

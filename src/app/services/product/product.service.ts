@@ -79,4 +79,8 @@ export class ProductService {
     getManifest(releaseCenterKey, productKey) {
         return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest');
     }
+
+    loadManifestFile(releaseCenterKey, productKey) {
+        return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest/file', {responseType: 'arraybuffer'});
+    }
 }
