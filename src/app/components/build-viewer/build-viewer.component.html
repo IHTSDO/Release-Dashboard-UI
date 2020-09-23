@@ -13,7 +13,7 @@
         </div>
         <div class="panel-top mb-3">                       
             <div class="panel-header text-left pl-2 pt-3">
-                <div class="font-weight-bold">{{activeBuild.id}}</div>
+                <div class="font-weight-bold">{{activeBuild.configuration?.buildName}} {{activeBuild.id}}</div>
             </div>
             <div>
                 <div class="row mx-0">
@@ -69,10 +69,11 @@
                 <th>User</th>
                 <th class="w-10">Log</th>
                 <th class="w-10">Release</th>
+                <th class="w-10">RVF Report</th>
                 <th class="w-10">Tag</th>
             </tr>
             <tr >
-                <td colspan="7"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="8"><div class="font-weight-bold loading">Loading</div></td>
             </tr>            
         </table>    
         <table class="table table-bordered" *ngIf="!buildsLoading">
@@ -83,6 +84,7 @@
                 <th>User</th>
                 <th class="w-10">Log</th>
                 <th class="w-10">Release</th>
+                <th class="w-10">RVF Report</th>                
                 <th class="w-10">Configurations</th>
                 <th class="w-10">Tag</th>
             </tr>
@@ -96,6 +98,7 @@
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0 btn-download"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
                 <td class="pb-0">{{build?.tag}}</td>
             </tr>

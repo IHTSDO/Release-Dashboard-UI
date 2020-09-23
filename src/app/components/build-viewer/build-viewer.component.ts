@@ -402,6 +402,10 @@ export class BuildViewerComponent implements OnInit {
         this.openBuildModal();
     }
 
+    openRvfReport(build: Build) {
+        window.open(build.rvfURL);
+    }
+
     private convertCustomRefsetCompositeKeys(customRefsetCompositeKeys) {
         let result = '';
         if (customRefsetCompositeKeys
