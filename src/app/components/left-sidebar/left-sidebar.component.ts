@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
 import { ReleaseCenter } from '../../models/releaseCenter';
 import { ActivatedRoute } from '@angular/router';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
@@ -11,21 +10,7 @@ import { ProductPaginationService } from '../../services/pagination/product-pagi
 @Component({
     selector: 'app-left-sidebar',
     templateUrl: './left-sidebar.component.html',
-    styleUrls: ['./left-sidebar.component.scss'],
-    animations: [
-        trigger('slide', [
-            state('start', style({ opacity: 0, transform: 'translateY(200%)'})),
-            state('end', style({ opacity: 0, transform: 'translateY(-200%)'})),
-            transition('start <=> end', [
-                animate('2000ms ease-in', keyframes([
-                    style({opacity: 0, transform: 'translateY(200%)', offset: 0}),
-                    style({opacity: 1, transform: 'translateY(0)', offset: 0.1}),
-                    style({opacity: 1, transform: 'translateY(0)', offset: .8}),
-                    style({opacity: 0, transform: 'translateY(-200%)', offset: 1.0})
-                ]))
-            ])
-        ])
-    ]
+    styleUrls: ['./left-sidebar.component.scss']
 })
 export class LeftSidebarComponent implements OnInit {
 
@@ -35,9 +20,10 @@ export class LeftSidebarComponent implements OnInit {
     activeReleaseCenter: ReleaseCenter;
 
     // animations
-    saved = 'start';
     saveResponse: string;
     savingCenter = false;
+
+    message: string;
 
     constructor(private route: ActivatedRoute,
                 private releaseCenterService: ReleaseCenterService,
@@ -85,14 +71,6 @@ export class LeftSidebarComponent implements OnInit {
         return promise;
     }
 
-    openModal(name) {
-        this.modalService.open(name);
-    }
-
-    closeModal(name) {
-        this.modalService.close(name);
-    }
-
     switchActiveReleaseCenter(center) {
         // Clear the selected page number for previous active release center
         this.paginationService.clearSelectedPage(this.activeReleaseCenter.id);
@@ -102,10 +80,11 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     addReleaseCenter(name, shortName) {
+        this.saveResponse = '';
+        this.message = '';
         const missingFields = this.missingFieldsCheck(name, shortName);
-        if (missingFields) {
-            this.saveResponse = 'Missing Fields';
-            this.saved = (this.saved === 'start' ? 'end' : 'start');
+        if (missingFields.length !== 0) {
+            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
             return;
         }
         this.savingCenter = true;
@@ -114,21 +93,23 @@ export class LeftSidebarComponent implements OnInit {
                 this.savingCenter = false;
                 this.releaseCenters.push(response);
                 this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
+                this.message = 'The release center ' + response.name + ' has been created successfully.';
                 this.modalService.close('add-modal');
+                this.openSuccessModel();
             },
             errorResponse => {
                 this.savingCenter = false;
                 this.saveResponse = errorResponse.error.errorMessage;
-                this.saved = (this.saved === 'start' ? 'end' : 'start');
             }
         );
     }
 
     saveReleaseCenter(name, shortName) {
+        this.saveResponse = '';
+        this.message = '';
         const missingFields = this.missingFieldsCheck(name, shortName);
-        if (missingFields) {
-            this.saveResponse = 'Missing Fields';
-            this.saved = (this.saved === 'start' ? 'end' : 'start');
+        if (missingFields.length !== 0) {
+            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
             return;
         }
 
@@ -140,17 +121,34 @@ export class LeftSidebarComponent implements OnInit {
                 this.releaseCenters[currentIndex] = response;
                 this.activeReleaseCenter = response;
                 this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
-                this.modalService.close('edit-modal');
+                this.message = 'The release center ' + response.name + ' has been updated successfully.';
+                this.closeModal('edit-modal');
+                this.openSuccessModel();
             },
             errorResponse => {
                 this.savingCenter = false;
                 this.saveResponse = errorResponse.error.errorMessage;
-                this.saved = (this.saved === 'start' ? 'end' : 'start');
             }
         );
     }
 
-    missingFieldsCheck(name, shortName): boolean {
-        return !name || !shortName;
+    missingFieldsCheck(name, shortName): Object[] {
+        const missingFields = [];
+        if (!name) { missingFields.push('Name'); }
+        if (!shortName) { missingFields.push('Short Name'); }
+
+        return missingFields;
+    }
+
+    openModal(name) {
+        this.modalService.open(name);
+    }
+
+    closeModal(name) {
+        this.modalService.close(name);
+    }
+
+    private openSuccessModel() {
+        this.openModal('release-center-success-modal');
     }
 }

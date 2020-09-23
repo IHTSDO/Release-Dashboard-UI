@@ -68,7 +68,16 @@ app-modal {
             border: 1px $ghost-grey solid;
         }
     }
-    
+    &.error-modal {
+        div.error i {
+            color:$mandy;
+        }
+    }
+    &.success-modal {
+        div.success i {
+            color:$fruit-salad;
+        }
+    }
     &.view-build-log-modal {
         white-space: pre-line;
         line-height: 2.4rem;

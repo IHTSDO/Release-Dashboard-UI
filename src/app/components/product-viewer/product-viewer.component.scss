@@ -29,6 +29,16 @@ app-modal {
             border: 1px $ghost-grey solid;
         }
     }
+    &.success-modal {
+        div.success i {
+            color:$fruit-salad;
+        }
+    }
+    &.error-modal {
+        div.error i {
+            color:$mandy;
+        }
+    }
     &.update-modal {
         input, select , textarea, select:focus{
             border: 1px $ghost-grey solid;

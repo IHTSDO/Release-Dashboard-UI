@@ -5,7 +5,6 @@ import { ProductService } from '../../services/product/product.service';
 import { ReleaseCenter } from '../../models/releaseCenter';
 import { ProductDataService } from '../../services/product/product-data.service';
 import { ModalService } from '../../services/modal/modal.service';
-import { trigger, state, style, keyframes, transition, animate } from '@angular/animations';
 import { Product } from '../../models/product';
 import { BuildConfiguration } from '../../models/buildConfiguration';
 import { QAConfiguration } from '../../models/qaConfiguration';
@@ -15,21 +14,7 @@ import { ProductPaginationService } from '../../services/pagination/product-pagi
 @Component({
     selector: 'app-product-viewer',
     templateUrl: './product-viewer.component.html',
-    styleUrls: ['./product-viewer.component.scss'],
-    animations: [
-        trigger('slide', [
-            state('start', style({ opacity: 0, transform: 'translateY(200%)'})),
-            state('end', style({ opacity: 0, transform: 'translateY(-200%)'})),
-            transition('start <=> end', [
-                animate('2000ms ease-in', keyframes([
-                    style({opacity: 0, transform: 'translateY(200%)', offset: 0}),
-                    style({opacity: 1, transform: 'translateY(0)', offset: 0.1}),
-                    style({opacity: 1, transform: 'translateY(0)', offset: .8}),
-                    style({opacity: 0, transform: 'translateY(-200%)', offset: 1.0})
-                ]))
-            ])
-        ])
-    ]
+    styleUrls: ['./product-viewer.component.scss']
 })
 export class ProductViewerComponent implements OnInit, OnDestroy {
 
@@ -46,7 +31,6 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     productsLoading = false;
 
     // animations
-    saved = 'start';
     saveResponse: string;
     savingProduct = false;
 
@@ -55,8 +39,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     pageNumber: Number;
     totalProduct: Number;
 
-    // global error message
-    errorMessage: string;
+    // global message
+    message: string;
 
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
@@ -66,7 +50,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
             this.products = [];
-            this.errorMessage = '';
+            this.message = '';
             this.pageNumber = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
             this.totalProduct = this.paginationService.EMPTY_ITEMS;
             this.productDataService.clearCachedProducts();
@@ -102,33 +86,49 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     createProduct(productName) {
+        this.saveResponse = '';
+        this.message = '';
+        const missingFields = this.missingFieldsCheck(productName.trim());
+        if (missingFields.length !== 0) {
+            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            return;
+        }
+
         this.savingProduct = true;
         this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(() => {
             this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
             this.loadProducts();
-            this.closeModal('add-product-modal');
-            this.savingProduct = false;
+            this.message = 'Product ' + productName + ' has been created successfully.';
+            this.closeAddProductModal();
+            this.openSuccessModel();
         },
         errorResponse => {
             this.savingProduct = false;
             this.saveResponse = errorResponse.error.errorMessage;
-            this.saved = (this.saved === 'start' ? 'end' : 'start');
+        },
+        () => {
+            this.savingProduct = false;
         });
     }
 
     updateProduct(product: Product, customRefsetCompositeKeys: string) {
         this.savingProduct = true;
+        this.saveResponse = '';
+        this.message = '';
         this.productService.patchProduct(this.activeReleaseCenter.id, product, customRefsetCompositeKeys).subscribe(
             response => {
                 this.products[this.products.findIndex(p => p.id === response.id)] = response;
-                this.savingProduct = false;
                 this.productDataService.cacheProducts(this.products);
-                this.closeModal('update-product-modal');
+                this.message = 'Product ' + product.name + ' has been updated successfully.';
+                this.closeUpdateProductModal();
+                this.openSuccessModel();
             },
             errorResponse => {
                 this.savingProduct = false;
                 this.saveResponse = errorResponse.error.errorMessage;
-                this.saved = (this.saved === 'start' ? 'end' : 'start');
+            },
+            () => {
+                this.savingProduct = false;
             }
         );
     }
@@ -180,7 +180,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             }
         }
 
-        this.openModal('update-product-modal');
+        this.openUpdateProductModal();
     }
 
     checkManifestFile(product: Product) {
@@ -188,7 +188,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.productService.getManifest(this.activeReleaseCenter.id, product.id).subscribe(
             data => {
                 if (data.hasOwnProperty('filename')) {
-                    this.openModal('manifest-confirmation-modal');
+                    this.openManifestConfirmationModal();
                 } else {
                     this.openUploadManifestFileDialog();
                 }
@@ -201,6 +201,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     loadManifestFile(product: Product) {
         this.selectedProduct = product;
+        this.message = '';
         this.productService.loadManifestFile(this.activeReleaseCenter.id, product.id).subscribe(
             data => {
                 const blob = new Blob([data], { type: 'application/xml'});
@@ -208,7 +209,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 window.open(url, '_blank');
             },
             () => {
-                this.errorMessage = 'The manifest does not exist for product ' + this.selectedProduct.name;
+                this.message = 'The manifest file does not exist for product ' + this.selectedProduct.name + '.';
+                this.openErrorModel();
             }
         );
     }
@@ -219,7 +221,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     uploadManifestFile(event) {
-        this.errorMessage = '';
+        this.message = '';
         const product = this.products.find(p => p.id === this.selectedProduct.id);
         product.manifestFileUploading = true;
         if (event.target.files.length > 0) {
@@ -230,12 +232,20 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                     product.manifestFileUploading = false;
                 },
                 errorResponse => {
-                    this.errorMessage = 'Failed to upload the Manifest file. Error: ' + errorResponse.error.errorMessage;
                     product.manifestFileUploading = false;
+                    this.message = 'Failed to upload the Manifest file. Error: ' + errorResponse.error.errorMessage;
+                    this.openErrorModel();
                 }
             );
             event.target.value = '';
         }
+    }
+
+    missingFieldsCheck(productName): Object[] {
+        const missingFields = [];
+        if (!productName) { missingFields.push('Product Name'); }
+
+        return missingFields;
     }
 
     openModal(name) {
@@ -244,5 +254,29 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     closeModal(name) {
         this.modalService.close(name);
+    }
+
+    private openManifestConfirmationModal() {
+        this.openModal('manifest-confirmation-modal');
+    }
+
+    private closeAddProductModal() {
+        this.closeModal('add-product-modal');
+    }
+
+    private openUpdateProductModal() {
+        this.openModal('update-product-modal');
+    }
+
+    private closeUpdateProductModal() {
+        this.closeModal('update-product-modal');
+    }
+
+    private openSuccessModel() {
+        this.openModal('product-success-modal');
+    }
+
+    private openErrorModel() {
+        this.openModal('product-error-modal');
     }
 }

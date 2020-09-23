@@ -36,8 +36,16 @@ nav#sidebar {
     }
 }
 
-app-modal.add-modal, app-modal.edit-modal {
-    input {
-        border: 1px $ghost-grey solid;
+app-modal {
+    &.add-modal, &.edit-modal {
+        input {
+            border: 1px $ghost-grey solid;
+        }
+    }   
+
+    &.success-modal {
+        div.success i {
+            color:$fruit-salad;
+        }
     }
 }
