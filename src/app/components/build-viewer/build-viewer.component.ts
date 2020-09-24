@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../models/product';
 import { Build } from '../../models/build';
@@ -17,7 +17,7 @@ import { BuildStateEnum } from '../../models/buildStateEnum';
   templateUrl: './build-viewer.component.html',
   styleUrls: ['./build-viewer.component.scss']
 })
-export class BuildViewerComponent implements OnInit {
+export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
 
     RF2_DATE_FORMAT = 'yyyyMMdd';
@@ -34,16 +34,15 @@ export class BuildViewerComponent implements OnInit {
     selectedBuild: Build;
     buildLog: string;
 
-    // animations
-    saved = 'start';
-    saveResponse: string;
-
     // Build properties
     buildParams: BuildParameters;
+
+    interval: any;
 
     // Control flags and error handling flags
     action: string;
     message: string;
+    saveResponse: string;
     buildTriggering = false;
     buildsLoading = false;
     buildLogLoading = false;
@@ -68,7 +67,14 @@ export class BuildViewerComponent implements OnInit {
                 data => this.activeProduct = <Product> data
             );
             this.loadBuilds();
+            this.startPolling();
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
     }
 
     // find product from cache, other from server
@@ -142,12 +148,13 @@ export class BuildViewerComponent implements OnInit {
             errorResponse => {
                 this.buildLogLoading = false;
                 if (errorResponse.status === 404) {
-                    this.message = 'The log file was not found';
+                    this.message = 'The log isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
-                        || BuildStateEnum.BEFORE_TRIGGER === build.status) {
-                        this.message += ' due to the build is running.';
+                        || BuildStateEnum.BEFORE_TRIGGER === build.status
+                        || BuildStateEnum.RVF_RUNNING === build.status) {
+                            this.message += ' whilst the build is running. Please press View Process button to see the live logging';
                     } else if (BuildStateEnum.CANCEL_REQUESTED === build.status) {
-                        this.message += ' due to the build is being canceled.';
+                        this.message += ' due to the build is being canceled. Please wait until the status changes to Cancelled';
                     } else {
                         this.message += '.';
                     }
@@ -195,12 +202,13 @@ export class BuildViewerComponent implements OnInit {
             errorResponse => {
                 build.buildDownloadingLog = false;
                 if (errorResponse.status === 404) {
-                    this.message = 'The build log was not found';
+                    this.message = 'The log file isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
-                        || BuildStateEnum.BEFORE_TRIGGER === build.status) {
-                        this.message += ' due to the build is running.';
+                        || BuildStateEnum.BEFORE_TRIGGER === build.status
+                        || BuildStateEnum.RVF_RUNNING === build.status) {
+                        this.message += ' whilst the build is running. Please press View Process button to see the live logging';
                     } else if (BuildStateEnum.CANCEL_REQUESTED === build.status) {
-                        this.message += ' due to the build is being canceled.';
+                        this.message += ' due to the build is being canceled. Please wait until the status changes to Cancelled';
                     } else {
                         this.message += '.';
                     }
@@ -234,11 +242,11 @@ export class BuildViewerComponent implements OnInit {
 
                 if (!buildPackageFound) {
                     build.buildDownloadingPackage = false;
-                    this.message = 'The build package was not found';
+                    this.message = 'The package isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
                         || BuildStateEnum.BEFORE_TRIGGER === build.status) {
-                        this.message += ' due to the build is running.';
-                    } else if (BuildStateEnum.BUILT !== build.status) {
+                        this.message += ' whilst the build is running. Please wait.';
+                    } else if (BuildStateEnum.RELEASE_COMPLETE !== build.status) {
                         this.message += ' due to the build failed to complete.';
                     } else {
                         this.message += '.';
@@ -307,15 +315,17 @@ export class BuildViewerComponent implements OnInit {
     }
 
     runBuild() {
+        this.clearMessage();
         const missingFields = this.missingFieldsCheck();
-        if (missingFields) {
-            this.saveResponse = 'Missing Fields';
-            this.saved = (this.saved === 'start' ? 'end' : 'start');
+        if (missingFields.length !== 0) {
+            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
             return;
         }
         this.clearMessage();
         this.buildTriggering = true;
         const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
+        this.closeBuildModal();
+        this.openWaitingModel('Creating build');
         this.buildService.runBuild(this.releaseCenterKey,
                                   this.productKey,
                                   this.buildParams.buildName,
@@ -323,22 +333,18 @@ export class BuildViewerComponent implements OnInit {
                                   this.buildParams.exportType,
                                   this.buildParams.maxFailureExport,
                                   formattedeffectiveDate).subscribe(
-            () => {
-                this.closeBuildModal();
-                this.buildsLoading = true;
-                setTimeout(() => {
-                    this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
-                        this.builds = response;
-                        this.buildsLoading = false;
-                        this.buildTriggering = false;
-                    });
-                }, 2000);
-                this.message = 'The build has been triggered successfully.';
+            build => {
+                this.builds.unshift(build);
+                this.buildTriggering = false;
+                this.message = 'The build has been created successfully.';
+                this.closeWaitingModel();
                 this.openSuccessModel();
             },
             errorResponse => {
                 this.buildTriggering = false;
-                this.saveResponse = errorResponse.error.errorMessage;
+                this.closeWaitingModel();
+                this.message = errorResponse.error.errorMessage;
+                this.openErrorModel();
             }
         );
     }
@@ -364,11 +370,12 @@ export class BuildViewerComponent implements OnInit {
     }
 
     doOpeningBuildModal(isNewBuild) {
+        this.clearMessage();
         this.buildParams = new BuildParameters();
         if (isNewBuild) {
             if (this.activeProduct.buildConfiguration) {
                 if (this.activeProduct.buildConfiguration.effectiveTime) {
-                    this.buildParams.effectiveDate = this.activeProduct.buildConfiguration.effectiveTime;
+                    this.buildParams.effectiveDate = new Date(this.activeProduct.buildConfiguration.effectiveTime);
                 } else {
                     this.buildParams.effectiveDate = null;
                 }
@@ -406,6 +413,41 @@ export class BuildViewerComponent implements OnInit {
         window.open(build.rvfURL);
     }
 
+    private startPolling() {
+        this.interval = setInterval(() => {
+            if (this.builds && this.builds.length !== 0) {
+                const latestBuild = this.builds[0];
+                if (BuildStateEnum.BEFORE_TRIGGER === latestBuild.status
+                    || BuildStateEnum.BUILDING === latestBuild.status
+                    || BuildStateEnum.BUILT === latestBuild.status
+                    || BuildStateEnum.CANCEL_REQUESTED === latestBuild.status
+                    || BuildStateEnum.RVF_RUNNING === latestBuild.status) {
+                    this.buildService.getBuild(this.releaseCenterKey, this.productKey, latestBuild.id).subscribe(
+                        response => {
+                            this.transferNewChangesIfAny(latestBuild, response);
+
+                            if (this.activeBuild && response.id === this.activeBuild.id) {
+                                this.transferNewChangesIfAny(this.activeBuild, response);
+                            }
+                        }
+                    );
+                }
+
+            }
+        }, 3000);
+    }
+
+    private transferNewChangesIfAny(oldBuild: Build, newBuild: Build) {
+        if (oldBuild && newBuild) {
+            if (oldBuild.status !== newBuild.status) {
+                oldBuild.status = newBuild.status;
+            }
+            if (oldBuild.rvfURL !== newBuild.rvfURL) {
+                oldBuild.rvfURL = newBuild.rvfURL;
+            }
+        }
+    }
+
     private convertCustomRefsetCompositeKeys(customRefsetCompositeKeys) {
         let result = '';
         if (customRefsetCompositeKeys
@@ -435,10 +477,15 @@ export class BuildViewerComponent implements OnInit {
         link.click();
     }
 
-    private missingFieldsCheck(): boolean {
-        return !this.buildParams.effectiveDate || !this.buildParams.branch
-                || !this.buildParams.exportType || !this.buildParams.maxFailureExport
-                || !this.buildParams.buildName;
+    private missingFieldsCheck(): Object[] {
+        const missingFields = [];
+        if (!this.buildParams.buildName) { missingFields.push('Build Name'); }
+        if (!this.buildParams.effectiveDate) { missingFields.push('Effective Date'); }
+        if (!this.buildParams.branch) { missingFields.push('Branch'); }
+        if (!this.buildParams.exportType) { missingFields.push('Export Type'); }
+        if (!this.buildParams.maxFailureExport) { missingFields.push('Failure Max'); }
+
+        return missingFields;
     }
 
     private clearMessage() {
@@ -482,7 +529,7 @@ export class BuildViewerComponent implements OnInit {
         this.openModal('view-build-configuration-modal');
     }
 
-    private openWaitingModel() {
+    private openWaitingModel(defaultMsg?: string) {
         if (this.activeBuild.buildDeleting) {
             this.action = 'Deleting Build';
         } else if (this.activeBuild.buildCanceling) {
@@ -490,7 +537,7 @@ export class BuildViewerComponent implements OnInit {
         } else if (this.activeBuild.buildPublishing) {
             this.action = 'Publishing Build';
         } else {
-            this.action = '';
+            this.action = defaultMsg;
         }
         this.openModal('waiting-modal');
     }

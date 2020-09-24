@@ -45,7 +45,7 @@ export class BuildService {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
   }
 
-  runBuild(releaseCenterKey, productKey, buildName, branch, exportType, maxFailureExport, effectiveDate) {
+  runBuild(releaseCenterKey, productKey, buildName, branch, exportType, maxFailureExport, effectiveDate): Observable<Build> {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
@@ -55,7 +55,7 @@ export class BuildService {
           loadTermServerData: true,
           loadExternalRefsetData: true
       };
-      return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
+      return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
   }
 
   deleteBuild(releaseCenterKey, productKey, buildId) {

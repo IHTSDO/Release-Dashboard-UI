@@ -16,4 +16,5 @@ export class Build {
     buildPublishing: boolean;
     buildDeleting: boolean;
     buildCanceling: boolean;
+    buildCreating: boolean;
 }

@@ -24,7 +24,7 @@
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Export Type:</label>
-                            <span class="font-weight-bold">{{activeBuild.configuration?.exportType}}</span>
+                            <span class="font-weight-bold">{{activeBuild.configuration?.exportType | titlecase}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Branch:</label>
@@ -38,7 +38,7 @@
                     <div class="col-5 text-left">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Status:</label>
-                            <span class="font-weight-bold">{{activeBuild.status}}</span>
+                            <span class="font-weight-bold">{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</span>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
@@ -48,7 +48,7 @@
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>                            
                             <button type="button" class="btn-green" 
-                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'BUILT' ||  activeBuild.tag === 'PUBLISHED'" 
+                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'RELEASE_COMPLETE' ||  activeBuild.tag === 'PUBLISHED'" 
                                     (click)="openModal('publish-build-confirmation-modal')">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
                             <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
@@ -94,7 +94,7 @@
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
-                <td class="pb-0">{{build?.status}}</td>
+                <td class="pb-0">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0 btn-download"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
