@@ -434,7 +434,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 }
 
             }
-        }, 3000);
+        }, 10000);
     }
 
     private transferNewChangesIfAny(oldBuild: Build, newBuild: Build) {
