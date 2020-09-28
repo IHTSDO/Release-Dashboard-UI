@@ -95,12 +95,13 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         }
 
         this.savingProduct = true;
-        this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(() => {
+        this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(data => {
+            this.selectedProduct = data;
             this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
             this.loadProducts();
-            this.message = 'Product ' + productName + ' has been created successfully.';
+            this.message = 'Product ' + productName + ' has been created successfully. Please update the configurations';
             this.closeAddProductModal();
-            this.openSuccessModel();
+            this.openProductCreationSuccessModal();
         },
         errorResponse => {
             this.savingProduct = false;
@@ -270,6 +271,10 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     private closeUpdateProductModal() {
         this.closeModal('update-product-modal');
+    }
+
+    private openProductCreationSuccessModal() {
+        this.openModal('product-creation-success-modal');
     }
 
     private openSuccessModel() {

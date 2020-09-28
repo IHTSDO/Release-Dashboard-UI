@@ -39,6 +39,12 @@ app-modal {
             color:$mandy;
         }
     }
+    &.product-creation-success-modal {
+        button.btn-blue {
+            width: 12rem;
+        }
+
+    }
     &.update-modal {
         input, select , textarea, select:focus{
             border: 1px $ghost-grey solid;
