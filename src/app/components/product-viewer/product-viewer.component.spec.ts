@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Pipe } from '@angular/core';
 
 import { LeftSidebarComponent } from '../../components/left-sidebar/left-sidebar.component';
@@ -19,7 +19,7 @@ describe('ProductViewerComponent', () => {
   let component: ProductViewerComponent;
   let fixture: ComponentFixture<ProductViewerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         ProductViewerComponent,

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import 'jquery';
 import { Title } from '@angular/platform-browser';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { BranchingService } from './services/branching/branching.service';
