@@ -410,7 +410,13 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     openRvfReport(build: Build) {
-        window.open(build.rvfURL);
+        if (build.rvfURL.startsWith('https')) {
+            window.open(build.rvfURL);
+        } else {
+            this.message = build.rvfURL;
+            this.openErrorModel();
+        }
+
     }
 
     private startPolling() {
