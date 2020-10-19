@@ -39,7 +39,6 @@ export class ProductService {
             justPackage: product.buildConfiguration.justPackage,
             firstTimeRelease: product.buildConfiguration.firstTimeRelease,
             betaRelease: product.buildConfiguration.betaRelease,
-            previousPublishedPackage: product.buildConfiguration.previousPublishedPackage,
             readmeEndDate: product.buildConfiguration.readmeEndDate,
             workbenchDataFixesRequired: product.buildConfiguration.workbenchDataFixesRequired,
             inputFilesFixesRequired: product.buildConfiguration.inputFilesFixesRequired,
@@ -68,6 +67,9 @@ export class ProductService {
         };
         if (customRefsetCompositeKeys) {
             data['customRefsetCompositeKeys'] = customRefsetCompositeKeys;
+        }
+        if (product.buildConfiguration.previousPublishedPackage) {
+            data['previousPublishedPackage'] = product.buildConfiguration.previousPublishedPackage;
         }
         return this.http.patch<Product>('/release/centers/' + releaseCenterKey + '/products/' + product.id, data);
     }
