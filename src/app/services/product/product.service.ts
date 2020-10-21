@@ -48,7 +48,6 @@ export class ProductService {
             previousExtensionRelease: product.qaTestConfig.previousExtensionRelease,
             assertionGroupNames: product.qaTestConfig.assertionGroupNames,
             extensionDependencyRelease: product.qaTestConfig.extensionDependencyRelease,
-            dependencyReleasePackage: product.buildConfiguration.extensionConfig.dependencyRelease,
             namespaceId: product.buildConfiguration.extensionConfig.namespaceId,
             moduleId: product.buildConfiguration.extensionConfig.moduleId,
             releaseExtensionAsAnEdition: product.buildConfiguration.extensionConfig.releaseAsAnEdition,
@@ -64,13 +63,11 @@ export class ProductService {
             releaseInformationFields: product.buildConfiguration.releaseInformationFields,
             useClassifierPreConditionChecks: product.buildConfiguration.useClassifierPreConditionChecks,
             conceptPreferredTerms : product.buildConfiguration.conceptPreferredTerms,
+            customRefsetCompositeKeys : customRefsetCompositeKeys,
+            previousPublishedPackage : product.buildConfiguration.previousPublishedPackage,
+            dependencyReleasePackage : product.buildConfiguration.extensionConfig.dependencyRelease
         };
-        if (customRefsetCompositeKeys) {
-            data['customRefsetCompositeKeys'] = customRefsetCompositeKeys;
-        }
-        if (product.buildConfiguration.previousPublishedPackage) {
-            data['previousPublishedPackage'] = product.buildConfiguration.previousPublishedPackage;
-        }
+
         return this.http.patch<Product>('/release/centers/' + releaseCenterKey + '/products/' + product.id, data);
     }
 
