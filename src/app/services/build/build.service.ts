@@ -55,6 +55,10 @@ export class BuildService {
           loadTermServerData: true,
           loadExternalRefsetData: true
       };
+      if (!branch) {
+        data['loadTermServerData'] = false;
+        data['loadExternalRefsetData'] = false;
+      }
       return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
   }
 

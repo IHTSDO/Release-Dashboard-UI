@@ -85,4 +85,12 @@ export class ProductService {
     loadManifestFile(releaseCenterKey, productKey) {
         return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest/file', {responseType: 'arraybuffer'});
     }
+
+    deleteProductInputFiles(releaseCenterKey, productKey) {
+        return this.http.delete('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/inputfiles/*.txt');
+    }
+
+    uploadProductInputFiles(releaseCenterKey, productKey, file: FormData) {
+        return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/inputfiles', file);
+    }
 }

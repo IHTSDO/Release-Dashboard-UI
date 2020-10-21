@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../models/product';
 import { Build } from '../../models/build';
@@ -11,6 +11,7 @@ import { formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { BuildStateEnum } from '../../models/buildStateEnum';
+import { BranchingService } from 'src/app/services/branching/branching.service';
 
 @Component({
   selector: 'app-build-viewer',
@@ -19,6 +20,7 @@ import { BuildStateEnum } from '../../models/buildStateEnum';
 })
 export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
+    @ViewChild('uploadInputFilesInput') private uploadInputFilesInput;
 
     RF2_DATE_FORMAT = 'yyyyMMdd';
     DATA_DOG_URL = 'https://app.datadoghq.com/dashboard/dm6-vs3-bz3/release-dashboard';
@@ -28,6 +30,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     productKey: string;
 
     builds: Build[];
+    localInputFiles: FileList;
 
     activeProduct: Product;
     activeBuild: Build;
@@ -46,6 +49,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     buildTriggering = false;
     buildsLoading = false;
     buildLogLoading = false;
+    useLocalInputFiles = false;
+
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -314,6 +319,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
+    selectInputFiles(files: FileList) {
+        this.localInputFiles = files;
+    }
+
     runBuild() {
         this.clearMessage();
         const missingFields = this.missingFieldsCheck();
@@ -325,28 +334,58 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.buildTriggering = true;
         const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
         this.closeBuildModal();
-        this.openWaitingModel('Creating build');
-        this.buildService.runBuild(this.releaseCenterKey,
-                                  this.productKey,
-                                  this.buildParams.buildName,
-                                  this.buildParams.branch,
-                                  this.buildParams.exportType,
-                                  this.buildParams.maxFailureExport,
-                                  formattedeffectiveDate).subscribe(
-            build => {
-                this.builds.unshift(build);
-                this.buildTriggering = false;
-                this.message = 'The build has been created successfully.';
-                this.closeWaitingModel();
-                this.openSuccessModel();
-            },
-            errorResponse => {
-                this.buildTriggering = false;
-                this.closeWaitingModel();
-                this.message = errorResponse.error.errorMessage;
-                this.openErrorModel();
-            }
-        );
+        if (this.useLocalInputFiles) {
+            this.openWaitingModel('Uploading input files');
+            this.productService.deleteProductInputFiles(this.releaseCenterKey, this.productKey).subscribe(() => {
+                this.uploadInputFiles(this.releaseCenterKey, this.productKey, this.productService, this.localInputFiles).then(() => {
+                    this.openWaitingModel('Creating build');
+                    this.buildService.runBuild(this.releaseCenterKey,
+                        this.productKey,
+                        this.buildParams.buildName,
+                        null,
+                        null,
+                        this.buildParams.maxFailureExport,
+                        formattedeffectiveDate).subscribe(
+                        build => {
+                            this.builds.unshift(build);
+                            this.buildTriggering = false;
+                            this.message = 'The build has been created successfully.';
+                            this.closeWaitingModel();
+                            this.openSuccessModel();
+                        },
+                        errorResponse => {
+                            this.buildTriggering = false;
+                            this.closeWaitingModel();
+                            this.message = errorResponse.error.errorMessage;
+                            this.openErrorModel();
+                        }
+                        );
+                });
+            });
+        } else {
+            this.openWaitingModel('Creating build');
+            this.buildService.runBuild(this.releaseCenterKey,
+                                      this.productKey,
+                                      this.buildParams.buildName,
+                                      this.buildParams.branch,
+                                      this.buildParams.exportType,
+                                      this.buildParams.maxFailureExport,
+                                      formattedeffectiveDate).subscribe(
+                build => {
+                    this.builds.unshift(build);
+                    this.buildTriggering = false;
+                    this.message = 'The build has been created successfully.';
+                    this.closeWaitingModel();
+                    this.openSuccessModel();
+                },
+                errorResponse => {
+                    this.buildTriggering = false;
+                    this.closeWaitingModel();
+                    this.message = errorResponse.error.errorMessage;
+                    this.openErrorModel();
+                }
+            );
+        }
     }
 
     deleteBuild(build: Build) {
@@ -372,6 +411,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     doOpeningBuildModal(isNewBuild) {
         this.clearMessage();
         this.buildParams = new BuildParameters();
+        this.useLocalInputFiles = false;
+        this.localInputFiles = null;
+        setTimeout(() => {
+            this.uploadInputFilesInput.nativeElement.value = '';
+        }, 0);
         if (isNewBuild) {
             if (this.activeProduct.buildConfiguration) {
                 if (this.activeProduct.buildConfiguration.effectiveTime) {
@@ -397,6 +441,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             if (buildConfiguration.branchPath) {
                 this.buildParams.branch = buildConfiguration.branchPath;
             } else {
+                this.useLocalInputFiles = true;
                 if (this.activeProduct.buildConfiguration.defaultBranchPath) {
                     this.buildParams.branch = this.activeProduct.buildConfiguration.defaultBranchPath;
                 } else {
@@ -417,6 +462,26 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.openErrorModel();
         }
 
+    }
+
+    private uploadInputFiles(releaseCenterKey, productKey, productService, localInputFiles) {
+        const promise = new Promise(function(resolve, reject) {
+            const upload = function(centerKey, prodKey, prodService, inputFiles, index) {
+                const formData = new FormData();
+                formData.append('file', localInputFiles[index]) ;
+                productService.uploadProductInputFiles(releaseCenterKey, productKey, formData).subscribe(() => {
+                    index++;
+                    if (index === inputFiles.length) {
+                        resolve();
+                    } else {
+                        upload(centerKey, prodKey, prodService, inputFiles, index);
+                    }
+                });
+            };
+            upload(releaseCenterKey, productKey, productService, localInputFiles, 0);
+        });
+
+        return promise;
     }
 
     private startPolling() {
@@ -487,8 +552,15 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         const missingFields = [];
         if (!this.buildParams.buildName) { missingFields.push('Build Name'); }
         if (!this.buildParams.effectiveDate) { missingFields.push('Effective Date'); }
-        if (!this.buildParams.branch) { missingFields.push('Branch'); }
-        if (!this.buildParams.exportType) { missingFields.push('Export Type'); }
+        if (this.useLocalInputFiles) {
+            if (!this.localInputFiles || this.localInputFiles.length === 0) {
+                missingFields.push('Local Input Files');
+            }
+        } else {
+            if (!this.buildParams.branch) { missingFields.push('Branch'); }
+            if (!this.buildParams.exportType) { missingFields.push('Export Type'); }
+        }
+
         if (!this.buildParams.maxFailureExport) { missingFields.push('Failure Max'); }
 
         return missingFields;
