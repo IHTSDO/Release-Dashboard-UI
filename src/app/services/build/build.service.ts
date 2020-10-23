@@ -45,7 +45,8 @@ export class BuildService {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
   }
 
-  runBuild(releaseCenterKey, productKey, buildName, branch, exportType, maxFailureExport, effectiveDate, excludedModuleIds): Observable<Build> {
+  runBuild(releaseCenterKey, productKey, buildName, branch, exportType,
+          maxFailureExport, effectiveDate, excludedModuleIds): Observable<Build> {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
@@ -60,7 +61,7 @@ export class BuildService {
         data['loadExternalRefsetData'] = false;
       }
       if (excludedModuleIds) {
-        var array = excludedModuleIds.replace(/\s/g, "").split(",");
+        let array = excludedModuleIds.replace(/\s/g, '').split(',');
         data['excludedModuleIds'] = array;
       }
       return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
