@@ -113,9 +113,14 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     updateProduct(product: Product, customRefsetCompositeKeys: string) {
-        this.savingProduct = true;
         this.saveResponse = '';
         this.message = '';
+        const missingFields = this.productConfigurationMissingFieldsCheck(product);
+        if (missingFields.length !== 0) {
+            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            return;
+        }
+        this.savingProduct = true;
         this.productService.patchProduct(this.activeReleaseCenter.id, product, customRefsetCompositeKeys).subscribe(
             response => {
                 this.products[this.products.findIndex(p => p.id === response.id)] = response;
@@ -245,6 +250,15 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     missingFieldsCheck(productName): Object[] {
         const missingFields = [];
         if (!productName) { missingFields.push('Product Name'); }
+
+        return missingFields;
+    }
+
+    productConfigurationMissingFieldsCheck(product: Product): Object[] {
+        const missingFields = [];
+        if (!product.buildConfiguration.effectiveTime) { missingFields.push('Effective Time'); }
+        if (!product.buildConfiguration.readmeHeader) { missingFields.push('Readme Header'); }
+        if (!product.buildConfiguration.readmeEndDate) { missingFields.push('Readme End Date'); }
 
         return missingFields;
     }
