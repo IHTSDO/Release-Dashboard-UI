@@ -345,7 +345,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         null,
                         null,
                         this.buildParams.maxFailureExport,
-                        formattedeffectiveDate).subscribe(
+                        formattedeffectiveDate,
+                        this.buildParams.excludedModuleIds).subscribe(
                         build => {
                             this.builds.unshift(build);
                             this.buildTriggering = false;
@@ -370,7 +371,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.branch,
                                       this.buildParams.exportType,
                                       this.buildParams.maxFailureExport,
-                                      formattedeffectiveDate).subscribe(
+                                      formattedeffectiveDate,
+                                      this.buildParams.excludedModuleIds).subscribe(
                 build => {
                     this.builds.unshift(build);
                     this.buildTriggering = false;
@@ -414,7 +416,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.useLocalInputFiles = false;
         this.localInputFiles = null;
         setTimeout(() => {
-            this.uploadInputFilesInput.nativeElement.value = '';
+            if (this.uploadInputFilesInput && this.uploadInputFilesInput.nativeElement) {
+                this.uploadInputFilesInput.nativeElement.value = '';
+            }
         }, 0);
         if (isNewBuild) {
             if (this.activeProduct.buildConfiguration) {
