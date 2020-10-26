@@ -61,7 +61,7 @@ export class BuildService {
         data['loadExternalRefsetData'] = false;
       }
       if (excludedModuleIds) {
-        let array = excludedModuleIds.replace(/\s/g, '').split(',');
+        const array = excludedModuleIds.replace(/\s/g, '').split(',');
         data['excludedModuleIds'] = array;
       }
       return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);

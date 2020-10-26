@@ -4,5 +4,5 @@ export class BuildParameters {
     maxFailureExport: number;
     effectiveDate: Date;
     buildName: string;
-    excludedModuleIds: string
+    excludedModuleIds: string;
 }
