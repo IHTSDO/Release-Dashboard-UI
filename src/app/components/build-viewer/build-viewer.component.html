@@ -71,9 +71,10 @@
                 <th class="w-10">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th class="w-10">Tag</th>
+                <th class="w-5">URL</th>
             </tr>
             <tr >
-                <td colspan="8"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="9"><div class="font-weight-bold loading">Loading</div></td>
             </tr>            
         </table>    
         <table class="table table-bordered" *ngIf="!buildsLoading">
@@ -87,6 +88,7 @@
                 <th class="w-10">RVF Report</th>                
                 <th class="w-10">Configurations</th>
                 <th class="w-10">Tag</th>
+                <th class="w-5">URL</th>
             </tr>
             <tr *ngIf="builds?.length === 0">
                 <td colspan="6">No builds found.</td>
@@ -98,9 +100,10 @@
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0 btn-download"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
-                <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">open_in_new</i></button></td>
+                <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
                 <td class="pb-0">{{build?.tag}}</td>
+                <td class="pb-0"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
             </tr>
         </table>
         <pagination-controls id="builds_table"

@@ -465,7 +465,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.message = build.rvfURL;
             this.openErrorModel();
         }
+    }
 
+    openBuildURL(build: Build) {
+        window.open(build['url']);
     }
 
     private uploadInputFiles(releaseCenterKey, productKey, productService, localInputFiles) {
