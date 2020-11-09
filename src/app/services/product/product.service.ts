@@ -90,4 +90,10 @@ export class ProductService {
     uploadProductInputFiles(releaseCenterKey, productKey, file: FormData) {
         return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/inputfiles', file);
     }
+
+    deleteProduct(releaseCenterKey, productKey, removeAllFilesFromS3) {
+        const params = new HttpParams()
+                    .set('removeAllFilesFromS3', removeAllFilesFromS3);
+        return this.http.delete('/release/centers/' + releaseCenterKey + '/products/' + productKey, {params: params});
+    }
 }

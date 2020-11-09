@@ -41,6 +41,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     // global message
     message: string;
+    action: string;
 
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
@@ -189,6 +190,33 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.openUpdateProductModal();
     }
 
+    openProductDeletionModal(product: Product) {
+        this.selectedProduct = product;
+        this.openModal('delete-product-confirmation-modal-level-one');
+    }
+
+    deleteProduct(includeAllFilesFromS3) {
+        this.openWaitingModel('Deleting product');
+        this.closeModal('delete-product-confirmation-modal-level-two');
+        this.productService.deleteProduct(this.activeReleaseCenter.id, this.selectedProduct.id,
+                                        typeof includeAllFilesFromS3 !== 'undefined' ? includeAllFilesFromS3 : false).subscribe(
+            () => {
+                if (this.pageNumber.valueOf() !== this.paginationService.DEFAULT_PAGE_NUMBER && this.products.length === 1) {
+                    this.pageNumber = this.pageNumber.valueOf() - 1;
+                }
+                this.loadProducts();
+                this.message = 'Product \'' + this.selectedProduct.name + '\' has been deleted successfully.';
+                this.closeWaitingModel();
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                this.message = errorResponse.error.errorMessage;
+                this.closeWaitingModel();
+                this.openErrorModel();
+            }
+        );
+    }
+
     checkManifestFile(product: Product) {
         this.selectedProduct = product;
         this.productService.getManifest(this.activeReleaseCenter.id, product.id).subscribe(
@@ -269,6 +297,15 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     closeModal(name) {
         this.modalService.close(name);
+    }
+
+    private openWaitingModel(action: string) {
+        this.action = action;
+        this.openModal('product-waiting-modal');
+    }
+
+    private closeWaitingModel() {
+        this.closeModal('product-waiting-modal');
     }
 
     private openManifestConfirmationModal() {

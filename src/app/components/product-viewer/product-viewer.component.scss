@@ -45,6 +45,15 @@ app-modal {
         }
 
     }
+    &.delete-product-confirmation-modal {
+        .btn-blue {
+            width: 10rem;
+        }
+        .btn-all {
+            width: 8rem;
+        }
+
+    }
     &.update-modal {
         input, select , textarea, select:focus{
             border: 1px $ghost-grey solid;
