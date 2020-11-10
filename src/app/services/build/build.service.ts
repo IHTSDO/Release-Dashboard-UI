@@ -70,4 +70,8 @@ export class BuildService {
   deleteBuild(releaseCenterKey, productKey, buildId) {
     return this.http.delete('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId);
   }
+
+  getPublishingBuildStatus(releaseCenterKey, productKey, buildId) {
+    return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/publish/status');
+  }
 }

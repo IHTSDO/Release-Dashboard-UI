@@ -4,14 +4,12 @@ import { Product } from '../../models/product';
 import { Build } from '../../models/build';
 import { BuildService } from '../../services/build/build.service';
 import { ProductService } from '../../services/product/product.service';
-import { forkJoin } from 'rxjs';
 import { ProductDataService } from '../../services/product/product-data.service';
 import { ModalService } from '../../services/modal/modal.service';
 import { formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { BuildStateEnum } from '../../models/buildStateEnum';
-import { BranchingService } from 'src/app/services/branching/branching.service';
 
 @Component({
   selector: 'app-build-viewer',
@@ -271,23 +269,46 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.openWaitingModel();
         this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
             () => {
-                this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
-                    build.buildPublishing = false;
-                    build.tag = response.tag;
-                    this.closeWaitingModel();
-                    this.message = 'The build has been published successfully.';
-                    this.openSuccessModel();
-                });
-            },
-            errorResponse => {
-                build.buildPublishing = false;
-                if (errorResponse.status === 504) {
-                    this.message = 'Your publish operation is taking longer than expected, but will complete.';
-                } else {
-                    this.message = errorResponse.error.errorMessage;
-                }
-                this.closeWaitingModel();
-                this.openErrorModel();
+                const interval = setInterval(() => {
+                    this.buildService.getPublishingBuildStatus(this.releaseCenterKey, this.productKey, build.id).subscribe(
+                        status => {
+                            if (status) {
+                                if (status['status'] === 'COMPLETED') {
+                                    this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
+                                        build.buildPublishing = false;
+                                        build.tag = response.tag;
+                                        this.closeWaitingModel();
+                                        this.message = 'The build has been published successfully.';
+                                        this.openSuccessModel();
+                                    });
+                                    clearInterval(interval);
+                                } else if (status['status'] === 'FAILED') {
+                                    build.buildPublishing = false;
+                                    this.message = status['message'];
+                                    this.closeWaitingModel();
+                                    this.openErrorModel();
+                                    clearInterval(interval);
+                                } else {
+                                    // do nothing
+                                }
+                            }
+                        },
+                        errorResponse => {
+                            if (errorResponse.status === 404) {
+                                this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
+                                    build.buildPublishing = false;
+                                    build.tag = response.tag;
+                                    this.closeWaitingModel();
+                                });
+                            } else {
+                                this.message = errorResponse.error.errorMessage;
+                                this.closeWaitingModel();
+                                this.openErrorModel();
+                            }
+                            clearInterval(interval);
+                        }
+                    );
+                }, 10000);
             }
         );
     }
