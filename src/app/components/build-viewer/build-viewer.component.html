@@ -70,11 +70,12 @@
                 <th class="w-10">Log</th>
                 <th class="w-10">Release</th>
                 <th class="w-10">RVF Report</th>
+                <th class="w-10">Configurations</th>
                 <th class="w-10">Tag</th>
                 <th class="w-5">URL</th>
             </tr>
             <tr >
-                <td colspan="9"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="10"><div class="font-weight-bold loading">Loading</div></td>
             </tr>            
         </table>    
         <table class="table table-bordered" *ngIf="!buildsLoading">
@@ -91,7 +92,7 @@
                 <th class="w-5">URL</th>
             </tr>
             <tr *ngIf="builds?.length === 0">
-                <td colspan="6">No builds found.</td>
+                <td colspan="10">No builds found.</td>
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
