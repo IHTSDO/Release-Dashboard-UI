@@ -38,7 +38,7 @@ div.build-viewer {
                 background-color: darken($anakiwa, 5%);
             }
         }
-        td:first-child {
+        td:nth-child(2) {
             text-overflow: ellipsis;
             max-width: 31ch;
             width: 31ch;
