@@ -369,11 +369,16 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         formattedeffectiveDate,
                         this.buildParams.excludedModuleIds).subscribe(
                         build => {
-                            this.builds.unshift(build);
-                            this.buildTriggering = false;
-                            this.message = 'The build has been created successfully.';
-                            this.closeWaitingModel();
-                            this.openSuccessModel();
+                            this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
+                                persistedBuild => {
+                                    this.builds.unshift(persistedBuild);
+                                    this.buildTriggering = false;
+                                    this.message = 'The build has been created successfully.';
+                                    this.closeWaitingModel();
+                                    this.openSuccessModel();
+                                }
+                            );
+
                         },
                         errorResponse => {
                             this.buildTriggering = false;
@@ -395,11 +400,15 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       formattedeffectiveDate,
                                       this.buildParams.excludedModuleIds).subscribe(
                 build => {
-                    this.builds.unshift(build);
-                    this.buildTriggering = false;
-                    this.message = 'The build has been created successfully.';
-                    this.closeWaitingModel();
-                    this.openSuccessModel();
+                    this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
+                        persistedBuild => {
+                            this.builds.unshift(persistedBuild);
+                            this.buildTriggering = false;
+                            this.message = 'The build has been created successfully.';
+                            this.closeWaitingModel();
+                            this.openSuccessModel();
+                        }
+                    );
                 },
                 errorResponse => {
                     this.buildTriggering = false;
