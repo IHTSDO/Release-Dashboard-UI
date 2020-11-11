@@ -71,11 +71,12 @@
                 <th class="w-10">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th class="w-10">Configurations</th>
+                <th class="w-10">Visibility</th>
                 <th class="w-10">Tag</th>
                 <th class="w-5">URL</th>
             </tr>
             <tr >
-                <td colspan="10"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="11"><div class="font-weight-bold loading">Loading</div></td>
             </tr>            
         </table>    
         <table class="table table-bordered" *ngIf="!buildsLoading">
@@ -88,11 +89,12 @@
                 <th class="w-10">Release</th>
                 <th class="w-10">RVF Report</th>                
                 <th class="w-10">Configurations</th>
+                <th class="w-10">Visibility</th>
                 <th class="w-10">Tag</th>
                 <th class="w-5">URL</th>
             </tr>
             <tr *ngIf="builds?.length === 0">
-                <td colspan="10">No builds found.</td>
+                <td colspan="11">No builds found.</td>
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
@@ -103,6 +105,7 @@
                 <td class="pb-0 btn-download"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
+                <td class="pb-0"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>
                 <td class="pb-0">{{build?.tag}}</td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
             </tr>
@@ -273,7 +276,7 @@
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Release As An Edition</label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-0">
                     <label class="w-25 font-weight-bold">Custom Refset Composite Keys</label>
@@ -301,7 +304,7 @@
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Dependency Release Package</label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.dependencyRelease">
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.dependencyRelease">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Included Previous Release Files</label>
@@ -309,11 +312,11 @@
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Namespace ID</label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.namespaceId">
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.namespaceId">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Module ID</label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig.moduleId">
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.moduleId">
                 </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Assertion Groups</label>
@@ -380,5 +383,16 @@
     </div>
     <div footer>        
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-error-modal')">Ok</button>
+    </div>
+</app-modal>
+
+<app-modal id="hide-build-confirmation-modal" class="modal add-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Do you want to hide the build '{{selectedBuild?.id}}'?</p>
+    </div>
+    <div footer>        
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('hide-build-confirmation-modal')">No</button>
+        <button type="button" class="btn-blue" (click)="hideBuild()">Yes</button>
     </div>
 </app-modal>

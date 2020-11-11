@@ -74,4 +74,11 @@ export class BuildService {
   getPublishingBuildStatus(releaseCenterKey, productKey, buildId) {
     return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/publish/status');
   }
+
+  updateBuildVisibility(releaseCenterKey, productKey, buildId, visibility) {
+    const params = new HttpParams()
+                .set('visibility', visibility);
+    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/visibility', {},
+                          {params: params});
+  }
 }

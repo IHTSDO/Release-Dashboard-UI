@@ -492,6 +492,29 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         window.open(build['url']);
     }
 
+    openBuildVisibilityModal(build: Build) {
+        this.selectedBuild = build;
+        this.openModal('hide-build-confirmation-modal');
+    }
+
+    hideBuild() {
+        this.openWaitingModel('Hiding build');
+        this.closeModal('hide-build-confirmation-modal');
+        this.buildService.updateBuildVisibility(this.releaseCenterKey, this.productKey, this.selectedBuild.id, false).subscribe(
+            () => {
+                this.loadBuilds();
+                this.message = 'Build \'' + this.selectedBuild.id + '\' has been hidden successfully.';
+                this.closeWaitingModel();
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                this.message = errorResponse.error.errorMessage;
+                this.closeWaitingModel();
+                this.openErrorModel();
+            }
+        );
+    }
+
     private uploadInputFiles(releaseCenterKey, productKey, productService, localInputFiles) {
         const promise = new Promise(function(resolve, reject) {
             const upload = function(centerKey, prodKey, prodService, inputFiles, index) {

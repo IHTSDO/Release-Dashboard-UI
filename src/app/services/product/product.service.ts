@@ -91,9 +91,9 @@ export class ProductService {
         return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/inputfiles', file);
     }
 
-    deleteProduct(releaseCenterKey, productKey, removeAllFilesFromS3) {
+    updateProductVisibility(releaseCenterKey, productKey, visibility) {
         const params = new HttpParams()
-                    .set('removeAllFilesFromS3', removeAllFilesFromS3);
-        return this.http.delete('/release/centers/' + releaseCenterKey + '/products/' + productKey, {params: params});
+                    .set('visibility', visibility);
+        return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/visibility', {}, {params: params});
     }
 }
