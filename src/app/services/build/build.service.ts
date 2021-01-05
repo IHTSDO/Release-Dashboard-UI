@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Build } from '../../models/build';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BuildConfiguration } from '../../models/buildConfiguration';
-import { QAConfiguration } from '../../models/qaConfiguration';
 
 @Injectable({
   providedIn: 'root'
@@ -80,5 +78,12 @@ export class BuildService {
                 .set('visibility', visibility);
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/visibility', {},
                           {params: params});
+  }
+
+  updateTags(releaseCenterKey, productKey, buildId, tags: String[]) {
+    const params = new HttpParams()
+            .set('tags', tags.join(','));
+    const url = '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/tags';
+    return this.http.post(url, {}, {params: params});
   }
 }

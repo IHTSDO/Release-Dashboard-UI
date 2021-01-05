@@ -73,7 +73,7 @@
                 <th class="w-10">RVF Report</th>
                 <th class="w-10">Configurations</th>
                 <th class="w-10">Visibility</th>
-                <th class="w-10">Tag</th>                
+                <th class="w-10">Tags</th>                
             </tr>
             <tr >
                 <td colspan="11"><div class="font-weight-bold loading">Loading</div></td>
@@ -91,7 +91,7 @@
                 <th class="w-10">RVF Report</th>                
                 <th class="w-10">Configurations</th>
                 <th class="w-10">Visibility</th>
-                <th class="w-10">Tag</th>                
+                <th class="w-10">Tags</th>                
             </tr>
             <tr *ngIf="builds?.length === 0">
                 <td colspan="11">No builds found.</td>
@@ -107,7 +107,9 @@
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>
-                <td class="pb-0">{{build?.tag}}</td>                
+                <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span> 
+                    <button *ngIf="!build.tags" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>
+                </td>                
             </tr>
         </table>
         <pagination-controls id="builds_table"
@@ -176,6 +178,24 @@
     <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('publish-build-confirmation-modal')">No</button>
         <button type="button" class="btn-blue" (click)="publishBuild(activeBuild)">Yes</button>
+    </div>
+</app-modal>
+
+<app-modal id="build-tagging-modal" class="modal build-modal">
+    <h3 header class="mb-0">Tagging</h3>
+    <div body class="text-left p-5">
+        <div *ngFor="let tag of allTags">
+            <div class="w-25 d-inline-block"></div>
+            <label>
+              <input type="checkbox" [value]="tag.value" [(ngModel)]="selectedTags[tag.value]"/>
+              {{tag.label}}
+            </label>
+          </div>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-tagging-modal')">Cancel</button>
+        <button type="button" class="btn-blue" (click)="saveTags()">Save</button>
     </div>
 </app-modal>
 

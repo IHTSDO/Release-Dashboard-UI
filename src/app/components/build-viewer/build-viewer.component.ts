@@ -10,6 +10,7 @@ import { formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { BuildStateEnum } from '../../models/buildStateEnum';
+import { BuildTagEnum } from '../../models/buildTagEnum';
 
 @Component({
   selector: 'app-build-viewer',
@@ -34,6 +35,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     activeBuild: Build;
     selectedBuild: Build;
     buildLog: string;
+    selectedTags: object;
 
     // Build properties
     buildParams: BuildParameters;
@@ -48,7 +50,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     buildsLoading = false;
     buildLogLoading = false;
     useLocalInputFiles = false;
-
+    allTags: object;
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -61,6 +63,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.activeBuild = new Build();
         this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
+        this.selectedTags = new Object();
+        this.allTags = Object.keys(BuildTagEnum).map(key => ({ label: BuildTagEnum[key], value: key }));
 
         this.route.paramMap.subscribe(paramMap => {
             this.productKey = paramMap['params']['productKey'];
@@ -276,7 +280,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                 if (status['status'] === 'COMPLETED') {
                                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                                         build.buildPublishing = false;
-                                        build.tag = response.tag;
+                                        build.tags = response.tags;
                                         this.closeWaitingModel();
                                         this.message = 'The build has been published successfully.';
                                         this.openSuccessModel();
@@ -297,7 +301,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                             if (errorResponse.status === 404) {
                                 this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                                     build.buildPublishing = false;
-                                    build.tag = response.tag;
+                                    build.tags = response.tags;
                                     this.closeWaitingModel();
                                 });
                             } else {
@@ -504,6 +508,45 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     openBuildVisibilityModal(build: Build) {
         this.selectedBuild = build;
         this.openModal('hide-build-confirmation-modal');
+    }
+
+    openTaggingModal(build: Build) {
+        this.selectedBuild = build;
+        this.selectedTags = {};
+        if (build.tags) {
+            for (let i = 0; i < build.tags.length; i++) {
+                this.selectedTags[build.tags[i]] = true;
+            }
+        }
+        this.openModal('build-tagging-modal');
+    }
+
+    saveTags() {
+        const newTags = [];
+        for (const key in this.selectedTags) {
+            if (this.selectedTags[key]) {
+                newTags.push(key);
+            }
+        }
+        this.openWaitingModel('Saving Tags');
+        this.closeModal('build-tagging-modal');
+        this.buildService.updateTags(this.releaseCenterKey, this.productKey, this.selectedBuild.id, newTags).subscribe(
+            () => {
+                this.buildService.getBuild(this.releaseCenterKey, this.productKey, this.selectedBuild.id).subscribe(
+                    response => {
+                        this.message = 'Tags have been updated successfully.';
+                        this.selectedBuild.tags = response.tags;
+                        this.closeWaitingModel();
+                        this.openSuccessModel();
+                    }
+                );
+            },
+            errorResponse => {
+                this.message = errorResponse.error.errorMessage;
+                this.closeWaitingModel();
+                this.openErrorModel();
+            }
+        );
     }
 
     hideBuild() {

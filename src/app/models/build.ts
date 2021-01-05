@@ -5,7 +5,7 @@ export class Build {
     id: string;
     buildUser: string;
     status: string;
-    tag: string;
+    tags: string[];
     rvfURL: string;
     configuration: BuildConfiguration;
     qaTestConfig: QAConfiguration;
