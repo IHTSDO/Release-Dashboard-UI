@@ -146,6 +146,12 @@
         <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.branch" placeholder="Branch">        
         <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
         <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">
+        <label class="w-75 rounded-lg ml-3 float-left">MRCM Validation Form
+            <select [disabled]="buildTriggering" class="rounded-lg p-3 m-3" [(ngModel)]="buildParams.mrcmValidationForm">
+                <option value="stated">Stated</option>
+                <option value="inferred">Inferred</option>           
+            </select>
+        </label>
     </div>
 
     <div footer>
@@ -224,7 +230,6 @@
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('view-build-log-modal')">Close</button>
     </div>
 </app-modal>
-
 
 <!--Waiting Model-->
 <app-modal id="waiting-modal" class="modal" hideHeader="true" hideFooter="true" disableBackgroundClickEvent="true" size="small">
@@ -353,6 +358,10 @@
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Enable MRCM</label>
                     <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableMRCMValidation">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="w-25 font-weight-bold">MRCM Validation Form</label>
+                    <div class="d-inline">{{selectedBuild.qaTestConfig?.mrcmValidationForm | titlecase}}</div>
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="w-25 font-weight-bold">Enable JIRA</label>

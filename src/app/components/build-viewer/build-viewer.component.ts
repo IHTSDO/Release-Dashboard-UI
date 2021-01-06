@@ -371,7 +371,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         null,
                         this.buildParams.maxFailureExport,
                         formattedeffectiveDate,
-                        this.buildParams.excludedModuleIds).subscribe(
+                        this.buildParams.excludedModuleIds,
+                        this.buildParams.mrcmValidationForm).subscribe(
                         build => {
                             this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
                                 persistedBuild => {
@@ -402,7 +403,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.exportType,
                                       this.buildParams.maxFailureExport,
                                       formattedeffectiveDate,
-                                      this.buildParams.excludedModuleIds).subscribe(
+                                      this.buildParams.excludedModuleIds,
+                                      this.buildParams.mrcmValidationForm).subscribe(
                 build => {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
                         persistedBuild => {
@@ -472,6 +474,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = 'PUBLISHED';
             this.buildParams.maxFailureExport = 100;
+            this.buildParams.mrcmValidationForm = 'stated';
         } else {
             const buildConfiguration = this.activeBuild.configuration;
             const qaTestConfig = this.activeBuild.qaTestConfig;
@@ -488,6 +491,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = buildConfiguration.exportType ? buildConfiguration.exportType : 'PUBLISHED';
             this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
+            this.buildParams.mrcmValidationForm = qaTestConfig.mrcmValidationForm ? qaTestConfig.mrcmValidationForm : 'stated';
         }
         this.openBuildModal();
     }

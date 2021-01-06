@@ -44,7 +44,7 @@ export class BuildService {
   }
 
   runBuild(releaseCenterKey, productKey, buildName, branch, exportType,
-          maxFailureExport, effectiveDate, excludedModuleIds): Observable<Build> {
+          maxFailureExport, effectiveDate, excludedModuleIds, mrcmValidationForm): Observable<Build> {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
@@ -52,7 +52,8 @@ export class BuildService {
           branchPath: branch,
           maxFailuresExport: maxFailureExport,
           loadTermServerData: true,
-          loadExternalRefsetData: true
+          loadExternalRefsetData: true,
+          mrcmValidationForm: mrcmValidationForm
       };
       if (!branch) {
         data['loadTermServerData'] = false;
