@@ -1,7 +1,10 @@
-<nav class="navbar sticky-top navbar-dark bg-dark p-2 pr-2">
+<nav class="navbar sticky-top p-2 pr-2" [ngClass]="{'local': environment === 'local',
+                                                                       'dev': environment === 'dev',
+                                                                       'uat':environment === 'uat',
+                                                                       'prod':environment === 'prod'}">
     <a class="logo" routerLink="/">
         <img class="logo mr-2 p-0" src="/assets/small_logo.png">
-        <span class="title text-ghost-grey">SNOMED CT Release Dashboard</span>
+        <span class="title">SNOMED CT Release Dashboard</span>
     </a>
 
     <ng-container [ngSwitch]="environment">
@@ -14,10 +17,10 @@
 
     <div *ngIf="user" class="float-right mx-3">
         <div class="logout d-inline-block m-2" (click)="logout()">
-            <span class="px-2 text-ghost-grey">Logout</span>
+            <span class="px-2">Logout</span>
         </div>
         <div class="user d-inline-block m-2">
-            <span class="px-2 text-ghost-grey">{{user.firstName}} {{user.lastName}}</span>
+            <span class="px-2">{{user.firstName}} {{user.lastName}}</span>
             <img class="rounded-circle mx-3" src="https://jira.ihtsdotools.org/secure/useravatar?ownerId={{user.login}}">
         </div>
     </div>

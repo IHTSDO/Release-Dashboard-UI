@@ -16,6 +16,9 @@ export class SnomedNavbarComponent implements OnInit {
 
     constructor(private authenticationService: AuthenticationService) {
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
+        if (this.environment === "" || this.environment === "local"){
+            this.environment = "prod";
+        }
         this.userSubscription = this.authenticationService.getUser().subscribe(data => this.user = data);
     }
 
