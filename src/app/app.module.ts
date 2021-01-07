@@ -29,6 +29,7 @@ import { BuildViewerComponent } from './components/build-viewer/build-viewer.com
 import { ProductService } from './services/product/product.service';
 import { ProductDataService } from './services/product/product-data.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
+import { EnvServiceProvider } from './providers/env.service.provider';
 
 @NgModule({
     declarations: [
@@ -58,6 +59,7 @@ import { AuthenticationInterceptor } from './interceptors/authentication.interce
         ProductService,
         ProductDataService,
         ModalService,
+        EnvServiceProvider,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HeaderInterceptor,

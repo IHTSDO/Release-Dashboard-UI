@@ -11,6 +11,7 @@ import { BuildParameters } from '../../models/buildParameters';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { BuildStateEnum } from '../../models/buildStateEnum';
 import { BuildTagEnum } from '../../models/buildTagEnum';
+import { EnvService } from '../../services/environment/env.service';
 
 @Component({
   selector: 'app-build-viewer',
@@ -36,6 +37,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     selectedBuild: Build;
     buildLog: string;
     selectedTags: object;
+    environment: string;
 
     // Build properties
     buildParams: BuildParameters;
@@ -56,10 +58,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 private modalService: ModalService,
                 private productService: ProductService,
                 private productDataService: ProductDataService,
-                private buildService: BuildService) {
+                private buildService: BuildService,
+                private envService: EnvService) {
     }
 
     ngOnInit(): void {
+        this.environment = this.envService.env;
         this.activeBuild = new Build();
         this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
@@ -512,6 +516,28 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     openBuildVisibilityModal(build: Build) {
         this.selectedBuild = build;
         this.openModal('hide-build-confirmation-modal');
+    }
+
+    openPublishingBuildConfirmationModal() {
+        this.message = 'Are you sure you want to publish this build? Please be aware this is a $env_placehoder$ environment '
+                    + 'and the publication of this package will therefore have consequence to live systems.';
+
+        switch (this.environment) {
+            case 'local':
+            case 'dev':
+                this.message = this.message.replace('$env_placehoder$', 'DEVELOPMENT');
+                break;
+            case 'uat':
+                this.message = this.message.replace('$env_placehoder$', 'UAT');
+                break;
+            case 'training':
+                this.message = this.message.replace('$env_placehoder$', 'TRAINING');
+                break;
+            default:
+                this.message = this.message.replace('$env_placehoder$', 'PRODUCTION ');
+                break;
+        }
+        this.openModal('publish-build-confirmation-modal');
     }
 
     openTaggingModal(build: Build) {

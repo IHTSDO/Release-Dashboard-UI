@@ -49,7 +49,7 @@
                             <label class="w-25 font-weight-bold">Result:</label>                            
                             <button type="button" class="btn-green" 
                                     [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'RELEASE_COMPLETE' ||  activeBuild.tag === 'PUBLISHED'" 
-                                    (click)="openModal('publish-build-confirmation-modal')">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
+                                    (click)="openPublishingBuildConfirmationModal()">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
                             <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
                     </div>
@@ -177,8 +177,8 @@
 <!--Build publishing confiramation-->
 <app-modal id="publish-build-confirmation-modal" class="modal build-modal">
     <h3 header class="mb-0">Confirmation</h3>
-    <div body class="text-center p-5">
-        <p>Are you sure you want to publish this build?</p>
+    <div body class="text-left p-5">
+        <p>{{message}}</p>
     </div>
 
     <div footer>

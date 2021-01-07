@@ -1,9 +1,6 @@
 @import '~src/variables.scss';
 
-nav {
-    
-    
-    
+nav {    
     a.logo {
         height: 4rem;
         font-size: 1.6rem;
@@ -94,21 +91,4 @@ nav {
             }
         }
     }
-}
-
-.local {
-    background-color: $river-bed;
-}
-
-.dev {
-    background-color: $mandy;
-}
-
-.uat {
-    background-color: $cerulean;
-}
-
-.prod {
-    background-color : #1699eF;
-    color: #fff;
 }

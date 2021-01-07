@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { BranchingService } from './services/branching/branching.service';
+import { EnvService } from './services/environment/env.service';
 
 @Component({
     selector: 'app-root',
@@ -10,16 +11,13 @@ import { BranchingService } from './services/branching/branching.service';
 })
 export class AppComponent implements OnInit {
 
-    environment: string;
-
     constructor(private authoringService: AuthoringService,
-                private branchingService: BranchingService,
+                private envService: EnvService,
                 private titleService: Title) {
     }
 
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
-        this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
         this.getUIConfiguration();
         this.assignFavicon();
     }
@@ -37,8 +35,7 @@ export class AppComponent implements OnInit {
 
     assignFavicon() {
         const favicon = $('#favicon');
-
-        switch (this.environment) {
+        switch (this.envService.env) {
             case 'local':
                 favicon.attr('href', 'favicon_grey.ico');
                 break;

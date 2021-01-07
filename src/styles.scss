@@ -260,3 +260,35 @@ div.badge {
         animation: white-dots 1s steps(5, end) infinite;
     }
 }
+
+.local {
+    background-color: $river-bed;
+    color: #fff;
+    a span {
+        color: #fff;
+    }
+}
+
+.dev {
+    background-color: $mandy;
+    color: #fff;
+    a span {
+        color: #fff;
+    }
+}
+
+.uat {
+    background-color: $sea-buckthorn;
+    color: #fff;
+    a span {
+        color: #fff;
+    }
+}
+
+.prod {
+    background-color : $blue;
+    color: #fff;
+    a span {
+        color: #fff;
+    }
+}

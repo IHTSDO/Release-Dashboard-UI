@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { EnvService } from '../../services/environment/env.service';
 import { User } from '../../models/user';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
 
@@ -14,15 +15,13 @@ export class SnomedNavbarComponent implements OnInit {
     user: User;
     userSubscription: Subscription;
 
-    constructor(private authenticationService: AuthenticationService) {
-        this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
-        if (this.environment === "" || this.environment === "local"){
-            this.environment = "prod";
-        }
+    constructor(private authenticationService: AuthenticationService,
+                private envService: EnvService) {
         this.userSubscription = this.authenticationService.getUser().subscribe(data => this.user = data);
     }
 
     ngOnInit() {
+        this.environment = this.envService.env;
         this.authenticationService.setUser();
     }
 

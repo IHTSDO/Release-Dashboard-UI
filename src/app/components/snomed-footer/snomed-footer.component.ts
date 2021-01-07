@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { EnvService } from 'src/app/services/environment/env.service';
 
 @Component({
     selector: 'app-snomed-footer',
@@ -8,10 +9,12 @@ import { Component, OnInit } from '@angular/core';
 export class SnomedFooterComponent implements OnInit {
 
     year: number = new Date().getFullYear();
-    constructor() {
+    environment: string;
+    constructor(private envService: EnvService) {
     }
 
     ngOnInit() {
+        this.environment = this.envService.env;
     }
 
 }
