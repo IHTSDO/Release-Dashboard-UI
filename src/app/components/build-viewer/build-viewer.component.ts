@@ -478,7 +478,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = 'PUBLISHED';
             this.buildParams.maxFailureExport = 100;
-            this.buildParams.mrcmValidationForm = 'stated';
+            this.buildParams.mrcmValidationForm = 'inferred';
         } else {
             const buildConfiguration = this.activeBuild.configuration;
             const qaTestConfig = this.activeBuild.qaTestConfig;
@@ -495,7 +495,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = buildConfiguration.exportType ? buildConfiguration.exportType : 'PUBLISHED';
             this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
-            this.buildParams.mrcmValidationForm = qaTestConfig.mrcmValidationForm ? qaTestConfig.mrcmValidationForm : 'stated';
+            this.buildParams.mrcmValidationForm = qaTestConfig.mrcmValidationForm ? qaTestConfig.mrcmValidationForm : 'inferred';
         }
         this.openBuildModal();
     }
