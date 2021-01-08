@@ -519,22 +519,22 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     openPublishingBuildConfirmationModal() {
-        this.message = 'Are you sure you want to publish this build? Please be aware this is a $env_placehoder$ environment '
-                    + 'and the publication of this package will therefore have consequence to live systems.';
+        this.message = 'Are you sure you want to publish this build? Please be aware this is a env_placehoder environment '
+                    + 'and the publication of this package will therefore have consequence to env_placehoder systems.';
 
         switch (this.environment) {
             case 'local':
             case 'dev':
-                this.message = this.message.replace('$env_placehoder$', 'DEVELOPMENT');
+                this.message = this.message.replace(/env_placehoder/g, 'DEVELOPMENT');
                 break;
             case 'uat':
-                this.message = this.message.replace('$env_placehoder$', 'UAT');
+                this.message = this.message.replace(/env_placehoder/g, 'UAT');
                 break;
             case 'training':
-                this.message = this.message.replace('$env_placehoder$', 'TRAINING');
+                this.message = this.message.replace(/env_placehoder/g, 'TRAINING');
                 break;
             default:
-                this.message = this.message.replace('$env_placehoder$', 'PRODUCTION ');
+                this.message = this.message.replace(/env_placehoder/g, 'PRODUCTION ');
                 break;
         }
         this.openModal('publish-build-confirmation-modal');
