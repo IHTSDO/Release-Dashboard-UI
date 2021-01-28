@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { ReleaseCenter } from '../../models/releaseCenter';
+import { CodeSystem } from '../../models/codeSystem';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,8 @@ export class ReleaseCenterService {
     private activeReleaseCenter = new Subject<any>();
 
     private releaseCenters: ReleaseCenter[];
+
+    private codeSystems: CodeSystem[];
 
     // Setters & Getters: Active Release Center
     setActiveReleaseCenter(releaseCenter) {
@@ -37,5 +40,13 @@ export class ReleaseCenterService {
 
     getCachedReleaseCenters() {
         return this.releaseCenters;
+    }
+
+    getCachedCodeSystems() {
+        return this.codeSystems;
+    }
+
+    cacheCodeSystems(codeSystems) {
+        this.codeSystems = codeSystems;
     }
 }

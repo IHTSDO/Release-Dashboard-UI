@@ -19,12 +19,17 @@
         <p>Please enter the details for the new Release Center</p>
         <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">
         <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" title="Short Name must be unique across system and a single word">
+        <select #addCodeSystem class="w-75 rounded-lg p-3 m-3">            
+            <option *ngFor="let codeSystem of codeSystem" [ngValue]="codeSystem.shortName">
+              {{codeSystem.name}}
+            </option>
+        </select>
     </div>
 
     <div footer>
         <div class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingCenter" (click)="closeModal('add-modal')">Cancel</button>
-        <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="addReleaseCenter(addName.value, addShortName.value)">Save</button>
+        <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="addReleaseCenter(addName.value, addShortName.value, addCodeSystem.value)">Save</button>
     </div>
 </app-modal>
 
@@ -35,11 +40,16 @@
         <p>Would you like to edit this release center?</p>
         <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
         <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" disabled placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
+        <select #editCodeSystem class="w-75 rounded-lg p-3 m-3" [value]="activeReleaseCenter?.codeSystem">            
+            <option *ngFor="let codeSystem of codeSystem" [value]="codeSystem.shortName">
+              {{codeSystem.name}}
+            </option>
+        </select>
     </div>
     <div footer>
         <div class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingCenter" (click)="closeModal('edit-modal')">Cancel</button>
-        <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="saveReleaseCenter(editName.value, editShortName.value)">Save</button>
+        <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="saveReleaseCenter(editName.value, editShortName.value, editCodeSystem.value)">Save</button>
     </div>
 </app-modal>
 

@@ -6,6 +6,7 @@ import { ReleaseServerService } from '../../services/releaseServer/release-serve
 import { ReleaseCenter } from '../../models/releaseCenter';
 import { ActivatedRoute } from '@angular/router';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
+import { CodeSystem } from '../../models/codeSystem';
 
 @Component({
     selector: 'app-left-sidebar',
@@ -17,6 +18,7 @@ export class LeftSidebarComponent implements OnInit {
     private activeReleaseCenterSubscription: Subscription;
 
     releaseCenters: ReleaseCenter[];
+    codeSystem: CodeSystem[];
     activeReleaseCenter: ReleaseCenter;
 
     // animations
@@ -55,6 +57,11 @@ export class LeftSidebarComponent implements OnInit {
                 this.releaseCenterService.setActiveReleaseCenter(this.releaseCenters[0]);
             }
         });
+
+        this.loadCodeSystems(this.releaseCenterService, this.releaseServer).then(data => {
+            this.codeSystem = <CodeSystem[]> data;
+            this.releaseCenterService.cacheCodeSystems(this.codeSystem);            
+        });
     }
 
     // load release centers from cache, other from server
@@ -71,6 +78,19 @@ export class LeftSidebarComponent implements OnInit {
         return promise;
     }
 
+    // load code systems from cache, other from server
+    loadCodeSystems(releaseCenterService, releaseServer) {
+        const promise = new Promise(function(resolve, reject) {
+            const codeSystems = releaseCenterService.getCachedCodeSystems();
+            if (codeSystems && codeSystems.length !== 0) {
+                resolve(codeSystems);
+                return;
+            }
+            releaseServer.getCodeSystems().subscribe(data => resolve(data));
+        });
+
+        return promise;
+    }
     switchActiveReleaseCenter(center) {
         // Clear the selected page number for previous active release center
         this.paginationService.clearSelectedPage(this.activeReleaseCenter.id);
@@ -79,16 +99,16 @@ export class LeftSidebarComponent implements OnInit {
         this.releaseCenterService.setActiveReleaseCenter(center);
     }
 
-    addReleaseCenter(name, shortName) {
+    addReleaseCenter(name, shortName, codeSystem) {
         this.saveResponse = '';
         this.message = '';
-        const missingFields = this.missingFieldsCheck(name, shortName);
+        const missingFields = this.missingFieldsCheck(name, shortName, codeSystem);
         if (missingFields.length !== 0) {
             this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
             return;
         }
         this.savingCenter = true;
-        this.releaseServer.postCenter({name: name, shortName: shortName}).subscribe(
+        this.releaseServer.postCenter({name: name, shortName: shortName, codeSystem: codeSystem}).subscribe(
             response => {
                 this.savingCenter = false;
                 this.releaseCenters.push(response);
@@ -104,17 +124,17 @@ export class LeftSidebarComponent implements OnInit {
         );
     }
 
-    saveReleaseCenter(name, shortName) {
+    saveReleaseCenter(name, shortName, codeSystem) {
         this.saveResponse = '';
         this.message = '';
-        const missingFields = this.missingFieldsCheck(name, shortName);
+        const missingFields = this.missingFieldsCheck(name, shortName, codeSystem);
         if (missingFields.length !== 0) {
             this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
             return;
         }
 
         this.savingCenter = true;
-        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortName: shortName}).subscribe(
+        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortName: shortName, codeSystem: codeSystem}).subscribe(
             response => {
                 this.savingCenter = false;
                 const currentIndex = this.releaseCenters.indexOf(this.activeReleaseCenter);
@@ -132,11 +152,11 @@ export class LeftSidebarComponent implements OnInit {
         );
     }
 
-    missingFieldsCheck(name, shortName): Object[] {
+    missingFieldsCheck(name, shortName, codeSystem): Object[] {
         const missingFields = [];
         if (!name) { missingFields.push('Name'); }
         if (!shortName) { missingFields.push('Short Name'); }
-
+        if (!codeSystem) { missingFields.push('Code System'); }
         return missingFields;
     }
 

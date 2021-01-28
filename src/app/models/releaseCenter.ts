@@ -5,5 +5,6 @@ export class ReleaseCenter {
     published_url: string;
     removed: string;
     shortName: string;
+    codeSystem: string;
     url: string;
 }
