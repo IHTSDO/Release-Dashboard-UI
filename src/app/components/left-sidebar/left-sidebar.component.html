@@ -6,8 +6,8 @@
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
     <div class="sidebar-buttons w-100">
         <div class="row justify-content-center align-items-center mb-2">
-            <button class="btn-circle btn-blue text-center float-left mr-5" (click)="addName.value = ''; addShortName.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
-            <button class="btn-circle btn-green text-center float-right ml-5" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
+            <button class="btn-circle btn-blue text-center float-left mr-5" *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
+            <button class="btn-circle btn-green text-center float-right" [ngClass]="{'ml-5': canAddReleaseCenter()}" *ngIf="canEditReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
         </div>        
     </div>
 </nav>
@@ -19,8 +19,9 @@
         <p>Please enter the details for the new Release Center</p>
         <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">
         <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" title="Short Name must be unique across system and a single word">
-        <select #addCodeSystem class="w-75 rounded-lg p-3 m-3">            
-            <option *ngFor="let codeSystem of codeSystem" [ngValue]="codeSystem.shortName">
+        <select #addCodeSystem class="w-75 rounded-lg p-3 m-3">
+            <option value=""></option>
+            <option *ngFor="let codeSystem of codeSystem" [value]="codeSystem.shortName">
               {{codeSystem.name}}
             </option>
         </select>
@@ -40,7 +41,8 @@
         <p>Would you like to edit this release center?</p>
         <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
         <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" disabled placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
-        <select #editCodeSystem class="w-75 rounded-lg p-3 m-3" [value]="activeReleaseCenter?.codeSystem">            
+        <select #editCodeSystem class="w-75 rounded-lg p-3 m-3" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">            
+            <option value=""></option>
             <option *ngFor="let codeSystem of codeSystem" [value]="codeSystem.shortName">
               {{codeSystem.name}}
             </option>

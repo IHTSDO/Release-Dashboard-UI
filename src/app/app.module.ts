@@ -1,6 +1,6 @@
 // FRAMEWORK IMPORTS
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +30,11 @@ import { ProductService } from './services/product/product.service';
 import { ProductDataService } from './services/product/product-data.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { EnvServiceProvider } from './providers/env.service.provider';
+import { PermissionService } from './services/permission/permission.service';
+
+export function startupServiceFactory(permissionService: PermissionService): Function {
+    return () => permissionService.getRoles();
+}
 
 @NgModule({
     declarations: [
@@ -59,6 +64,7 @@ import { EnvServiceProvider } from './providers/env.service.provider';
         ProductService,
         ProductDataService,
         ModalService,
+        PermissionService,
         EnvServiceProvider,
         {
             provide: HTTP_INTERCEPTORS,
@@ -69,9 +75,16 @@ import { EnvServiceProvider } from './providers/env.service.provider';
             provide: HTTP_INTERCEPTORS,
             useClass: AuthenticationInterceptor,
             multi: true
-        }
+        },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: startupServiceFactory,
+            deps: [PermissionService],
+            multi: true
+          }
     ],
     bootstrap: [AppComponent]
 })
+
 export class AppModule {
 }

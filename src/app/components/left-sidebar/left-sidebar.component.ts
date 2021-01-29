@@ -4,9 +4,10 @@ import { ReleaseCenterService } from '../../services/releaseCenter/release-cente
 import { ModalService } from '../../services/modal/modal.service';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
 import { ReleaseCenter } from '../../models/releaseCenter';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 import { CodeSystem } from '../../models/codeSystem';
+import { PermissionService } from '../../services/permission/permission.service';
 
 @Component({
     selector: 'app-left-sidebar',
@@ -19,6 +20,7 @@ export class LeftSidebarComponent implements OnInit {
 
     releaseCenters: ReleaseCenter[];
     codeSystem: CodeSystem[];
+    roles: Object;
     activeReleaseCenter: ReleaseCenter;
 
     // animations
@@ -28,9 +30,11 @@ export class LeftSidebarComponent implements OnInit {
     message: string;
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
                 private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
                 private releaseServer: ReleaseServerService,
+                private permissionService: PermissionService,
                 private paginationService: ProductPaginationService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(data => {
             this.activeReleaseCenter = data;
@@ -39,28 +43,32 @@ export class LeftSidebarComponent implements OnInit {
 
     ngOnInit(): void {
         let releaseCenterKey;
+        this.roles = this.permissionService.roles;
         this.route.paramMap.subscribe(paramMap => {
             releaseCenterKey = paramMap['params']['releaseCenterKey'];
         });
-
         this.loadReleaseCenters(this.releaseCenterService, this.releaseServer).then(data => {
             this.releaseCenters = <ReleaseCenter[]> data;
             this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
-            if (releaseCenterKey) {
-                const activeReleaseCenter = this.releaseCenters.find(releaseCenter => releaseCenter.id === releaseCenterKey);
-                if (activeReleaseCenter) {
-                    this.releaseCenterService.setActiveReleaseCenter(activeReleaseCenter);
+            if (this.releaseCenters.length !== 0) {
+                if (releaseCenterKey) {
+                    const activeReleaseCenter = this.releaseCenters.find(releaseCenter => releaseCenter.id === releaseCenterKey);
+                    if (activeReleaseCenter) {
+                        this.releaseCenterService.setActiveReleaseCenter(activeReleaseCenter);
+                    } else {
+                        this.releaseCenterService.setActiveReleaseCenter(this.releaseCenters[0]);
+                        this.router.navigate(['/', this.releaseCenters[0].id], {skipLocationChange: false});
+                    }
                 } else {
                     this.releaseCenterService.setActiveReleaseCenter(this.releaseCenters[0]);
+                    this.router.navigate(['/', this.releaseCenters[0].id], {skipLocationChange: false});
                 }
-            } else {
-                this.releaseCenterService.setActiveReleaseCenter(this.releaseCenters[0]);
             }
         });
 
         this.loadCodeSystems(this.releaseCenterService, this.releaseServer).then(data => {
             this.codeSystem = <CodeSystem[]> data;
-            this.releaseCenterService.cacheCodeSystems(this.codeSystem);            
+            this.releaseCenterService.cacheCodeSystems(this.codeSystem);
         });
     }
 
@@ -166,6 +174,18 @@ export class LeftSidebarComponent implements OnInit {
 
     closeModal(name) {
         this.modalService.close(name);
+    }
+
+    canAddReleaseCenter() {
+        return this.roles && this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'];
+    }
+
+    canEditReleaseCenter() {
+        return this.roles && (
+            (this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
+            || (this.roles.hasOwnProperty('ADMIN') && this.activeReleaseCenter
+                && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            );
     }
 
     private openSuccessModel() {

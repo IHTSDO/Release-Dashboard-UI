@@ -10,6 +10,7 @@ import { BuildConfiguration } from '../../models/buildConfiguration';
 import { QAConfiguration } from '../../models/qaConfiguration';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
+import { PermissionService } from '../../services/permission/permission.service';
 
 @Component({
     selector: 'app-product-viewer',
@@ -27,6 +28,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     selectedProduct: Product;
     editedProduct: Product;
     customRefsetCompositeKeys: string;
+    roles: Object;
 
     productsLoading = false;
 
@@ -47,6 +49,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 private modalService: ModalService,
                 private productService: ProductService,
                 private productDataService: ProductDataService,
+                private permissionService: PermissionService,
                 private paginationService: ProductPaginationService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
@@ -62,6 +65,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.roles = this.permissionService.roles;
         this.customRefsetCompositeKeys = null;
         this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
         this.totalProduct = this.paginationService.EMPTY_ITEMS;
@@ -288,6 +292,17 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         if (!product.buildConfiguration.readmeEndDate) { missingFields.push('Readme End Date'); }
 
         return missingFields;
+    }
+
+    canAddProduct() {
+        return this.roles && this.activeReleaseCenter && this.activeReleaseCenter.codeSystem &&
+            ((this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
+            || (this.roles.hasOwnProperty('RELEASE_MANAGER_GLOBAL') && this.roles['RELEASE_MANAGER_GLOBAL'])
+            || (this.roles.hasOwnProperty('ADMIN')
+                    && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            || (this.roles.hasOwnProperty('RELEASE_MANAGER')
+                    && (<Array<String>> this.roles['RELEASE_MANAGER']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            );
     }
 
     openModal(name) {

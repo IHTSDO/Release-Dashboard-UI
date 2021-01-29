@@ -8,7 +8,7 @@
                 </a> 
             </div>
             <div class="col-6">
-                <button type="button" class="btn-green ml-3 my-1 mr-1 justify-content-end float-right" (click)="doOpeningBuildModal(true)">Run New Build</button>
+                <button type="button" *ngIf="canTriggerBuild()" class="btn-green ml-3 my-1 mr-1 justify-content-end float-right" (click)="doOpeningBuildModal(true)">Run New Build</button>
             </div>            
         </div>
         <div class="panel-top mb-3">                       
@@ -17,7 +17,7 @@
             </div>
             <div>
                 <div class="row mx-0">
-                    <div class="col-7 text-left">
+                    <div class="col-7 text-left pb-18">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Effective Time:</label>
                             <span class="font-weight-bold">{{activeBuild.configuration?.effectiveTime}}</span>
@@ -42,15 +42,16 @@
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-blue" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)">View Process</button>
-                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
+                            <button type="button" class="btn-blue" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)">View Process</button>
+                            <button type="button" class="btn-mandy ml-3" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
                         </div>                        
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>                            
-                            <button type="button" class="btn-green" 
-                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'RELEASE_COMPLETE' ||  activeBuild.tag === 'PUBLISHED'" 
+                            <button type="button" class="btn-green"
+                                    *ngIf="canPublishBuild()" 
+                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'RELEASE_COMPLETE' || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)" 
                                     (click)="openPublishingBuildConfirmationModal()">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
-                            <button type="button" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
+                            <button type="button" *ngIf="canDeleteBuild()" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
                     </div>
                 </div>                
@@ -58,7 +59,7 @@
             <div class="panel-footer text-right">                
                 <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
-                <button type="button" class="btn-green ml-3 my-1 mr-1" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
+                <button type="button" class="btn-green ml-3 my-1 mr-1" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
             </div>
         </div>
         <table class="table table-bordered" *ngIf="buildsLoading">
@@ -69,10 +70,10 @@
                 <th>Status</th>
                 <th>User</th>
                 <th class="w-10">Log</th>
-                <th class="w-10">Release</th>
+                <th class="w-10" *ngIf="canTriggerBuild()">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th>Configurations</th>
-                <th>Visibility</th>
+                <th *ngIf="canTriggerBuild()">Visibility</th>
                 <th class="w-10">Tags</th>                
             </tr>
             <tr >
@@ -87,10 +88,10 @@
                 <th>Status</th>
                 <th>User</th>
                 <th class="w-5">Log</th>
-                <th class="w-10">Release</th>
+                <th class="w-10" *ngIf="canTriggerBuild()">Release</th>
                 <th class="w-10">RVF Report</th>                
                 <th>Configurations</th>
-                <th>Visibility</th>
+                <th *ngIf="canTriggerBuild()">Visibility</th>
                 <th class="w-15">Tags</th>                
             </tr>
             <tr *ngIf="builds?.length === 0">
@@ -103,12 +104,12 @@
                 <td class="pb-0">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
-                <td class="pb-0 btn-download"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0 btn-download" *ngIf="canTriggerBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
-                <td class="pb-0"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>
-                <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span> 
-                    <button *ngIf="!build.tags" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>
+                <td class="pb-0" *ngIf="canTriggerBuild()"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>
+                <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && canTriggerBuild()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span> 
+                    <button *ngIf="!build.tags && canTriggerBuild()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>
                 </td>                
             </tr>
         </table>

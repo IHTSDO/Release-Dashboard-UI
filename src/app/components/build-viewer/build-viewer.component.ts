@@ -12,6 +12,10 @@ import { ExtensionConfig } from '../../models/extensionConfig';
 import { BuildStateEnum } from '../../models/buildStateEnum';
 import { BuildTagEnum } from '../../models/buildTagEnum';
 import { EnvService } from '../../services/environment/env.service';
+import { PermissionService } from '../../services/permission/permission.service';
+import { ReleaseCenter } from '../../models/releaseCenter';
+import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
+import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
 
 @Component({
   selector: 'app-build-viewer',
@@ -28,11 +32,13 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // params map
     releaseCenterKey: string;
     productKey: string;
+    roles: Object;
 
     builds: Build[];
     localInputFiles: FileList;
 
     activeProduct: Product;
+    activeReleaseCenter: ReleaseCenter;
     activeBuild: Build;
     selectedBuild: Build;
     buildLog: string;
@@ -58,12 +64,16 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 private modalService: ModalService,
                 private productService: ProductService,
                 private productDataService: ProductDataService,
+                private releaseCenterService: ReleaseCenterService,
+                private releaseServerService: ReleaseServerService,
                 private buildService: BuildService,
+                private permissionService: PermissionService,
                 private envService: EnvService) {
     }
 
     ngOnInit(): void {
         this.environment = this.envService.env;
+        this.roles = this.permissionService.roles;
         this.activeBuild = new Build();
         this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
@@ -76,6 +86,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
             this.loadProduct(this.productService, this.productDataService, this.releaseCenterKey, this.productKey).then(
                 data => this.activeProduct = <Product> data
+            );
+
+            this.loadReleaseCenter(this.releaseCenterService, this.releaseServerService, this.releaseCenterKey).then(
+                data => this.activeReleaseCenter = <ReleaseCenter> data
             );
             this.loadBuilds();
             this.startPolling();
@@ -97,6 +111,20 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 return;
             }
             productService.getProduct(releaseCenterKey, productKey).subscribe(data => resolve(data));
+        });
+
+        return promise;
+    }
+
+    // find release center from cache, other from server
+    loadReleaseCenter(releaseCenterService, releaseServerService, releaseCenterKey) {
+        const promise = new Promise(function(resolve, reject) {
+            const product = releaseCenterService.findReleaseCenterByKey(releaseCenterKey);
+            if (product) {
+                resolve(product);
+                return;
+            }
+            releaseServerService.getCenter(releaseCenterKey).subscribe(data => resolve(data));
         });
 
         return promise;
@@ -597,6 +625,38 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
+    canTriggerBuild() {
+        return this.roles && this.activeReleaseCenter && this.activeReleaseCenter.codeSystem &&
+            ((this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
+            || (this.roles.hasOwnProperty('RELEASE_MANAGER_GLOBAL') && this.roles['RELEASE_MANAGER_GLOBAL'])
+            || (this.roles.hasOwnProperty('ADMIN')
+                    && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            || (this.roles.hasOwnProperty('RELEASE_MANAGER')
+                    && (<Array<String>> this.roles['RELEASE_MANAGER']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            );
+    }
+
+    canPublishBuild() {
+        return this.roles && this.activeReleaseCenter && this.activeReleaseCenter.codeSystem &&
+            (!this.activeBuild.tags || this.activeBuild.tags.indexOf('PUBLISHED') === -1) &&
+            ((this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
+            || (this.roles.hasOwnProperty('ADMIN')
+                && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            );
+    }
+
+    canDeleteBuild() {
+        return this.activeBuild && (!this.activeBuild.tags || this.activeBuild.tags.indexOf('PUBLISHED') === -1) &&
+            this.roles && this.activeReleaseCenter && this.activeReleaseCenter.codeSystem &&
+            ((this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
+            || (this.roles.hasOwnProperty('RELEASE_MANAGER_GLOBAL') && this.roles['RELEASE_MANAGER_GLOBAL'])
+            || (this.roles.hasOwnProperty('ADMIN')
+                    && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            || (this.roles.hasOwnProperty('RELEASE_MANAGER')
+                    && (<Array<String>> this.roles['RELEASE_MANAGER']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+            );
+    }
+
     private uploadInputFiles(releaseCenterKey, productKey, productService, localInputFiles) {
         const promise = new Promise(function(resolve, reject) {
             const upload = function(centerKey, prodKey, prodService, inputFiles, index) {
@@ -605,7 +665,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 productService.uploadProductInputFiles(releaseCenterKey, productKey, formData).subscribe(() => {
                     index++;
                     if (index === inputFiles.length) {
-                        resolve();
+                        resolve(null);
                     } else {
                         upload(centerKey, prodKey, prodService, inputFiles, index);
                     }

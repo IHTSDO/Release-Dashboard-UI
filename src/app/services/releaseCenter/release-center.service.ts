@@ -30,6 +30,14 @@ export class ReleaseCenterService {
         return this.activeReleaseCenter.asObservable();
     }
 
+    findReleaseCenterByKey(releaseCenterKey) {
+        if (this.releaseCenters) {
+            return this.releaseCenters.find(releaseCenter => releaseCenter.id === releaseCenterKey);
+        }
+
+        return null;
+    }
+
     cacheReleaseCenters(releaseCenters) {
         this.releaseCenters = releaseCenters;
     }
