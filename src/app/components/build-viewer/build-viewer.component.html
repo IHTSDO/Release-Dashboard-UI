@@ -70,7 +70,7 @@
                 <th>Status</th>
                 <th>User</th>
                 <th class="w-10">Log</th>
-                <th class="w-10" *ngIf="canTriggerBuild()">Release</th>
+                <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th>Configurations</th>
                 <th *ngIf="canTriggerBuild()">Visibility</th>
@@ -88,7 +88,7 @@
                 <th>Status</th>
                 <th>User</th>
                 <th class="w-5">Log</th>
-                <th class="w-10" *ngIf="canTriggerBuild()">Release</th>
+                <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
                 <th class="w-10">RVF Report</th>                
                 <th>Configurations</th>
                 <th *ngIf="canTriggerBuild()">Visibility</th>
@@ -104,7 +104,7 @@
                 <td class="pb-0">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
-                <td class="pb-0 btn-download" *ngIf="canTriggerBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
                 <td class="pb-0" *ngIf="canTriggerBuild()"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>

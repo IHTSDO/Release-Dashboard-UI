@@ -295,13 +295,12 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     canAddProduct() {
-        return this.roles && this.activeReleaseCenter && this.activeReleaseCenter.codeSystem &&
-            ((this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
-            || (this.roles.hasOwnProperty('RELEASE_MANAGER_GLOBAL') && this.roles['RELEASE_MANAGER_GLOBAL'])
-            || (this.roles.hasOwnProperty('ADMIN')
-                    && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
-            || (this.roles.hasOwnProperty('RELEASE_MANAGER')
-                    && (<Array<String>> this.roles['RELEASE_MANAGER']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
+        const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
+        return this.roles && codeSystem &&
+            ((this.roles.hasOwnProperty('GLOBAL') && ((<Array<String>> this.roles['GLOBAL'])).indexOf('ADMIN') !== -1
+                || ((<Array<String>> this.roles['GLOBAL'])).indexOf('RELEASE_MANAGER') !== -1)
+            || (this.roles.hasOwnProperty(codeSystem) && ((<Array<String>> this.roles[codeSystem]).indexOf('ADMIN') !== -1)
+                || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1)
             );
     }
 

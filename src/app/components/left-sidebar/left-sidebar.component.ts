@@ -19,7 +19,7 @@ export class LeftSidebarComponent implements OnInit {
     private activeReleaseCenterSubscription: Subscription;
 
     releaseCenters: ReleaseCenter[];
-    codeSystem: CodeSystem[];
+    codeSystems: CodeSystem[];
     roles: Object;
     activeReleaseCenter: ReleaseCenter;
 
@@ -42,6 +42,7 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.activeReleaseCenter = new ReleaseCenter();
         let releaseCenterKey;
         this.roles = this.permissionService.roles;
         this.route.paramMap.subscribe(paramMap => {
@@ -67,8 +68,8 @@ export class LeftSidebarComponent implements OnInit {
         });
 
         this.loadCodeSystems(this.releaseCenterService, this.releaseServer).then(data => {
-            this.codeSystem = <CodeSystem[]> data;
-            this.releaseCenterService.cacheCodeSystems(this.codeSystem);
+            this.codeSystems = <CodeSystem[]> data;
+            this.releaseCenterService.cacheCodeSystems(this.codeSystems);
         });
     }
 
@@ -177,15 +178,7 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     canAddReleaseCenter() {
-        return this.roles && this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'];
-    }
-
-    canEditReleaseCenter() {
-        return this.roles && (
-            (this.roles.hasOwnProperty('ADMIN_GLOBAL') && this.roles['ADMIN_GLOBAL'])
-            || (this.roles.hasOwnProperty('ADMIN') && this.activeReleaseCenter
-                && (<Array<String>> this.roles['ADMIN']).indexOf(this.activeReleaseCenter.codeSystem) !== -1)
-            );
+        return this.roles && this.roles.hasOwnProperty('GLOBAL') && (<Array<String>> this.roles['GLOBAL']).indexOf('ADMIN') !== -1;
     }
 
     private openSuccessModel() {
