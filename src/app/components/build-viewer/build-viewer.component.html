@@ -57,19 +57,19 @@
                 </div>                
             </div>    
             <div class="panel-footer text-right">                
-                <button type="button" class="btn-sea-buckthorn ml-3 my-1" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
+                <button type="button" class="btn-sea-buckthorn ml-3 my-1" *ngIf="canDownloadBuild()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
                 <button type="button" class="btn-green ml-3 my-1 mr-1" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
             </div>
         </div>
         <table class="table table-bordered" *ngIf="buildsLoading">
             <tr>
-                <th class="w-5">URL</th>
+                <th class="w-5" *ngIf="canDownloadBuild()">URL</th>
                 <th>Build Name</th>
                 <th>Build Date</th>
                 <th>Status</th>
                 <th>User</th>
-                <th class="w-10">Log</th>
+                <th class="w-10" *ngIf="canDownloadBuild()">Log</th>
                 <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th>Configurations</th>
@@ -82,12 +82,12 @@
         </table>    
         <table class="table table-bordered" *ngIf="!buildsLoading">
             <tr>
-                <th class="w-5">URL</th>
+                <th class="w-5" *ngIf="canDownloadBuild()">URL</th>
                 <th>Build Name</th>
                 <th>Build Date</th>
                 <th>Status</th>
                 <th>User</th>
-                <th class="w-5">Log</th>
+                <th class="w-5" *ngIf="canDownloadBuild()">Log</th>
                 <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
                 <th class="w-10">RVF Report</th>                
                 <th>Configurations</th>
@@ -98,12 +98,12 @@
                 <td colspan="11">No builds found.</td>
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
-                <td class="pb-0"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
+                <td class="pb-0" *ngIf="canDownloadBuild()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
-                <td class="pb-0 btn-download"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
