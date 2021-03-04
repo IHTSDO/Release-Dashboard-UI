@@ -629,15 +629,15 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
         return this.roles && codeSystem && (
             (this.roles.hasOwnProperty('GLOBAL') && (
-                    (<Array<String>> this.roles['GLOBAL']).indexOf('RAD_ADMIN') !== -1
+                    (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
                 ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
                 ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1)
                 )
             || (this.roles.hasOwnProperty(codeSystem) && (
-                    (<Array<String>> this.roles[codeSystem]).indexOf('RAD_ADMIN') !== -1
+                    (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
-                ||  (<Array<String>> this.roles[codeSystem]).indexOf('RAD_USER') !== -1
+                ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_USER') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('AUTHOR') !== -1)
                 )
         );
@@ -647,13 +647,13 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
         return this.roles && codeSystem && (
             (this.roles.hasOwnProperty('GLOBAL') && (
-                    (<Array<String>> this.roles['GLOBAL']).indexOf('RAD_ADMIN') !== -1
+                    (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
                 ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
                 ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1
                     )
                 )
             || (this.roles.hasOwnProperty(codeSystem) && (
-                    (<Array<String>> this.roles[codeSystem]).indexOf('RAD_ADMIN') !== -1
+                    (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
                     )
@@ -666,12 +666,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         return this.roles && codeSystem && this.activeBuild &&
             (!this.activeBuild.tags || this.activeBuild.tags.indexOf('PUBLISHED') === -1) && (
                 (this.roles.hasOwnProperty('GLOBAL') && (
-                        (<Array<String>> this.roles['GLOBAL']).indexOf('RAD_ADMIN') !== -1
+                        (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
                     || (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
                     )
                 )
             ||  (this.roles.hasOwnProperty(codeSystem) && (
-                        (<Array<String>> this.roles[codeSystem]).indexOf('RAD_ADMIN') !== -1
+                        (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
                     || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
                     )
                 )
@@ -683,13 +683,13 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         return this.roles && codeSystem && this.activeBuild &&
             (!this.activeBuild.tags || this.activeBuild.tags.indexOf('PUBLISHED') === -1) && (
                 (this.roles.hasOwnProperty('GLOBAL') && (
-                        (<Array<String>> this.roles['GLOBAL']).indexOf('RAD_ADMIN') !== -1
+                        (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
                     ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
                     ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1
                     )
                 )
                 || (this.roles.hasOwnProperty(codeSystem) && (
-                        (<Array<String>> this.roles[codeSystem]).indexOf('RAD_ADMIN') !== -1
+                        (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
                     ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
                     ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
                     )

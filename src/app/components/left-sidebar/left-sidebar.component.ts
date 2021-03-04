@@ -178,7 +178,7 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     canAddReleaseCenter() {
-        return this.roles && this.roles.hasOwnProperty('GLOBAL') && (<Array<String>> this.roles['GLOBAL']).indexOf('RAD_ADMIN') !== -1;
+        return this.roles && this.roles.hasOwnProperty('GLOBAL') && (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1;
     }
 
     private openSuccessModel() {
