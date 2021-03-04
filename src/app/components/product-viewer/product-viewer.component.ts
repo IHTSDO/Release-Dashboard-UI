@@ -296,11 +296,17 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     canAddProduct() {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
-        return this.roles && codeSystem &&
-            ((this.roles.hasOwnProperty('GLOBAL') && ((<Array<String>> this.roles['GLOBAL'])).indexOf('ADMIN') !== -1
-                || ((<Array<String>> this.roles['GLOBAL'])).indexOf('RELEASE_MANAGER') !== -1)
-            || (this.roles.hasOwnProperty(codeSystem) && ((<Array<String>> this.roles[codeSystem]).indexOf('ADMIN') !== -1)
-                || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1)
+        return this.roles && codeSystem && (
+            (this.roles.hasOwnProperty('GLOBAL') && (
+                   (<Array<String>> this.roles['GLOBAL']).indexOf('RAD_ADMIN') !== -1
+                || (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
+                || (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1)
+                )
+            || (this.roles.hasOwnProperty(codeSystem) && (
+                   (<Array<String>> this.roles[codeSystem]).indexOf('RAD_ADMIN') !== -1
+                || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
+                || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1)
+                )
             );
     }
 
