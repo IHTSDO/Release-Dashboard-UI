@@ -59,7 +59,10 @@ app-modal {
             border: 1px $ghost-grey solid;
         }
         input[type=text], textarea {
-            width: 75%;
+            width: 73%;
+        }
+        label {
+            width: 27%;
         }
         textarea {
             white-space: pre-line;
