@@ -157,14 +157,14 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    loadProductManifestFilesInfo(products : Product[]) {
+    loadProductManifestFilesInfo(products: Product[]) {
         for (let index = 0; index < products.length; index++) {
             const product = products[index];
             this.productService.getManifest(this.activeReleaseCenter.id, product.id).subscribe(
                 data => {
                     if (data.hasOwnProperty('filename')) {
                         this.productsWithManifestUploaded.push(product.id);
-                    }                   
+                    }
                 }
             );
         }
@@ -242,7 +242,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.openUploadManifestFileDialog();
         } else {
             this.openManifestConfirmationModal();
-        }        
+        }
     }
 
     loadManifestFile(product: Product) {

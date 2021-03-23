@@ -34,7 +34,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     productKey: string;
     roles: Object;
 
-    builds: Build[];
+    builds: Build[]; // the builds used by UI
+    allBuilds: Build[]; // hold all builds from server
     localInputFiles: FileList;
 
     activeProduct: Product;
@@ -44,6 +45,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     buildLog: string;
     selectedTags: object;
     environment: string;
+    view: string;
 
     // Build properties
     buildParams: BuildParameters;
@@ -72,6 +74,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.view = 'default';
         this.environment = this.envService.env;
         this.roles = this.permissionService.roles;
         this.activeBuild = new Build();
@@ -132,12 +135,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     loadBuilds() {
         this.buildsLoading = true;
+        this.allBuilds = [];
         this.clearMessage();
         this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
-                this.builds = response;
+                this.allBuilds = response;
+                this.sortBuilds();
                 // Update Build Status in case the status has been changed
                 if (this.activeBuild.id) {
-                    const build = this.builds.find(b => b.id === this.activeBuild.id);
+                    const build = this.allBuilds.find(b => b.id === this.activeBuild.id);
                     if (build) {
                         this.activeBuild.status = build.status;
                     }
@@ -152,6 +157,49 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 this.buildsLoading = false;
             }
         );
+    }
+
+    sortBuilds() {
+        switch (this.view) {
+            case 'default': {
+                let latestPublishedBuild;
+                const publishedBuilds = [];
+                for (let i = 0; i < this.allBuilds.length; i++) {
+                    if (this.allBuilds[i].tags && this.allBuilds[i].tags.indexOf('PUBLISHED') !== -1) {
+                        if (!latestPublishedBuild) {
+                            latestPublishedBuild = this.allBuilds[i];
+                        } else {
+                            publishedBuilds.push(this.allBuilds[i]);
+                        }
+                    }
+                }
+                if (latestPublishedBuild) {
+                    this.builds = this.allBuilds.slice(0, this.allBuilds.indexOf(latestPublishedBuild) + 1).concat(publishedBuilds);
+                } else {
+                    this.builds = this.allBuilds;
+                }
+                break;
+            }
+            case 'unpublished': {
+                this.builds = this.allBuilds.filter(function(build) {
+                    return !build.tags || build.tags.indexOf('PUBLISHED') === -1;
+                });
+                break;
+            }
+            case 'published': {
+                this.builds = this.allBuilds.filter(function(build) {
+                    return build.tags && build.tags.indexOf('PUBLISHED') !== -1;
+                });
+                break;
+            }
+            case 'all-releases': {
+                this.builds = this.allBuilds;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
     }
 
     setActiveBuild(build) {
@@ -357,10 +405,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             () => {
                 this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                     build.buildCanceling = false;
-                    const updatedBuild = this.builds.find(b => b.id === this.activeBuild.id);
+                    const updatedBuild = this.allBuilds.find(b => b.id === this.activeBuild.id);
                     if (updatedBuild) {
                         updatedBuild.status = response.status;
                         this.activeBuild.status = response.status;
+                        this.sortBuilds();
                     }
                     this.closeWaitingModel();
                     this.message = 'The build has been canceled successfully.';
@@ -395,7 +444,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.openWaitingModel('Uploading input files');
             this.productService.deleteProductInputFiles(this.releaseCenterKey, this.productKey).subscribe(() => {
                 this.uploadInputFiles(this.releaseCenterKey, this.productKey, this.productService, this.localInputFiles).then(() => {
-                    this.openWaitingModel('Creating build');
+                    this.openWaitingModel('Initiating build');
                     this.buildService.runBuild(this.releaseCenterKey,
                         this.productKey,
                         this.buildParams.buildName,
@@ -408,11 +457,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         build => {
                             this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
                                 persistedBuild => {
-                                    this.builds.unshift(persistedBuild);
+                                    this.allBuilds.unshift(persistedBuild);
                                     this.buildTriggering = false;
                                     this.message = 'The build has been successfully initiated.';
                                     this.closeWaitingModel();
                                     this.openSuccessModel();
+                                    this.sortBuilds();
                                 }
                             );
 
@@ -440,11 +490,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 build => {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
                         persistedBuild => {
-                            this.builds.unshift(persistedBuild);
+                            this.allBuilds.unshift(persistedBuild);
                             this.buildTriggering = false;
                             this.message = 'The build has been successfully initiated.';
                             this.closeWaitingModel();
                             this.openSuccessModel();
+                            this.sortBuilds();
                         }
                     );
                 },
@@ -717,8 +768,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     private startPolling() {
         this.interval = setInterval(() => {
-            if (this.builds && this.builds.length !== 0) {
-                const latestBuild = this.builds[0];
+            if (this.allBuilds && this.allBuilds.length !== 0) {
+                const latestBuild = this.allBuilds[0];
                 if (BuildStateEnum.BEFORE_TRIGGER === latestBuild.status
                     || BuildStateEnum.BUILDING === latestBuild.status
                     || BuildStateEnum.BUILT === latestBuild.status
@@ -727,10 +778,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, latestBuild.id).subscribe(
                         response => {
                             this.transferNewChangesIfAny(latestBuild, response);
-
                             if (this.activeBuild && response.id === this.activeBuild.id) {
                                 this.transferNewChangesIfAny(this.activeBuild, response);
                             }
+                            this.sortBuilds();
                         }
                     );
                 }

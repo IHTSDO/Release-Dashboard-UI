@@ -26,7 +26,11 @@ div.build-viewer {
         div.panel-header,
         div.panel-footer {
             height: 3.5rem;
-            background: #E0E0E0;            
+            background: #E0E0E0;
+            
+            select {
+                margin-top: 4px;
+            }
         }        
     }
     

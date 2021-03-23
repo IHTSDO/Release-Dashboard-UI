@@ -56,7 +56,14 @@
                     </div>
                 </div>                
             </div>    
-            <div class="panel-footer text-right">                
+            <div class="panel-footer text-right">
+                <label for="view" class="float-left font-weight-bold p-3">View</label>
+                <select [(ngModel)]="view" id="view" class="rounded-lg p-2 float-left" (change)="sortBuilds(); p = 0;">
+                    <option value="default">Default</option>
+                    <option value="all-releases">All Releases</option>
+                    <option value="published">Published</option>
+                    <option value="unpublished">Unpublished</option>
+                </select>                
                 <button type="button" class="btn-sea-buckthorn ml-3 my-1" *ngIf="canDownloadBuild()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
                 <button type="button" class="btn-green ml-3 my-1 mr-1" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
