@@ -410,7 +410,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                 persistedBuild => {
                                     this.builds.unshift(persistedBuild);
                                     this.buildTriggering = false;
-                                    this.message = 'The build has been created successfully.';
+                                    this.message = 'The build has been successfully initiated.';
                                     this.closeWaitingModel();
                                     this.openSuccessModel();
                                 }
@@ -442,7 +442,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         persistedBuild => {
                             this.builds.unshift(persistedBuild);
                             this.buildTriggering = false;
-                            this.message = 'The build has been created successfully.';
+                            this.message = 'The build has been successfully initiated.';
                             this.closeWaitingModel();
                             this.openSuccessModel();
                         }
