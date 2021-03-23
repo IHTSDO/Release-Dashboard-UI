@@ -31,7 +31,7 @@
                 <td class="pb-0 btn-groups">
                     <div class="input-group pl-4 justify-content-start">
                         <button class="btn-circle btn-green" *ngIf="canAddProduct()" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>
-                        <button class="btn-circle btn-sea-buckthorn ml-3" (click)="loadManifestFile(product); $event.stopPropagation()" title="View Manifest File"><i class="material-icons">insert_drive_file</i></button>
+                        <button class="btn-circle  ml-3" [ngClass]="{'btn-light-red': !productsWithManifestUploaded.includes(product.id), 'btn-green': productsWithManifestUploaded.includes(product.id)}" (click)="loadManifestFile(product); $event.stopPropagation()" title="{{!productsWithManifestUploaded.includes(product.id) ? 'The manifest has not yet been uploaded' : 'View Manifest File'}}"><i class="material-icons">insert_drive_file</i></button>
                         <button class="btn-circle btn-blue ml-3" *ngIf="!product.manifestFileUploading && canAddProduct()" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>
                         <div *ngIf="product.manifestFileUploading" class="badge loading">Uploading</div>
                         <button class="btn-circle btn-mandy ml-3" *ngIf="canAddProduct()" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product"><i class="material-icons">visibility_off</i></button>

@@ -29,6 +29,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     editedProduct: Product;
     customRefsetCompositeKeys: string;
     roles: Object;
+    productsWithManifestUploaded: string[];
 
     productsLoading = false;
 
@@ -55,6 +56,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.activeReleaseCenter = response;
             this.products = [];
             this.message = '';
+            this.productsWithManifestUploaded = [];
             this.pageNumber = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
             this.totalProduct = this.paginationService.EMPTY_ITEMS;
             this.productDataService.clearCachedProducts();
@@ -151,7 +153,21 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.totalProduct = response['totalElements'];
             this.productsLoading = false;
             this.productDataService.cacheProducts(this.products);
+            this.loadProductManifestFilesInfo(this.products);
         });
+    }
+
+    loadProductManifestFilesInfo(products : Product[]) {
+        for (let index = 0; index < products.length; index++) {
+            const product = products[index];
+            this.productService.getManifest(this.activeReleaseCenter.id, product.id).subscribe(
+                data => {
+                    if (data.hasOwnProperty('filename')) {
+                        this.productsWithManifestUploaded.push(product.id);
+                    }                   
+                }
+            );
+        }
     }
 
     handlePageChange(event) {
@@ -222,21 +238,18 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     checkManifestFile(product: Product) {
         this.selectedProduct = product;
-        this.productService.getManifest(this.activeReleaseCenter.id, product.id).subscribe(
-            data => {
-                if (data.hasOwnProperty('filename')) {
-                    this.openManifestConfirmationModal();
-                } else {
-                    this.openUploadManifestFileDialog();
-                }
-            },
-            () => {
-                this.openUploadManifestFileDialog();
-            }
-        );
+        if (this.productsWithManifestUploaded.indexOf(product.id) === -1) {
+            this.openUploadManifestFileDialog();
+        } else {
+            this.openManifestConfirmationModal();
+        }        
     }
 
     loadManifestFile(product: Product) {
+        if (this.productsWithManifestUploaded.indexOf(product.id) === -1) {
+            return;
+        }
+
         this.selectedProduct = product;
         this.message = '';
         this.productService.loadManifestFile(this.activeReleaseCenter.id, product.id).subscribe(
@@ -267,6 +280,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.productService.uploadManifest(this.activeReleaseCenter.id, this.selectedProduct.id, formData).subscribe(
                 () => {
                     product.manifestFileUploading = false;
+                    this.productsWithManifestUploaded.push( this.selectedProduct.id);
                 },
                 errorResponse => {
                     product.manifestFileUploading = false;

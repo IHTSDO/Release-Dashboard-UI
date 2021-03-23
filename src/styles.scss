@@ -114,6 +114,12 @@ button {
             }
         }
     }
+    &.btn-light-red {
+        background-color: #f85c4d;         
+        &:hover {
+           background-color: darken(#f85c4d, 5%);
+        }
+    }
     &.btn-mandy {
         background-color: $mandy;         
         &:hover {
