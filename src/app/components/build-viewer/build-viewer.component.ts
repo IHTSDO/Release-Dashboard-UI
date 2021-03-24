@@ -477,7 +477,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 });
             });
         } else {
-            this.openWaitingModel('Creating build');
+            this.openWaitingModel('Initiating build');
             this.buildService.runBuild(this.releaseCenterKey,
                                       this.productKey,
                                       this.buildParams.buildName,
