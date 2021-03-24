@@ -100,7 +100,10 @@ app-modal {
             cursor: default;
         }
         input[type=text], textarea {
-            width: 75%;
+            width: 73%;
+        }
+        label {
+            width: 27%;
         }
     }    
 }

@@ -231,7 +231,7 @@
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Drools Rules Group Names
-                        <span class="font-weight-light" title="Passes to RVF to run validation using Drools rules if enableDrools=true. Values are a list of Drools rules groups separated by a comma">(?)</span>
+                        <span class="font-weight-light" title="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">(?)</span>
                     </label>
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.droolsRulesGroupNames">
                 </div>
@@ -249,13 +249,13 @@
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">JIRA Product Name
-                        <span class="font-weight-light" title="Passes to RVF if jiraIssueCreationFlag=true. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
+                        <span class="font-weight-light" title="Passes to RVF if the Enable JIRA flag is checked. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
                     </label>
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.productName">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">JIRA Reporting Stage
-                        <span class="font-weight-light" title="Passes to RVF if jiraIssueCreationFlag=true. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
+                        <span class="font-weight-light" title="Passes to RVF if the Enable JIRA flag is checked. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
                     </label>
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.reportingStage">
                 </div>                
