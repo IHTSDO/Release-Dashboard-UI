@@ -96,7 +96,9 @@
                     <input type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" value="{{ editedProduct.buildConfiguration.effectiveTime | date:'yyyy-MM-dd' }}">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Default Branch</label>
+                    <label class="font-weight-bold">Default Branch
+                        <span class="font-weight-light" title="The branch path of Term server which will be used for exporting Delta files. It may be empty if the product is a Derivative product which will be getting the Delta files from the local input files">(?)</span>
+                    </label>
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">

@@ -79,6 +79,9 @@ app-modal {
         input, select , select:focus{
             border: 1px $ghost-grey solid;
         }
+        span {
+            margin-top: 1.8em;
+        }
     }
     &.error-modal {
         div.error i {

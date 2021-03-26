@@ -146,13 +146,22 @@
         <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 mb-3" type="text" [(ngModel)]="buildParams.buildName" placeholder="Build Name">
         <input [disabled]="buildTriggering" type="text" placeholder="Effective Time" class="w-75 rounded-lg p-3 m-3" bsDatepicker [(bsValue)]="buildParams.effectiveDate" value="{{ buildParams.effectiveDate | date:'yyyy-MM-dd' }}">
         <input *ngIf="useLocalInputFiles" class="w-75 rounded-lg p-3 m-3"  multiple #uploadInputFilesInput type="file" (change)="selectInputFiles($event.target.files)">        
-        <select *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" [(ngModel)]="buildParams.exportType">
-            <option value="PUBLISHED">Published</option>
-            <option value="UNPUBLISHED">Unpublished</option>
-            <option value="FEEDBACK_FIX">Feedback Fix</option>            
-        </select>
+        <div class="w-100" *ngIf="!useLocalInputFiles">
+            <select  [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" [(ngModel)]="buildParams.exportType">
+                <option value="PUBLISHED">Published</option>
+                <option value="UNPUBLISHED">Unpublished</option>
+                <option value="FEEDBACK_FIX">Feedback Fix</option>            
+            </select>
+            <span class="font-weight-light position-absolute" title="Passes the type of export to Term Server to export the contents. Possible values are &quot;Published&quot;, &quot;Unpublished&quot;, &quot;Feedback Fix&quot;.
+Use &quot;Published&quot; to retrieve all Production data that has been versioned with the &quot;Effective Time&quot;.
+Use &quot;Unpublished&quot; to retrieve all data from the term server regardless of versioned dates.
+Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">(?)</span>
+        </div>        
         <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.branch" placeholder="Branch">        
-        <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
+        <div class="w-100">
+            <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
+            <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
+        </div>        
         <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">
         <label class="w-75 rounded-lg ml-3 float-left">MRCM Validation Form
             <select [disabled]="buildTriggering" class="rounded-lg p-3 m-3" [(ngModel)]="buildParams.mrcmValidationForm">
@@ -262,7 +271,12 @@
                     <div class="d-inline">{{selectedBuild.configuration?.effectiveTime}}</div>                    
                 </div>
                 <div class="mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Export Type</label>
+                    <label class="font-weight-bold">Export Type
+                        <span class="font-weight-light" title="Passes the type of export to Term Server to export the contents. Possible values are &quot;Published&quot;, &quot;Unpublished&quot;, &quot;Feedback Fix&quot;.
+Use &quot;Published&quot; to retrieve all Production data that has been versioned with the &quot;Effective Time&quot;.
+Use &quot;Unpublished&quot; to retrieve all data from the term server regardless of versioned dates.
+Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">(?)</span>
+                    </label>
                     <div class="d-inline">{{selectedBuild.configuration ? (selectedBuild.configuration.exportType ? (selectedBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''}}</div>                    
                 </div>
                 <div class="mx-sm-3 mb-0 mt-0">
@@ -270,7 +284,9 @@
                     <div class="d-inline">{{selectedBuild.configuration?.branchPath}}</div>                    
                 </div>
                 <div class="mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Failure Max</label>
+                    <label class="font-weight-bold">Failure Max
+                        <span class="font-weight-light" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
+                    </label>
                     <div class="d-inline">{{selectedBuild.qaTestConfig?.maxFailureExport}}</div>                    
                 </div>
                 <div class="mx-sm-3 mb-0 mt-1">
