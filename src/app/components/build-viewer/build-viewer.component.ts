@@ -333,7 +333,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     if (BuildStateEnum.BUILDING === build.status
                         || BuildStateEnum.BEFORE_TRIGGER === build.status) {
                         this.message += ' whilst the build is running. Please wait.';
-                    } else if (BuildStateEnum.RELEASE_COMPLETE !== build.status) {
+                    } else if (BuildStateEnum.RELEASE_COMPLETE !== build.status &&
+                                BuildStateEnum.RELEASE_COMPLETE_WITH_WARNINGS !== build.status) {
                         this.message += ' due to the build failed to complete.';
                     } else {
                         this.message += '.';

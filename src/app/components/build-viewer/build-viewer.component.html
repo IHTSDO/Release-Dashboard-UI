@@ -49,7 +49,7 @@
                             <label class="w-25 font-weight-bold">Result:</label>                            
                             <button type="button" class="btn-green"
                                     *ngIf="canPublishBuild()" 
-                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || activeBuild.status!== 'RELEASE_COMPLETE' || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)" 
+                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)" 
                                     (click)="openPublishingBuildConfirmationModal()">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
                             <button type="button" *ngIf="canDeleteBuild()" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
@@ -92,7 +92,7 @@
                 <th class="w-5" *ngIf="canDownloadBuild()">URL</th>
                 <th>Build Name</th>
                 <th>Build Date</th>
-                <th>Status</th>
+                <th class="w-12">Status</th>
                 <th>User</th>
                 <th class="w-5" *ngIf="canDownloadBuild()">Log</th>
                 <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
@@ -108,7 +108,7 @@
                 <td class="pb-0" *ngIf="canDownloadBuild()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
-                <td class="pb-0">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
+                <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>

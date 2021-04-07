@@ -56,6 +56,10 @@ div.build-viewer {
         td {
             padding: .8rem;
 
+            &.hasWarnings {
+                background-color: lighten($candlelight, 10%);
+            }
+
             &.btn-download, 
             &.btn-setting {
                 padding: .2rem;
