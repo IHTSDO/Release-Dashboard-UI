@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { BranchingService } from './services/branching/branching.service';
 import { EnvService } from './services/environment/env.service';
+import { WebsocketService } from './services/websocket/websocket.service';
 
 @Component({
     selector: 'app-root',
@@ -13,13 +14,15 @@ export class AppComponent implements OnInit {
 
     constructor(private authoringService: AuthoringService,
                 private envService: EnvService,
-                private titleService: Title) {
+                private titleService: Title,
+                private websocketService: WebsocketService) {
     }
 
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.getUIConfiguration();
         this.assignFavicon();
+        this.websocketService.connect();
     }
 
     getUIConfiguration() {

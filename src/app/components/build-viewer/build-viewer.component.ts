@@ -16,6 +16,7 @@ import { PermissionService } from '../../services/permission/permission.service'
 import { ReleaseCenter } from '../../models/releaseCenter';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
+import { WebsocketService } from '../../services/websocket/websocket.service';
 
 @Component({
   selector: 'app-build-viewer',
@@ -70,7 +71,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 private releaseServerService: ReleaseServerService,
                 private buildService: BuildService,
                 private permissionService: PermissionService,
-                private envService: EnvService) {
+                private envService: EnvService,
+                private websocketService: WebsocketService) {
     }
 
     ngOnInit(): void {
@@ -95,7 +97,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 data => this.activeReleaseCenter = <ReleaseCenter> data
             );
             this.loadBuilds();
-            this.startPolling();
+        });
+
+        this.websocketService.messageEvent.addListener('build-status-change-event', (message) => {
+            console.log(message);
+            this.updateBuildStatus(message);
         });
     }
 
@@ -103,6 +109,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         if (this.interval) {
             clearInterval(this.interval);
         }
+
+        this.websocketService.messageEvent.removeListener('build-status-change-event', () => {});
     }
 
     // find product from cache, other from server
@@ -767,15 +775,18 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         return promise;
     }
 
-    private startPolling() {
-        this.interval = setInterval(() => {
-            if (this.allBuilds && this.allBuilds.length !== 0) {
-                const latestBuild = this.allBuilds[0];
-                if (BuildStateEnum.BEFORE_TRIGGER === latestBuild.status
-                    || BuildStateEnum.BUILDING === latestBuild.status
-                    || BuildStateEnum.BUILT === latestBuild.status
-                    || BuildStateEnum.CANCEL_REQUESTED === latestBuild.status
-                    || BuildStateEnum.RVF_RUNNING === latestBuild.status) {
+    private updateBuildStatus(message) {
+        if (this.allBuilds && this.allBuilds.length !== 0) {
+            const latestBuild = this.allBuilds.filter(build => {
+                return this.releaseCenterKey === message.releaseCenterKey
+                    && this.productKey === message.productBusinessKey
+                    && build.id === message.buildId;
+            })[0];
+
+            if (latestBuild) {
+                if (BuildStateEnum.RELEASE_COMPLETE === message.buildStatus
+                    || BuildStateEnum.RELEASE_COMPLETE === message.buildStatus
+                    || BuildStateEnum.RVF_RUNNING === message.buildStatus) {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, latestBuild.id).subscribe(
                         response => {
                             this.transferNewChangesIfAny(latestBuild, response);
@@ -785,10 +796,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                             this.sortBuilds();
                         }
                     );
+                } else {
+                    latestBuild.status = message.buildStatus;
+                    if (this.activeBuild && message.buildId === this.activeBuild.id) {
+                        this.activeBuild.status = message.buildStatus;
+                    }
                 }
-
             }
-        }, 10000);
+        }
     }
 
     private transferNewChangesIfAny(oldBuild: Build, newBuild: Build) {

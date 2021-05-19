@@ -31,6 +31,7 @@ import { ProductDataService } from './services/product/product-data.service';
 import { AuthenticationInterceptor } from './interceptors/authentication.interceptor';
 import { EnvServiceProvider } from './providers/env.service.provider';
 import { PermissionService } from './services/permission/permission.service';
+import { WebsocketService } from './services/websocket/websocket.service';
 
 export function startupServiceFactory(permissionService: PermissionService): Function {
     return () => permissionService.getRoles();
@@ -65,6 +66,7 @@ export function startupServiceFactory(permissionService: PermissionService): Fun
         ProductDataService,
         ModalService,
         PermissionService,
+        WebsocketService,
         EnvServiceProvider,
         {
             provide: HTTP_INTERCEPTORS,
