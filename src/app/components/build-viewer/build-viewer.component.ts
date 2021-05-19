@@ -100,8 +100,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         });
 
         this.websocketService.messageEvent.addListener('build-status-change-event', (message) => {
-            console.log(message);
-            this.updateBuildStatus(message);
+            this.updateBuildStatus(JSON.parse(message.body));
         });
     }
 
