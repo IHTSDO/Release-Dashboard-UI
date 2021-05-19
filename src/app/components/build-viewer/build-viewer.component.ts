@@ -778,7 +778,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         if (this.allBuilds && this.allBuilds.length !== 0) {
             const latestBuild = this.allBuilds.filter(build => {
                 return this.releaseCenterKey === message.releaseCenterKey
-                    && this.productKey === message.productBusinessKey
+                    && this.productKey === message.productKey
                     && build.id === message.buildId;
             })[0];
 
