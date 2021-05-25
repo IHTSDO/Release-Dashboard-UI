@@ -783,8 +783,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             })[0];
 
             if (latestBuild) {
-                if (BuildStateEnum.RELEASE_COMPLETE === message.buildStatus
-                    || BuildStateEnum.RELEASE_COMPLETE === message.buildStatus
+                if (BuildStateEnum.RVF_QUEUED === message.buildStatus
                     || BuildStateEnum.RVF_RUNNING === message.buildStatus) {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, latestBuild.id).subscribe(
                         response => {
