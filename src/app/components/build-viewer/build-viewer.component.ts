@@ -405,34 +405,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
-    stopBuild(build: Build) {
-        build.buildCanceling = true;
-        this.closeCancalingBuildConfirmationModal();
-        this.openWaitingModel();
-        this.buildService.stopBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-            () => {
-                this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
-                    build.buildCanceling = false;
-                    const updatedBuild = this.allBuilds.find(b => b.id === this.activeBuild.id);
-                    if (updatedBuild) {
-                        updatedBuild.status = response.status;
-                        this.activeBuild.status = response.status;
-                        this.sortBuilds();
-                    }
-                    this.closeWaitingModel();
-                    this.message = 'The build has been canceled successfully.';
-                    this.openSuccessModel();
-                });
-            },
-            errorResponse => {
-                this.message = errorResponse.error.errorMessage;
-                build.buildCanceling = false;
-                this.closeWaitingModel();
-                this.openErrorModel();
-            }
-        );
-    }
-
     selectInputFiles(files: FileList) {
         this.localInputFiles = files;
     }
@@ -877,10 +849,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     private closePublishingBuildConfirmationModal() {
         this.closeModal('publish-build-confirmation-modal');
-    }
-
-    private closeCancalingBuildConfirmationModal() {
-        this.closeModal('stop-build-confirmation-modal');
     }
 
     private openBuildModal() {
