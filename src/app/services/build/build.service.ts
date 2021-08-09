@@ -35,12 +35,33 @@ export class BuildService {
       return this.http.get(url, {responseType: 'arraybuffer'});
   }
 
+  createBuild(releaseCenterKey, productKey): Observable<Build> {
+    return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', {});
+  }
+
   publishBuild(releaseCenterKey, productKey, buildId) {
       return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/publish', {});
   }
 
   stopBuild(releaseCenterKey, productKey, buildId) {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
+  }
+
+  uploadInputFile(releaseCenterKey, productKey, buildId, file: FormData) {
+    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/inputfiles', file);
+  }
+
+  scheduleBuild(releaseCenterKey, productKey, buildId, buildName, effectiveDate, maxFailureExport, mrcmValidationForm) {
+    const data = {
+      effectiveDate: effectiveDate,
+      buildName: buildName,
+      maxFailuresExport: maxFailureExport,
+      loadTermServerData: false,
+      loadExternalRefsetData: false,
+      mrcmValidationForm: mrcmValidationForm,
+      skipGatheringSourceFiles: true
+    };
+    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/schedule', data);
   }
 
   runBuild(releaseCenterKey, productKey, buildName, branch, exportType,

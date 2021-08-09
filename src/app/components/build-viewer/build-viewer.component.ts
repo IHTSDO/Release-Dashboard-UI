@@ -450,38 +450,31 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.closeBuildModal();
         if (this.useLocalInputFiles) {
             this.openWaitingModel('Uploading input files');
-            this.productService.deleteProductInputFiles(this.releaseCenterKey, this.productKey).subscribe(() => {
-                this.uploadInputFiles(this.releaseCenterKey, this.productKey, this.productService, this.localInputFiles).then(() => {
-                    this.openWaitingModel('Initiating build');
-                    this.buildService.runBuild(this.releaseCenterKey,
+            this.buildService.createBuild(this.releaseCenterKey, this.productKey).subscribe((response) => {
+                this.uploadInputFiles(this.releaseCenterKey,
+                    this.productKey,
+                    response.id,
+                    this.buildService,
+                    this.localInputFiles).then(() => {
+                    this.buildService.scheduleBuild(this.releaseCenterKey,
                         this.productKey,
+                        response.id,
                         this.buildParams.buildName,
-                        null,
-                        null,
-                        this.buildParams.maxFailureExport,
                         formattedeffectiveDate,
-                        this.buildParams.excludedModuleIds,
-                        this.buildParams.mrcmValidationForm).subscribe(
-                        build => {
-                            this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-                                persistedBuild => {
-                                    this.allBuilds.unshift(persistedBuild);
-                                    this.buildTriggering = false;
-                                    this.message = 'The build has been successfully initiated.';
-                                    this.closeWaitingModel();
-                                    this.openSuccessModel();
-                                    this.sortBuilds();
-                                }
-                            );
-
-                        },
-                        errorResponse => {
-                            this.buildTriggering = false;
-                            this.closeWaitingModel();
-                            this.message = errorResponse.error.errorMessage;
-                            this.openErrorModel();
-                        }
+                        this.buildParams.maxFailureExport,
+                        this.buildParams.mrcmValidationForm).subscribe(() => {
+                        this.buildService.getBuild(this.releaseCenterKey, this.productKey, response.id).subscribe(
+                            persistedBuild => {
+                                this.allBuilds.unshift(persistedBuild);
+                                this.buildTriggering = false;
+                                this.message = 'The build has been successfully initiated.';
+                                this.closeWaitingModel();
+                                this.openSuccessModel();
+                                this.sortBuilds();
+                            }
                         );
+                    });
+
                 });
             });
         } else {
@@ -754,21 +747,21 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             );
     }
 
-    private uploadInputFiles(releaseCenterKey, productKey, productService, localInputFiles) {
+    private uploadInputFiles(releaseCenterKey, productKey, buildId, buildService, localInputFiles) {
         const promise = new Promise(function(resolve, reject) {
-            const upload = function(centerKey, prodKey, prodService, inputFiles, index) {
+            const upload = function(inputFiles, index) {
                 const formData = new FormData();
                 formData.append('file', localInputFiles[index]) ;
-                productService.uploadProductInputFiles(releaseCenterKey, productKey, formData).subscribe(() => {
+                buildService.uploadInputFile(releaseCenterKey, productKey, buildId, formData).subscribe(() => {
                     index++;
                     if (index === inputFiles.length) {
                         resolve(null);
                     } else {
-                        upload(centerKey, prodKey, prodService, inputFiles, index);
+                        upload(inputFiles, index);
                     }
                 });
             };
-            upload(releaseCenterKey, productKey, productService, localInputFiles, 0);
+            upload(localInputFiles, 0);
         });
 
         return promise;
