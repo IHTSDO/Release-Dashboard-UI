@@ -35,8 +35,17 @@ export class BuildService {
       return this.http.get(url, {responseType: 'arraybuffer'});
   }
 
-  createBuild(releaseCenterKey, productKey): Observable<Build> {
-    return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', {});
+  createBuild(releaseCenterKey, productKey, buildName, effectiveDate, maxFailureExport, mrcmValidationForm): Observable<Build> {
+    const data = {
+      effectiveDate: effectiveDate,
+      buildName: buildName,
+      maxFailuresExport: maxFailureExport,
+      loadTermServerData: false,
+      loadExternalRefsetData: false,
+      mrcmValidationForm: mrcmValidationForm,
+      skipGatheringSourceFiles: true
+    };
+    return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', data);
   }
 
   publishBuild(releaseCenterKey, productKey, buildId) {
@@ -51,17 +60,8 @@ export class BuildService {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/inputfiles', file);
   }
 
-  scheduleBuild(releaseCenterKey, productKey, buildId, buildName, effectiveDate, maxFailureExport, mrcmValidationForm) {
-    const data = {
-      effectiveDate: effectiveDate,
-      buildName: buildName,
-      maxFailuresExport: maxFailureExport,
-      loadTermServerData: false,
-      loadExternalRefsetData: false,
-      mrcmValidationForm: mrcmValidationForm,
-      skipGatheringSourceFiles: true
-    };
-    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/schedule', data);
+  scheduleBuild(releaseCenterKey, productKey, buildId) {
+    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/schedule', {});
   }
 
   runBuild(releaseCenterKey, productKey, buildName, branch, exportType,

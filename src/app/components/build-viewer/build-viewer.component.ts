@@ -450,19 +450,18 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.closeBuildModal();
         if (this.useLocalInputFiles) {
             this.openWaitingModel('Uploading input files');
-            this.buildService.createBuild(this.releaseCenterKey, this.productKey).subscribe((response) => {
+            this.buildService.createBuild(this.releaseCenterKey,
+                        this.productKey,
+                        this.buildParams.buildName,
+                        formattedeffectiveDate,
+                        this.buildParams.maxFailureExport,
+                        this.buildParams.mrcmValidationForm).subscribe((response) => {
                 this.uploadInputFiles(this.releaseCenterKey,
                     this.productKey,
                     response.id,
                     this.buildService,
                     this.localInputFiles).then(() => {
-                    this.buildService.scheduleBuild(this.releaseCenterKey,
-                        this.productKey,
-                        response.id,
-                        this.buildParams.buildName,
-                        formattedeffectiveDate,
-                        this.buildParams.maxFailureExport,
-                        this.buildParams.mrcmValidationForm).subscribe(() => {
+                    this.buildService.scheduleBuild(this.releaseCenterKey, this.productKey, response.id, ).subscribe(() => {
                         this.buildService.getBuild(this.releaseCenterKey, this.productKey, response.id).subscribe(
                             persistedBuild => {
                                 this.allBuilds.unshift(persistedBuild);
