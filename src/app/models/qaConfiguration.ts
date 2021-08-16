@@ -10,5 +10,4 @@ export class QAConfiguration {
     previousInternationalRelease: string;
     productName: string;
     reportingStage: string;
-    mrcmValidationForm: string;
 }

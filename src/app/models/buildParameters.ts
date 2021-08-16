@@ -5,5 +5,4 @@ export class BuildParameters {
     effectiveDate: Date;
     buildName: string;
     excludedModuleIds: string;
-    mrcmValidationForm: string;
 }

@@ -162,13 +162,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
             <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
         </div>        
-        <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">
-        <label class="w-75 rounded-lg ml-3 float-left">MRCM Validation Form
-            <select [disabled]="buildTriggering" class="rounded-lg p-3 m-3" [(ngModel)]="buildParams.mrcmValidationForm">
-                <option value="stated">Stated</option>
-                <option value="inferred">Inferred</option>           
-            </select>
-        </label>
+        <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">        
     </div>
 
     <div footer>
@@ -430,11 +424,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <span class="font-weight-light" title="Passes to RVF to enable the validations with MRCM Validator">(?)</span>
                     </label>
                     <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableMRCMValidation">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">MRCM Validation Form</label>
-                    <div class="d-inline">{{selectedBuild.qaTestConfig?.mrcmValidationForm | titlecase}}</div>
-                </div>
+                </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Enable JIRA
                         <span class="font-weight-light" title="Passes to RVF to allow RVF to automatically create a JIRA ticket for each of the failure found in RVF validation report">(?)</span>

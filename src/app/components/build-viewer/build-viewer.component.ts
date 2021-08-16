@@ -454,8 +454,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         this.productKey,
                         this.buildParams.buildName,
                         formattedeffectiveDate,
-                        this.buildParams.maxFailureExport,
-                        this.buildParams.mrcmValidationForm).subscribe((response) => {
+                        this.buildParams.maxFailureExport).subscribe((response) => {
                 this.uploadInputFiles(this.releaseCenterKey,
                     this.productKey,
                     response.id,
@@ -485,8 +484,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.exportType,
                                       this.buildParams.maxFailureExport,
                                       formattedeffectiveDate,
-                                      this.buildParams.excludedModuleIds,
-                                      this.buildParams.mrcmValidationForm).subscribe(
+                                      this.buildParams.excludedModuleIds).subscribe(
                 build => {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
                         persistedBuild => {
@@ -557,7 +555,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = 'PUBLISHED';
             this.buildParams.maxFailureExport = 100;
-            this.buildParams.mrcmValidationForm = 'inferred';
         } else {
             const buildConfiguration = this.activeBuild.configuration;
             const qaTestConfig = this.activeBuild.qaTestConfig;
@@ -574,7 +571,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = buildConfiguration.exportType ? buildConfiguration.exportType : 'PUBLISHED';
             this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
-            this.buildParams.mrcmValidationForm = qaTestConfig.mrcmValidationForm ? qaTestConfig.mrcmValidationForm : 'inferred';
         }
         this.openBuildModal();
     }

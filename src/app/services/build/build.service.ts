@@ -35,14 +35,13 @@ export class BuildService {
       return this.http.get(url, {responseType: 'arraybuffer'});
   }
 
-  createBuild(releaseCenterKey, productKey, buildName, effectiveDate, maxFailureExport, mrcmValidationForm): Observable<Build> {
+  createBuild(releaseCenterKey, productKey, buildName, effectiveDate, maxFailureExport): Observable<Build> {
     const data = {
       effectiveDate: effectiveDate,
       buildName: buildName,
       maxFailuresExport: maxFailureExport,
       loadTermServerData: false,
-      loadExternalRefsetData: false,
-      mrcmValidationForm: mrcmValidationForm
+      loadExternalRefsetData: false
     };
     return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', data);
   }
@@ -64,7 +63,7 @@ export class BuildService {
   }
 
   runBuild(releaseCenterKey, productKey, buildName, branch, exportType,
-          maxFailureExport, effectiveDate, excludedModuleIds, mrcmValidationForm): Observable<Build> {
+          maxFailureExport, effectiveDate, excludedModuleIds): Observable<Build> {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
@@ -72,8 +71,7 @@ export class BuildService {
           branchPath: branch,
           maxFailuresExport: maxFailureExport,
           loadTermServerData: true,
-          loadExternalRefsetData: true,
-          mrcmValidationForm: mrcmValidationForm
+          loadExternalRefsetData: true
       };
       if (excludedModuleIds) {
         const array = excludedModuleIds.replace(/\s/g, '').split(',');
