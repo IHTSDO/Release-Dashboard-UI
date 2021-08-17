@@ -42,8 +42,7 @@ export class BuildService {
       maxFailuresExport: maxFailureExport,
       loadTermServerData: false,
       loadExternalRefsetData: false,
-      mrcmValidationForm: mrcmValidationForm,
-      skipGatheringSourceFiles: true
+      mrcmValidationForm: mrcmValidationForm
     };
     return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', data);
   }
@@ -76,10 +75,6 @@ export class BuildService {
           loadExternalRefsetData: true,
           mrcmValidationForm: mrcmValidationForm
       };
-      if (!branch) {
-        data['loadTermServerData'] = false;
-        data['loadExternalRefsetData'] = false;
-      }
       if (excludedModuleIds) {
         const array = excludedModuleIds.replace(/\s/g, '').split(',');
         data['excludedModuleIds'] = array;
