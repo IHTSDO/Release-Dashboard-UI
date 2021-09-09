@@ -37,6 +37,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     builds: Build[]; // the builds used by UI
     allBuilds: Build[]; // hold all builds from server
+    hiddenBuilds: Build[]; // hold all hidden builds from server
     localInputFiles: FileList;
 
     activeProduct: Product;
@@ -59,6 +60,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     saveResponse: string;
     buildTriggering = false;
     buildsLoading = false;
+    hiddenBuildsLoading = false;
     buildLogLoading = false;
     useLocalInputFiles = false;
     allTags: object;
@@ -144,7 +146,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.buildsLoading = true;
         this.allBuilds = [];
         this.clearMessage();
-        this.buildService.getBuilds(this.releaseCenterKey, this.productKey).subscribe(response => {
+        this.buildService.getBuilds(this.releaseCenterKey, this.productKey, true, true, true).subscribe(response => {
                 this.allBuilds = response;
                 this.sortBuilds();
                 // Update Build Status in case the status has been changed
@@ -162,6 +164,24 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             },
             () => {
                 this.buildsLoading = false;
+            }
+        );
+    }
+
+    loadHiddenBuilds() {
+        this.hiddenBuildsLoading = true;
+        this.hiddenBuilds = [];
+        this.clearMessage();
+        this.buildService.getBuilds(this.releaseCenterKey, this.productKey, true, false, false).subscribe(response => {
+                this.hiddenBuilds = response;
+            },
+            errorResponse => {
+                this.buildsLoading = false;
+                this.message = errorResponse.error.errorMessage;
+                this.openErrorModel();
+            },
+            () => {
+                this.hiddenBuildsLoading = false;
             }
         );
     }
@@ -593,6 +613,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.openModal('hide-build-confirmation-modal');
     }
 
+    openUnhideBuildConfirmationModal(build: Build) {
+        this.selectedBuild = build;
+        this.openModal('unhide-build-confirmation-modal');
+    }
+
     openPublishingBuildConfirmationModal() {
         this.message = 'Are you sure you want to publish this build? Please be aware this is a env_placehoder environment '
                     + 'and the publication of this package will therefore have consequence to env_placehoder systems.';
@@ -661,6 +686,27 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             () => {
                 this.loadBuilds();
                 this.message = 'Build \'' + this.selectedBuild.id + '\' has been hidden successfully.';
+                this.closeWaitingModel();
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                this.message = errorResponse.error.errorMessage;
+                this.closeWaitingModel();
+                this.openErrorModel();
+            }
+        );
+    }
+
+    unHideBuild() {
+        this.openWaitingModel('Un-hiding build');
+        this.closeModal('unhide-build-confirmation-modal');
+        this.buildService.updateBuildVisibility(this.releaseCenterKey, this.productKey, this.selectedBuild.id, true).subscribe(
+            () => {
+                this.loadBuilds();
+                this.hiddenBuilds = this.hiddenBuilds.filter(build => {
+                    return build.id !== this.selectedBuild.id;
+                });
+                this.message = 'Build \'' + this.selectedBuild.id + '\' has been made visible successfully.';
                 this.closeWaitingModel();
                 this.openSuccessModel();
             },
