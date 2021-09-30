@@ -504,7 +504,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.exportType,
                                       this.buildParams.maxFailureExport,
                                       formattedeffectiveDate,
-                                      this.buildParams.excludedModuleIds).subscribe(
+                                      this.buildParams.excludedModuleIds,
+                                      this.buildParams.enableTraceabilityValidation).subscribe(
                 build => {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
                         persistedBuild => {
@@ -591,6 +592,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = buildConfiguration.exportType ? buildConfiguration.exportType : 'PUBLISHED';
             this.buildParams.maxFailureExport = qaTestConfig.maxFailureExport ? qaTestConfig.maxFailureExport : 100;
+            this.buildParams.enableTraceabilityValidation = qaTestConfig.enableTraceabilityValidation ?
+                                                            qaTestConfig.enableTraceabilityValidation : false;
         }
         this.openBuildModal();
     }

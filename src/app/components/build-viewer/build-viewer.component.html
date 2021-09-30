@@ -188,7 +188,7 @@
         <input [disabled]="buildTriggering" type="text" placeholder="Effective Time" class="w-75 rounded-lg p-3 m-3" bsDatepicker [(bsValue)]="buildParams.effectiveDate" value="{{ buildParams.effectiveDate | date:'yyyy-MM-dd' }}">
         <input *ngIf="useLocalInputFiles" class="w-75 rounded-lg p-3 m-3"  multiple #uploadInputFilesInput type="file" (change)="selectInputFiles($event.target.files)">
         <div class="w-100" *ngIf="!useLocalInputFiles">
-            <select  [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" [(ngModel)]="buildParams.exportType">
+            <select  [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" (change)="buildParams.enableTraceabilityValidation= (buildParams.exportType === 'PUBLISHED' ? false : true)" [(ngModel)]="buildParams.exportType">
                 <option value="PUBLISHED">Published</option>
                 <option value="UNPUBLISHED">Unpublished</option>
                 <option value="FEEDBACK_FIX">Feedback Fix</option>
@@ -204,6 +204,13 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
         </div>
         <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">
+        <div class="p-3 m-3 text-left row" *ngIf="!useLocalInputFiles">
+            <div class="w-75 d-inline pl-5 ml-2">
+                <input type="checkbox" [disabled]="buildParams.exportType === 'PUBLISHED'" [(ngModel)]="buildParams.enableTraceabilityValidation">
+                <span class="pl-2">Enable Traceability Validation</span>&nbsp;
+                <span class="font-weight-light" title="Passes to RVF to enable Traceability Validation">(?)</span>
+            </div>
+        </div>
     </div>
 
     <div footer>
@@ -465,6 +472,12 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <span class="font-weight-light" title="Passes to RVF to enable the validations with MRCM Validator">(?)</span>
                     </label>
                     <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableMRCMValidation">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="font-weight-bold">Enable Traceability Validation
+                        <span class="font-weight-light" title="Passes to RVF to enable Traceability Validation">(?)</span>
+                    </label>
+                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableTraceabilityValidation">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Enable JIRA

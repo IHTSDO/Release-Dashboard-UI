@@ -5,4 +5,5 @@ export class BuildParameters {
     effectiveDate: Date;
     buildName: string;
     excludedModuleIds: string;
+    enableTraceabilityValidation: boolean;
 }

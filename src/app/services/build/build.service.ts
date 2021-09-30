@@ -64,7 +64,7 @@ export class BuildService {
   }
 
   runBuild(releaseCenterKey, productKey, buildName, branch, exportType,
-          maxFailureExport, effectiveDate, excludedModuleIds): Observable<Build> {
+          maxFailureExport, effectiveDate, excludedModuleIds, enableTraceabilityValidation): Observable<Build> {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
@@ -72,7 +72,8 @@ export class BuildService {
           branchPath: branch,
           maxFailuresExport: maxFailureExport,
           loadTermServerData: true,
-          loadExternalRefsetData: true
+          loadExternalRefsetData: true,
+          enableTraceabilityValidation: enableTraceabilityValidation
       };
       if (excludedModuleIds) {
         const array = excludedModuleIds.replace(/\s/g, '').split(',');
