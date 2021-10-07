@@ -1,5 +1,5 @@
 <nav id="sidebar" class="footer-margin">
-    <h3 class="p-3 mb-0">Release Centers</h3>
+    <h3 class="p-3 mb-0">Release Centers  <a href="/regression-test" target="blank" title="Release Regression Test"><i class="material-icons float-right">open_in_new</i></a></h3>
     <div *ngFor="let center of releaseCenters" class="center py-2 px-3"
          (click)="switchActiveReleaseCenter(center)"
          routerLink="/{{center.id}}"
