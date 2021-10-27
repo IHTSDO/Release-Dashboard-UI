@@ -1,9 +1,9 @@
-<nav class="navbar sticky-top p-2 pr-2" [ngClass]="{'local': environment === 'local',
+<nav class="navbar sticky-top p-2 ps-2" [ngClass]="{'local': environment === 'local',
                                                     'dev': environment === 'dev',
                                                     'uat': environment === 'uat',
                                                     'prod': environment === 'prod'}">
     <a class="logo" routerLink="/">
-        <img class="logo mr-2 p-0" src="/assets/small_logo.png">
+        <img class="logo me-2 p-0" src="/assets/small_logo.png">
         <span class="title">SNOMED CT Release Dashboard - {{environment === 'prod' ? 'PRODUCTION' : environment | uppercase}}</span>
     </a>
 
@@ -15,7 +15,7 @@
         <div *ngSwitchDefault class="banner text-white d-none"></div>
     </ng-container>
 
-    <div *ngIf="user" class="float-right mx-3">
+    <div *ngIf="user" class="float-end mx-3">
         <div class="logout d-inline-block m-2" (click)="logout()">
             <span class="px-2">Logout</span>
         </div>
