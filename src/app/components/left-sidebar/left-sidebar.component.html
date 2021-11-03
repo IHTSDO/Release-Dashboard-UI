@@ -1,14 +1,14 @@
 <nav id="sidebar" class="footer-margin">
-    <h3 class="p-3 mb-0">Release Centers  <a href="/regression-test" target="blank" title="Release Regression Test"><i class="material-icons float-end">open_in_new</i></a></h3>
+    <h3 class="p-3 mb-0">Release Centers</h3>
     <div *ngFor="let center of releaseCenters" class="center py-2 px-3"
          (click)="switchActiveReleaseCenter(center)"
          routerLink="/{{center.id}}"
          [class.active]="activeReleaseCenter === center">{{center.name}}</div>
     <div class="sidebar-buttons w-100">
         <div class="row justify-content-center align-items-center mb-2">
-            <button class="btn-circle btn-blue text-center float-start me-5" *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
-            <button class="btn-circle btn-green text-center float-end ms-5" *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
-        </div>
+            <button class="btn-circle btn-blue text-center float-left mr-5" *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
+            <button class="btn-circle btn-green text-center float-right ml-5" *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
+        </div>        
     </div>
 </nav>
 
@@ -41,7 +41,7 @@
         <p>Would you like to edit this release center?</p>
         <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
         <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" disabled placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
-        <select #editCodeSystem class="w-75 rounded-lg p-3 m-3" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">
+        <select #editCodeSystem class="w-75 rounded-lg p-3 m-3" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">            
             <option value=""></option>
             <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName" [selected]="codeSystem.shortName == activeReleaseCenter?.codeSystem">
               {{codeSystem.name}}
@@ -58,9 +58,9 @@
 <app-modal id="release-center-success-modal" class="modal success-modal">
     <h3 header class="mb-0">Success</h3>
     <div body class="text-center p-5">
-        <div class="text-start success ps-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
-    <div footer>
+    <div footer>        
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('release-center-success-modal')">Ok</button>
     </div>
 </app-modal>

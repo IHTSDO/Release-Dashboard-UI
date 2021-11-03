@@ -3,21 +3,21 @@
         <h2 class="mt-3">{{activeProduct?.name}}</h2>
         <div class="row">
             <div class="col-6">
-                <a class="link-back float-start mt-1" routerLink="/{{releaseCenterKey}}">
+                <a class="link-back float-left mt-1" routerLink="/{{releaseCenterKey}}">
                     <span class="font-weight-bold">&lt;&lt;&nbsp;</span> Back To Release Center
                 </a>
             </div>
             <div class="col-6">
-                <button type="button" *ngIf="canTriggerBuild()" class="btn-green ms-3 my-1 me-1 justify-content-end float-end" (click)="doOpeningBuildModal(true)">Run New Build</button>
+                <button type="button" *ngIf="canTriggerBuild()" class="btn-green ml-3 my-1 mr-1 justify-content-end float-right" (click)="doOpeningBuildModal(true)">Run New Build</button>
             </div>
         </div>
         <div class="panel-top mb-3">
-            <div class="panel-header text-start ps-2 pt-3">
+            <div class="panel-header text-left pl-2 pt-3">
                 <div class="font-weight-bold">{{activeBuild.configuration?.buildName}} {{activeBuild.id}}</div>
             </div>
             <div>
                 <div class="row mx-0">
-                    <div class="col-7 text-start pb-18">
+                    <div class="col-7 text-left pb-18">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Effective Time:</label>
                             <span class="font-weight-bold">{{activeBuild.configuration?.effectiveTime}}</span>
@@ -35,7 +35,7 @@
                             <span class="font-weight-bold">{{activeBuild.qaTestConfig?.maxFailureExport}}</span>
                         </div>
                     </div>
-                    <div class="col-5 text-start">
+                    <div class="col-5 text-left">
                         <div class="form-group mx-sm-3 mb-2 mt-2">
                             <label class="w-25 font-weight-bold">Status:</label>
                             <span class="font-weight-bold">{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</span>
@@ -43,7 +43,7 @@
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
                             <label class="w-25 font-weight-bold"></label>
                             <button type="button" class="btn-blue" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)">View Process</button>
-                            <button type="button" class="btn-mandy ms-3" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
+                            <button type="button" class="btn-mandy ml-3" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
                         </div>
                         <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
                             <label class="w-25 font-weight-bold">Result:</label>
@@ -51,23 +51,23 @@
                                     *ngIf="canPublishBuild()"
                                     [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)"
                                     (click)="openPublishingBuildConfirmationModal()">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
-                            <button type="button" *ngIf="canDeleteBuild()" class="btn-mandy ms-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
+                            <button type="button" *ngIf="canDeleteBuild()" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel-footer text-end">
-                <label for="view" class="float-start font-weight-bold p-3">View</label>
-                <select [(ngModel)]="view" id="view" class="rounded-lg p-2 float-start" (change)="sortBuilds(); p = 0;">
+            <div class="panel-footer text-right">
+                <label for="view" class="float-left font-weight-bold p-3">View</label>
+                <select [(ngModel)]="view" id="view" class="rounded-lg p-2 float-left" (change)="sortBuilds(); p = 0;">
                     <option value="default">Default</option>
                     <option value="all-releases">All Releases</option>
                     <option value="published">Published</option>
                     <option value="unpublished">Unpublished</option>
                 </select>
-                <button type="button" class="btn-sea-buckthorn ms-3 my-1" *ngIf="canDownloadBuild()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
-                <button type="button" class="btn-blue ms-3 my-1" *ngIf="canTriggerBuild()" (click)="openModal('hidden-builds-modal'); loadHiddenBuilds()">View Hidden</button>
-                <button type="button" class="btn-blue ms-3 my-1" (click)="loadBuilds()">View All</button>
-                <button type="button" class="btn-green ms-3 my-1 me-1" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
+                <button type="button" class="btn-sea-buckthorn ml-3 my-1" *ngIf="canDownloadBuild()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
+                <button type="button" class="btn-blue ml-3 my-1" *ngIf="canTriggerBuild()" (click)="openModal('hidden-builds-modal'); loadHiddenBuilds()">View Hidden</button>
+                <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
+                <button type="button" class="btn-green ml-3 my-1 mr-1" *ngIf="canTriggerBuild()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
             </div>
         </div>
         <table class="table table-bordered" *ngIf="buildsLoading">
@@ -107,7 +107,7 @@
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td class="pb-0" *ngIf="canDownloadBuild()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
-                <td class="pb-0 text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
+                <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
@@ -150,7 +150,7 @@
                 <td colspan="11">No hidden builds found.</td>
             </tr>
             <tr *ngFor="let build of hiddenBuilds | paginate: {id: 'hidden_builds_table', itemsPerPage: 10, currentPage: p1, totalItems: hiddenBuilds?.length}">
-                <td class="pb-0 text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
+                <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
@@ -178,10 +178,10 @@
     <h3 header class="mb-0">Build Configurations</h3>
     <div body class="text-center p-5">
         <p>Please enter the details for the Build</p>
-        <div class="p-3 m-3 text-start row">
-            <div class="w-75 d-inline ps-5 ms-2">
+        <div class="p-3 m-3 text-left row">
+            <div class="w-75 d-inline pl-5 ml-2">
                 <input type="checkbox" [(ngModel)]="useLocalInputFiles">
-                <span class="ps-2 font-weight-bold">Use Local Input Files</span>
+                <span class="pl-2 font-weight-bold">Use Local Input Files</span>
             </div>
         </div>
         <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 mb-3" type="text" [(ngModel)]="buildParams.buildName" placeholder="Build Name">
@@ -204,13 +204,6 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
         </div>
         <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">
-        <div class="p-3 m-3 text-start row" *ngIf="!useLocalInputFiles">
-            <div class="w-75 d-inline ps-5 ms-2">
-                <input type="checkbox" [disabled]="buildParams.exportType === 'PUBLISHED'" [(ngModel)]="buildParams.enableTraceabilityValidation">
-                <span class="ps-2">Enable Traceability Validation</span>&nbsp;
-                <span class="font-weight-light" title="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">(?)</span>
-            </div>
-        </div>
     </div>
 
     <div footer>
@@ -236,7 +229,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <!--Build publishing confiramation-->
 <app-modal id="publish-build-confirmation-modal" class="modal build-modal">
     <h3 header class="mb-0">Confirmation</h3>
-    <div body class="text-start p-5">
+    <div body class="text-left p-5">
         <p>{{message}}</p>
     </div>
 
@@ -248,7 +241,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
 <app-modal id="build-tagging-modal" class="modal build-modal">
     <h3 header class="mb-0">Tagging</h3>
-    <div body class="text-start p-5">
+    <div body class="text-left p-5">
         <div *ngFor="let tag of allTags">
             <div class="w-25 d-inline-block"></div>
             <label>
@@ -280,7 +273,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <!--View Log Model-->
 <app-modal id="view-build-log-modal" class="modal view-build-log-modal" size="large">
     <h3 header class="mb-0">Log</h3>
-    <div body class="text-start p-5" [class.text-center]="buildLogLoading">
+    <div body class="text-left p-5" [class.text-center]="buildLogLoading">
         <div class="font-weight-bold loading" *ngIf="buildLogLoading">Loading</div>
         <p *ngIf="!buildLogLoading">{{buildLog}}</p>
     </div>
@@ -292,7 +285,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
 <!--Waiting Model-->
 <app-modal id="waiting-modal" class="modal" hideHeader="true" hideFooter="true" disableBackgroundClickEvent="true" size="small">
-    <div body class="text-start p-5 text-center">
+    <div body class="text-left p-5 text-center">
         <div class="font-weight-bold loading">{{action}}</div>
     </div>
 </app-modal>
@@ -301,7 +294,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     <h3 header class="mb-0">Build Configurations</h3>
     <div body class="text-center p-5">
         <div class="row mx-0" *ngIf="selectedBuild">
-            <div class="col-12 text-start">
+            <div class="col-12 text-left">
                 <div class="mx-sm-3 mb-0 mt-0">
                     <label class="font-weight-bold">Build Name</label>
                     <div class="d-inline">{{selectedBuild.configuration?.buildName}}</div>
@@ -520,7 +513,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <app-modal id="build-success-modal" class="modal success-modal">
     <h3 header class="mb-0">Success</h3>
     <div body class="text-center p-5">
-        <div class="text-start success ps-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-success-modal')">Ok</button>
@@ -530,7 +523,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <app-modal id="build-error-modal" class="modal error-modal">
     <h3 header class="mb-0">Error</h3>
     <div body class="text-center p-5">
-        <div class="text-start error ps-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-left error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-error-modal')">Ok</button>
