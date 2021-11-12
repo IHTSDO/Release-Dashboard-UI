@@ -17,6 +17,7 @@ import { ReleaseCenter } from '../../models/releaseCenter';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
+import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 
 @Component({
   selector: 'app-build-viewer',
@@ -65,6 +66,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     useLocalInputFiles = false;
     allTags: object;
 
+    // pagination
+    pageSize: Number;
+    pageNumber: Number;
+    totalBuild = Number;
+
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
                 private productService: ProductService,
@@ -74,7 +80,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 private buildService: BuildService,
                 private permissionService: PermissionService,
                 private envService: EnvService,
-                private websocketService: WebsocketService) {
+                private websocketService: WebsocketService,
+                private paginationService: ProductPaginationService) {
     }
 
     ngOnInit(): void {
@@ -85,6 +92,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
         this.selectedTags = new Object();
+        this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
+        this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
         this.allTags = Object.keys(BuildTagEnum).map(key => ({ label: BuildTagEnum[key], value: key }));
 
         this.route.paramMap.subscribe(paramMap => {
@@ -142,12 +151,19 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         return promise;
     }
 
+    handlePageChange(event) {
+        this.pageNumber = event;
+        this.loadBuilds();
+    }
+
     loadBuilds() {
         this.buildsLoading = true;
         this.allBuilds = [];
         this.clearMessage();
-        this.buildService.getBuilds(this.releaseCenterKey, this.productKey, true, true, true).subscribe(response => {
-                this.allBuilds = response;
+        this.buildService.getBuilds(this.releaseCenterKey, this.productKey,
+                                    true, true, true, this.pageNumber, this.pageSize).subscribe(response => {
+                this.allBuilds = response['content'];
+                this.totalBuild = response['totalElements'];
                 this.sortBuilds();
                 // Update Build Status in case the status has been changed
                 if (this.activeBuild.id) {
@@ -172,8 +188,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.hiddenBuildsLoading = true;
         this.hiddenBuilds = [];
         this.clearMessage();
-        this.buildService.getBuilds(this.releaseCenterKey, this.productKey, true, false, false).subscribe(response => {
-                this.hiddenBuilds = response;
+        this.buildService.getBuilds(this.releaseCenterKey, this.productKey, true, false, false, 1, 100).subscribe(response => {
+                this.hiddenBuilds = response['content'];
             },
             errorResponse => {
                 this.buildsLoading = false;
@@ -482,13 +498,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.localInputFiles).then(() => {
                     this.buildService.scheduleBuild(this.releaseCenterKey, this.productKey, response.id, ).subscribe(() => {
                         this.buildService.getBuild(this.releaseCenterKey, this.productKey, response.id).subscribe(
-                            persistedBuild => {
-                                this.allBuilds.unshift(persistedBuild);
+                            () => {
+                                this.loadBuilds();
                                 this.buildTriggering = false;
                                 this.message = 'The build has been successfully initiated.';
                                 this.closeWaitingModel();
                                 this.openSuccessModel();
-                                this.sortBuilds();
                             }
                         );
                     });
@@ -508,13 +523,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.enableTraceabilityValidation).subscribe(
                 build => {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-                        persistedBuild => {
-                            this.allBuilds.unshift(persistedBuild);
+                        () => {
+                            this.loadBuilds();
                             this.buildTriggering = false;
                             this.message = 'The build has been successfully initiated.';
                             this.closeWaitingModel();
                             this.openSuccessModel();
-                            this.sortBuilds();
                         }
                     );
                 },

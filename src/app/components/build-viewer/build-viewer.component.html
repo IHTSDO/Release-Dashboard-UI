@@ -105,7 +105,7 @@
             <tr *ngIf="builds?.length === 0">
                 <td colspan="11">No builds found.</td>
             </tr>
-            <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: 10, currentPage: p, totalItems: builds?.length}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
+            <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalBuild}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td class="pb-0" *ngIf="canDownloadBuild()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0">{{build?.id}}</td>
@@ -122,7 +122,7 @@
             </tr>
         </table>
         <pagination-controls id="builds_table"
-                      (pageChange)="p = $event"
+                      (pageChange)="handlePageChange($event)"
                       directionLinks="true"
                       autoHide="true"
                       responsive="true"
