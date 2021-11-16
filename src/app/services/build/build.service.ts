@@ -14,11 +14,12 @@ export class BuildService {
       return this.http.get<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId);
   }
 
-  getBuilds(releaseCenterKey, productKey, iclucdeBuildConfig, includeQAConfig, visibility, pageNumber, pageSize): Observable<object> {
+  getBuilds(releaseCenterKey, productKey, iclucdeBuildConfig, includeQAConfig, visibility, view, pageNumber, pageSize): Observable<object> {
         const params = new HttpParams()
             .set('includeBuildConfiguration', iclucdeBuildConfig)
             .set('includeQAConfiguration', includeQAConfig)
             .set('visibility', visibility)
+            .set('viewMode', view)
             .set('pageNumber', (pageNumber - 1).toString())
             .set('pageSize', pageSize);
       return this.http.get<object>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds', {params: params});

@@ -58,11 +58,11 @@
             </div>
             <div class="panel-footer text-right">
                 <label for="view" class="float-left font-weight-bold p-3">View</label>
-                <select [(ngModel)]="view" id="view" class="rounded-lg p-2 float-left" (change)="sortBuilds(); p = 0;">
-                    <option value="default">Default</option>
-                    <option value="all-releases">All Releases</option>
-                    <option value="published">Published</option>
-                    <option value="unpublished">Unpublished</option>
+                <select [(ngModel)]="view" id="view" class="rounded-lg p-2 float-left" (change)="pageNumber = 1; loadBuilds();">
+                    <option value="DEFAULT">Default</option>
+                    <option value="ALL_RELEASES">All Releases</option>
+                    <option value="PUBLISHED">Published</option>
+                    <option value="UNPUBLISHED">Unpublished</option>
                 </select>
                 <button type="button" class="btn-sea-buckthorn ml-3 my-1" *ngIf="canDownloadBuild()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
                 <button type="button" class="btn-blue ml-3 my-1" *ngIf="canTriggerBuild()" (click)="openModal('hidden-builds-modal'); loadHiddenBuilds()">View Hidden</button>
