@@ -20,6 +20,7 @@ export class BuildConfiguration {
     readmeEndDate: string;
     readmeHeader: string;
     releaseInformationFields: string;
+    additionalReleaseInformationFields: string;
     workbenchDataFixesRequired: boolean;
     branchPath: string;
     defaultBranchPath: string;

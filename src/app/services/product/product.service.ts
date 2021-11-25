@@ -61,6 +61,7 @@ export class ProductService {
             classifyOutputFiles: product.buildConfiguration.classifyOutputFiles,
             licenseStatement: product.buildConfiguration.licenceStatement,
             releaseInformationFields: product.buildConfiguration.releaseInformationFields,
+            additionalReleaseInformationFields: product.buildConfiguration.additionalReleaseInformationFields,
             useClassifierPreConditionChecks: product.buildConfiguration.useClassifierPreConditionChecks,
             conceptPreferredTerms : product.buildConfiguration.conceptPreferredTerms,
             customRefsetCompositeKeys : customRefsetCompositeKeys,
