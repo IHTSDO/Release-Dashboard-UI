@@ -502,13 +502,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <span class="font-weight-light" title="Define a number of properies which will be generated in the Release Package Information file">(?)</span>
                     </label>
                     <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.releaseInformationFields">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Additional Release Information Fields
-                        <span class="font-weight-light" title="Define the list of fields which will be inlcuded in the Release Package Information file. For example: key1:value1|key2:value2|key3:value3...">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.additionalReleaseInformationFields">
-                </div>
+                </div>                
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Concept Preferred Terms
                         <span class="font-weight-light" title="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">(?)</span>
@@ -516,10 +510,16 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.conceptPreferredTerms">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="font-weight-bold align-top">Additional Release Information Fields
+                        <span class="font-weight-light" title="Define the list of fields which will be inlcuded in the Release Package Information file. For example: key1:value1|key2:value2|key3:value3...">(?)</span>
+                    </label>
+                    <textarea rows="5" style="resize: vertical;" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold align-top">License Statement
                         <span class="font-weight-light" title="The licence statement which will be used in the Release Package Information file">(?)</span>
                     </label>
-                    <textarea rows="5" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.licenceStatement"></textarea>
+                    <textarea rows="5" style="resize: vertical;" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.licenceStatement"></textarea>
                 </div>
             </div>
         </div>
