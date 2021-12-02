@@ -1,8 +1,8 @@
 <app-left-sidebar></app-left-sidebar>
 <div *ngIf="activeReleaseCenter" class="product-viewer text-center">
-    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>        
-    <div class="container">        
-        <button class="btn-circle ml-3 mb-3 btn-blue float-right" *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; saveResponse = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>        
+    <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
+    <div class="container">
+        <button class="btn-circle ml-3 mb-3 btn-blue float-right" *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; saveResponse = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>
         <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
                 <th>Product</th>
@@ -12,7 +12,7 @@
             </tr>
             <tr>
                 <td colspan="4"><div class="font-weight-bold loading">Loading</div></td>
-            </tr>           
+            </tr>
         </table>
         <table class="table table-bordered" *ngIf="!productsLoading">
             <tr>
@@ -35,12 +35,12 @@
                         <button class="btn-circle btn-blue ml-3" *ngIf="!product.manifestFileUploading && canAddProduct()" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>
                         <div *ngIf="product.manifestFileUploading" class="badge loading">Uploading</div>
                         <button class="btn-circle btn-mandy ml-3" *ngIf="canAddProduct()" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product"><i class="material-icons">visibility_off</i></button>
-                    </div>                                                            
+                    </div>
                 </td>
             </tr>
         </table>
         <pagination-controls id="products_table"
-                      (pageChange)="handlePageChange($event)"                      
+                      (pageChange)="handlePageChange($event)"
                       directionLinks="true"
                       autoHide="true"
                       responsive="true"
@@ -71,7 +71,7 @@
     <div body class="text-center p-5">
         <p>The manifest file already exists (<a [routerLink]="" (click)="loadManifestFile(selectedProduct)">see manifest.xml</a>). Replace it?</p>
     </div>
-    <div footer>        
+    <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('manifest-confirmation-modal')">No</button>
         <button type="button" class="btn-blue" (click)="openUploadManifestFileDialog(); closeModal('manifest-confirmation-modal')">Yes</button>
     </div>
@@ -79,20 +79,20 @@
 
 <!-- UPDATE MODAL -->
 <app-modal id="update-product-modal" class="modal update-modal" size="large">
-    <h3 header class="mb-0">Product Configurations</h3>    
+    <h3 header class="mb-0">Product Configurations</h3>
     <div body class="text-center p-5">
         <h3 class="mb-4">{{editedProduct.name}}</h3>
         <div class="row mx-0 mb-2">
             <div class="col-12 text-left">
                 <p class="mx-sm-3 font-italic">See&nbsp;<a href="https://confluence.ihtsdotools.org/pages/viewpage.action?spaceKey=RMT&title=SRS+Script+Client+parameter+documentation">confluence</a>&nbsp;page for more information about these prarmeters.</p>
             </div>
-        </div>   
+        </div>
         <div class="row mx-0">
             <div class="col-12 text-left">
                 <div class="form-group mx-sm-3 mb-0 mt-0">
                     <label class="font-weight-bold">Effective Time
                         <span class="font-weight-light" title="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. EXample: 2015-07-31">(?)</span>
-                    </label>                    
+                    </label>
                     <input type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" value="{{ editedProduct.buildConfiguration.effectiveTime | date:'yyyy-MM-dd' }}">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
@@ -124,7 +124,7 @@
                         <span class="font-weight-light" title="Indicates if the input files should just be packaged up (with no processing applied to them)">(?)</span>
                     </label>
                     <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.justPackage">
-                </div>                
+                </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Beta Release
                         <span class="font-weight-light" title="Indicate whether or not the release is a beta release">(?)</span>
@@ -148,7 +148,7 @@
                         <span class="font-weight-light" title="Allows classification in the preCondition checks">(?)</span>
                     </label>
                     <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.useClassifierPreConditionChecks">
-                </div>                
+                </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Classify Output Files
                         <span class="font-weight-light" title="Indicates whether or not to run a classification against the output files">(?)</span>
@@ -188,7 +188,7 @@
                         <span class="font-weight-light" title="Passes the previous extension release version to the RVF for  QA testing">(?)</span>
                     </label>
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.previousExtensionRelease">
-                </div>                
+                </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Extension Dependency Release
                         <span class="font-weight-light" title="Passes the international release version (that the extension is dependent upon) to the RVF for QA testing">(?)</span>
@@ -218,7 +218,7 @@
                         <span class="font-weight-light" title="The module id for a given extension release">(?)</span>
                     </label>
                     <input type="number" class="w-25 rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.moduleId">
-                </div>                
+                </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Assertion Groups
                         <span class="font-weight-light" title="Passes the assertion group name(s) to the RVF for QA testing">(?)</span>
@@ -260,13 +260,7 @@
                         <span class="font-weight-light" title="Passes to RVF if the Enable JIRA flag is checked. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
                     </label>
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.reportingStage">
-                </div>                
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Release Information Fields
-                        <span class="font-weight-light" title="Define a number of properies which will be generated in the Release Package Information file">(?)</span>
-                    </label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.releaseInformationFields">
-                </div>                
+                </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Concept Preferred Terms
                         <span class="font-weight-light" title="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">(?)</span>
@@ -274,8 +268,8 @@
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.conceptPreferredTerms">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold align-top">Additional Release Information Fields
-                        <span class="font-weight-light" title="Define the list of fields which will be inlcuded in the Release Package Information file. For example: key1:value1|key2:value2|key3:value3...">(?)</span>
+                    <label class="font-weight-bold align-top">Release Information Fields
+                        <span class="font-weight-light" title="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">(?)</span>
                     </label>
                     <textarea rows="5" style="resize: vertical;" [(ngModel)]="editedProduct.buildConfiguration.additionalReleaseInformationFields"></textarea>
                 </div>
@@ -285,8 +279,8 @@
                     </label>
                     <textarea rows="5" style="resize: vertical;" [(ngModel)]="editedProduct.buildConfiguration.licenceStatement"></textarea>
                 </div>
-            </div>            
-        </div>        
+            </div>
+        </div>
     </div>
     <div footer>
         <div class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
@@ -300,7 +294,7 @@
     <div body class="text-center p-5">
         <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
-    <div footer>        
+    <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('product-success-modal')">Ok</button>
     </div>
 </app-modal>
@@ -310,7 +304,7 @@
     <div body class="text-center p-5">
         <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
-    <div footer>        
+    <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('product-creation-success-modal')">Cancel</button>
         <button type="button" class="btn-blue" (click)="openUpdateConfigurationsModal(selectedProduct); closeModal('product-creation-success-modal')">Configure Product</button>
     </div>
@@ -321,7 +315,7 @@
     <div body class="text-center p-5">
         <div class="text-left error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
-    <div footer>        
+    <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('product-error-modal')">Ok</button>
     </div>
 </app-modal>
@@ -331,7 +325,7 @@
     <div body class="text-center p-5">
         <p>Do you want to hide the product '{{selectedProduct?.name}}'?</p>
     </div>
-    <div footer>        
+    <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('hide-product-confirmation-modal')">No</button>
         <button type="button" class="btn-blue" (click)="hideProduct()">Yes</button>
     </div>
@@ -341,5 +335,5 @@
 <app-modal id="product-waiting-modal" class="modal" hideHeader="true" hideFooter="true" disableBackgroundClickEvent="true" size="small">
     <div body class="text-left p-5 text-center">
         <div class="font-weight-bold loading">{{action}}</div>
-    </div>    
+    </div>
 </app-modal>

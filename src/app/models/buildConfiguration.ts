@@ -19,7 +19,6 @@ export class BuildConfiguration {
     previousPublishedPackage: string;
     readmeEndDate: string;
     readmeHeader: string;
-    releaseInformationFields: string;
     additionalReleaseInformationFields: string;
     workbenchDataFixesRequired: boolean;
     branchPath: string;
