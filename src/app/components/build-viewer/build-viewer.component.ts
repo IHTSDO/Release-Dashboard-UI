@@ -174,6 +174,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             errorResponse => {
                 this.buildsLoading = false;
                 this.message = errorResponse.error.errorMessage;
+                if (this.message && (this.message.includes('Build configuration file is missing')
+                                    || this.message.includes('QA Configuration file is missing'))) {
+                    this.message += ' Please contact technical support to get help resolving this.';
+                }
                 this.openErrorModel();
             },
             () => {
@@ -440,12 +444,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
         this.closeBuildModal();
         if (this.useLocalInputFiles) {
-            this.openWaitingModel('Uploading input files');
             this.buildService.createBuild(this.releaseCenterKey,
                         this.productKey,
                         this.buildParams.buildName,
                         formattedeffectiveDate,
                         this.buildParams.maxFailureExport).subscribe((response) => {
+                this.openWaitingModel('Uploading input files');
                 this.uploadInputFiles(this.releaseCenterKey,
                     this.productKey,
                     response.id,
@@ -463,7 +467,26 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                         );
                     });
 
+                },
+                errorResponse => {
+                    this.loadBuilds();
+                    this.buildTriggering = false;
+                    if (errorResponse.status === 413 ||
+                        (errorResponse.error && errorResponse.error.errorMessage && errorResponse.error.errorMessage.includes('Maximum upload size exceeded'))) {
+                        this.message = 'Your local input files are too large. Please delete the newly created build and re-upload files smaller than 500MB.';
+                    } else {
+                        this.message = errorResponse.message;
+                    }
+                    this.openErrorModel();
+                    this.closeWaitingModel();
                 });
+            },
+            errorResponse => {
+                this.message = errorResponse.error.errorMessage;
+                if (this.message.includes('No manifest file found for product')) {
+                    this.message += '. Please upload it.';
+                }
+                this.openErrorModel();
             });
         } else {
             this.openWaitingModel('Initiating build');
@@ -491,6 +514,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.buildTriggering = false;
                     this.closeWaitingModel();
                     this.message = errorResponse.error.errorMessage;
+                    if (this.message.includes('No manifest file found for product')) {
+                        this.message += '. Please upload it.';
+                    }
                     this.openErrorModel();
                 }
             );
@@ -772,6 +798,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     } else {
                         upload(inputFiles, index);
                     }
+                },
+                errorResponse => {
+                    console.log(errorResponse);
+                    reject(errorResponse);
                 });
             };
             upload(localInputFiles, 0);

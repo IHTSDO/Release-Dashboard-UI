@@ -8,8 +8,8 @@
     </div>    
     <div class="sidebar-buttons w-100">
         <div class="row justify-content-center align-items-center mb-2">
-            <button class="btn-circle btn-blue text-center float-left mr-5" *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; saveResponse = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
-            <button class="btn-circle btn-green text-center float-right ml-5" *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="saveResponse = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
+            <button class="btn-circle btn-blue text-center float-left mr-5" *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; message = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>
+            <button class="btn-circle btn-green text-center float-right ml-5" *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="message = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>
         </div>        
     </div>
 </nav>
@@ -29,8 +29,7 @@
         </select>
     </div>
 
-    <div footer>
-        <div class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
+    <div footer>        
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingCenter" (click)="closeModal('add-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="addReleaseCenter(addName.value, addShortName.value, addCodeSystem.value)">Save</button>
     </div>
@@ -50,8 +49,7 @@
             </option>
         </select>
     </div>
-    <div footer>
-        <div class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
+    <div footer>        
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingCenter" (click)="closeModal('edit-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="savingCenter" (click)="saveReleaseCenter(editName.value, editShortName.value, editCodeSystem.value)">Save</button>
     </div>
@@ -64,5 +62,15 @@
     </div>
     <div footer>        
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('release-center-success-modal')">Ok</button>
+    </div>
+</app-modal>
+
+<app-modal id="release-center-error-modal" class="modal error-modal">
+    <h3 header class="mb-0">Error</h3>
+    <div body class="text-center p-5">
+        <div class="text-left error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+    </div>
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('release-center-error-modal')">Ok</button>
     </div>
 </app-modal>

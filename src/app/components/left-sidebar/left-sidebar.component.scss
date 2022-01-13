@@ -6,6 +6,11 @@ nav#sidebar {
     height: calc(100vh - 9rem);
     background: $alto-white;
 
+    div.error {
+        color: $mandy;
+        padding: .75rem;
+    }
+
     h3 {
         border-bottom: 1px $ghost-grey solid;
 
@@ -50,11 +55,15 @@ app-modal {
         input {
             border: 1px $ghost-grey solid;
         }
-    }   
-
+    }
     &.success-modal {
         div.success i {
             color:$fruit-salad;
+        }
+    }
+    &.error-modal {
+        div.error i {
+            color:$mandy;
         }
     }
 }

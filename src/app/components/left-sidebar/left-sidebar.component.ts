@@ -24,7 +24,6 @@ export class LeftSidebarComponent implements OnInit {
     activeReleaseCenter: ReleaseCenter;
 
     // animations
-    saveResponse: string;
     savingCenter = false;
 
     message: string;
@@ -109,11 +108,11 @@ export class LeftSidebarComponent implements OnInit {
     }
 
     addReleaseCenter(name, shortName, codeSystem) {
-        this.saveResponse = '';
         this.message = '';
         const missingFields = this.missingFieldsCheck(name, shortName, codeSystem);
         if (missingFields.length !== 0) {
-            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            this.message = 'Please enter the following fields: ' + missingFields.join(', ') + '.';
+            this.openErrorModel();
             return;
         }
         this.savingCenter = true;
@@ -128,17 +127,23 @@ export class LeftSidebarComponent implements OnInit {
             },
             errorResponse => {
                 this.savingCenter = false;
-                this.saveResponse = errorResponse.error.errorMessage;
+                if (errorResponse.status === 409) {
+                    this.message = 'There was already a release center with short name \'' + shortName + '\'. Please select another one.';
+                } else {
+                    this.message = errorResponse.error.errorMessage;
+                }
+
+                this.openErrorModel();
             }
         );
     }
 
     saveReleaseCenter(name, shortName, codeSystem) {
-        this.saveResponse = '';
         this.message = '';
         const missingFields = this.missingFieldsCheck(name, shortName, codeSystem);
         if (missingFields.length !== 0) {
-            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            this.message = 'Please enter the following fields: ' + missingFields.join(', ') + '.';
+            this.openErrorModel();
             return;
         }
 
@@ -156,7 +161,8 @@ export class LeftSidebarComponent implements OnInit {
             },
             errorResponse => {
                 this.savingCenter = false;
-                this.saveResponse = errorResponse.error.errorMessage;
+                this.message = errorResponse.error.errorMessage;
+                this.openErrorModel();
             }
         );
     }
@@ -183,5 +189,9 @@ export class LeftSidebarComponent implements OnInit {
 
     private openSuccessModel() {
         this.openModal('release-center-success-modal');
+    }
+
+    private openErrorModel() {
+        this.openModal('release-center-error-modal');
     }
 }

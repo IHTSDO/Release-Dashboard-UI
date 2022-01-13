@@ -34,7 +34,6 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     productsLoading = false;
 
     // animations
-    saveResponse: string;
     savingProduct = false;
 
     // pagination
@@ -93,11 +92,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     createProduct(productName) {
-        this.saveResponse = '';
         this.message = '';
         const missingFields = this.missingFieldsCheck(productName.trim());
         if (missingFields.length !== 0) {
-            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            this.message = 'Please enter the following fields: ' + missingFields.join(', ') + '.';
+            this.openErrorModel();
             return;
         }
 
@@ -112,7 +111,12 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         },
         errorResponse => {
             this.savingProduct = false;
-            this.saveResponse = errorResponse.error.errorMessage;
+            if (errorResponse.status === 409) {
+                this.message = 'There was already a product name \'' + productName + '\'. Please select another one.';
+            } else {
+                this.message = errorResponse.error.errorMessage;
+            }
+            this.openErrorModel();
         },
         () => {
             this.savingProduct = false;
@@ -120,11 +124,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     updateProduct(product: Product, customRefsetCompositeKeys: string) {
-        this.saveResponse = '';
         this.message = '';
         const missingFields = this.productConfigurationMissingFieldsCheck(product);
         if (missingFields.length !== 0) {
-            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            this.message = 'Please enter the following fields: ' + missingFields.join(', ') + '.';
+            this.openErrorModel();
             return;
         }
         this.savingProduct = true;
@@ -138,7 +142,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             },
             errorResponse => {
                 this.savingProduct = false;
-                this.saveResponse = errorResponse.error.errorMessage;
+                this.message = errorResponse.error.errorMessage;
+                this.openErrorModel();
             },
             () => {
                 this.savingProduct = false;
@@ -176,7 +181,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     openUpdateConfigurationsModal(product: Product) {
-        this.saveResponse = '';
+        this.message = '';
         this.customRefsetCompositeKeys = '';
         this.editedProduct = (JSON.parse(JSON.stringify(product)));
         if (!product.buildConfiguration) {
