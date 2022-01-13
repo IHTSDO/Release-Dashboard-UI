@@ -37,7 +37,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     savingProduct = false;
 
     // pagination
-    pageSize: Number;
+    pageSize = 20;
     pageNumber: Number;
     totalProduct: Number;
 
@@ -68,7 +68,6 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.roles = this.permissionService.roles;
         this.customRefsetCompositeKeys = null;
-        this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
         this.totalProduct = this.paginationService.EMPTY_ITEMS;
         this.initializeEditingProduct();
     }
