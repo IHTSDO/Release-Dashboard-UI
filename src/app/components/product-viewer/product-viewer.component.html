@@ -6,28 +6,22 @@
         <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
                 <th>Product</th>
-                <th>Status</th>
-                <th>Tag</th>
                 <th class="w-15"></th>
             </tr>
             <tr>
-                <td colspan="4"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="2"><div class="font-weight-bold loading">Loading</div></td>
             </tr>
         </table>
         <table class="table table-bordered" *ngIf="!productsLoading">
             <tr>
                 <th>Product</th>
-                <th>Status</th>
-                <th>Tag</th>
                 <th class="max-vw-15"></th>
             </tr>
             <tr *ngIf="products?.length === 0">
-                <td colspan="4">No products found.</td>
+                <td colspan="2">No products found.</td>
             </tr>
             <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalProduct}" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}">
                 <td class="pb-0 text-left">{{product?.name}}</td>
-                <td class="pb-0">{{product?.latestBuildStatus.replaceAll('_', ' ') | titlecase}}</td>
-                <td class="pb-0"><span *ngIf="product.latestTag">{{product.latestTag.replaceAll('_', ' ') | titlecase}}</span></td>
                 <td class="pb-0 btn-groups">
                     <div class="input-group pl-4 justify-content-start">
                         <button class="btn-circle btn-green" *ngIf="canAddProduct()" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>
@@ -59,7 +53,7 @@
         <p>Please enter Product Name for the new Product</p>
         <input #addProductName class="w-75 rounded-lg p-2" type="text" placeholder="Product Name">
     </div>
-    <div footer>        
+    <div footer>
         <button type="button" class="btn-sea-buckthorn" [disabled]="savingProduct" (click)="closeModal('add-product-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="savingProduct" (click)="createProduct(addProductName.value)">Save</button>
     </div>
