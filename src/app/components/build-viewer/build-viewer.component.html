@@ -213,8 +213,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         </div>
     </div>
 
-    <div footer>
-        <div class="px-3 error" [class.d-none]="saveResponse?.length===0">{{saveResponse}}</div>
+    <div footer>        
         <button type="button" class="btn-sea-buckthorn" [disabled]="buildTriggering" (click)="closeModal('build-modal')">Cancel</button>
         <button type="button" class="btn-blue" [disabled]="buildTriggering" (click)="runBuild()">Run</button>
     </div>

@@ -57,7 +57,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // Control flags and error handling flags
     action: string;
     message: string;
-    saveResponse: string;
     buildTriggering = false;
     buildsLoading = false;
     hiddenBuildsLoading = false;
@@ -436,7 +435,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.clearMessage();
         const missingFields = this.missingFieldsCheck();
         if (missingFields.length !== 0) {
-            this.saveResponse = 'Missing Fields: ' + missingFields.join(', ') + '.';
+            this.message = 'Please enter the following fields: ' + missingFields.join(', ') + '.';
+            this.openErrorModel();
             return;
         }
         this.clearMessage();
@@ -899,7 +899,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     private clearMessage() {
         this.message = '';
-        this.saveResponse = '';
     }
 
     private openSuccessModel() {
