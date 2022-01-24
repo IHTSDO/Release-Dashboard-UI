@@ -187,6 +187,12 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             const effectiveTime = new Date(this.editedProduct.buildConfiguration.effectiveTime);
             this.editedProduct.buildConfiguration.effectiveTime = effectiveTime;
         }
+        if (this.editedProduct.buildConfiguration.extensionConfig &&
+            this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
+            // Convert to Date
+            const effectiveTime = new Date(this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate);
+            this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate = effectiveTime;
+        }
         if (!product.qaTestConfig) {
             this.editedProduct.qaTestConfig = new QAConfiguration();
         }

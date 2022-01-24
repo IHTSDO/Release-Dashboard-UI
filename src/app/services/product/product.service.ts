@@ -67,6 +67,11 @@ export class ProductService {
             previousPublishedPackage : product.buildConfiguration.previousPublishedPackage,
             dependencyReleasePackage : product.buildConfiguration.extensionConfig.dependencyRelease
         };
+        if (product.buildConfiguration.extensionConfig &&
+            product.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
+                data['previousEditionDependencyEffectiveDate'] =
+                    formatDate(product.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate, 'yyyy-MM-dd', 'en-US');
+            }
 
         return this.http.patch<Product>('/release/centers/' + releaseCenterKey + '/products/' + product.id, data);
     }

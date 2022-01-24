@@ -3,4 +3,5 @@ export class ExtensionConfig {
     moduleId: string;
     namespaceId: string;
     releaseAsAnEdition: boolean;
+    previousEditionDependencyEffectiveDate: Date;
 }
