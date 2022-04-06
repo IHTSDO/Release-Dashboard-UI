@@ -167,6 +167,29 @@ export class LeftSidebarComponent implements OnInit {
         );
     }
 
+    removeReleaseCenter() {
+        if (!this.activeReleaseCenter) {
+            return;
+        }
+        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: this.activeReleaseCenter.name,
+                                                                shortName: this.activeReleaseCenter.shortName,
+                                                                codeSystem: this.activeReleaseCenter.codeSystem,
+                                                                removed: true}).subscribe(
+            response => {
+                this.releaseCenterService.clearCachedReleaseCenters();
+                this.ngOnInit();
+                this.message = 'The release center ' + response.name + ' has been removed successfully.';
+                this.closeModal('remove-relese-center-confirmation-modal');
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                this.closeModal('remove-relese-center-confirmation-modal');
+                this.message = errorResponse.error.errorMessage;
+                this.openErrorModel();
+            }
+        );
+    }
+
     missingFieldsCheck(name, shortName, codeSystem): Object[] {
         const missingFields = [];
         if (!name) { missingFields.push('Name'); }
