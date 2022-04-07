@@ -365,8 +365,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                         build.buildPublishing = false;
                                         build.tags = response.tags;
                                         this.closeWaitingModel();
-                                        this.message = 'The build has been published successfully.';
-                                        this.openSuccessModel();
+                                        if (status['message']) {
+                                            this.message = status['message'];
+                                            this.message += '.\nPlease contact technical support to get help resolving this.';
+                                            this.openErrorModel();
+                                        } else {
+                                            this.message = 'The build has been published successfully.';
+                                            this.openSuccessModel();
+                                        }
                                     });
                                     clearInterval(interval);
                                 } else if (status['status'] === 'FAILED') {

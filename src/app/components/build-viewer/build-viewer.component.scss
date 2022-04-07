@@ -88,8 +88,12 @@ app-modal {
         }
     }
     &.error-modal {
-        div.error i {
-            color:$mandy;
+        div.error {
+            white-space: pre-wrap;
+
+            i {
+                color:$mandy;
+            }
         }
     }
     &.success-modal {
