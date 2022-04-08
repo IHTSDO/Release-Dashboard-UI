@@ -12,6 +12,7 @@ export class BuildConfiguration {
     customRefsetCompositeKeys: object;
     extensionConfig: ExtensionConfig;
     includePrevReleaseFiles: string;
+    excludeRefsetDescriptorMembers: string;
     inputFilesFixesRequired: boolean;
     justPackage: boolean;
     licenceStatement: string;

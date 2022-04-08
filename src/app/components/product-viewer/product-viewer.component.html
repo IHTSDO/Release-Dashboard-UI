@@ -209,6 +209,12 @@
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.includePrevReleaseFiles">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="font-weight-bold">Excluded Refset Descriptor members
+                        <span class="font-weight-light" title="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">(?)</span>
+                    </label>
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.excludeRefsetDescriptorMembers">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Namespace ID
                         <span class="font-weight-light" title="The namespace id for a given extension release">(?)</span>
                     </label>
