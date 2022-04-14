@@ -13,6 +13,7 @@ export class BuildConfiguration {
     extensionConfig: ExtensionConfig;
     includePrevReleaseFiles: string;
     excludeRefsetDescriptorMembers: string;
+    excludeLanguageRefsetIds: string;
     inputFilesFixesRequired: boolean;
     justPackage: boolean;
     licenceStatement: string;

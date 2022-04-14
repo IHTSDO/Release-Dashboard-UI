@@ -58,6 +58,7 @@ export class ProductService {
             jiraReportingStage: product.qaTestConfig.reportingStage,
             includePrevReleaseFiles: product.buildConfiguration.includePrevReleaseFiles,
             excludeRefsetDescriptorMembers: product.buildConfiguration.excludeRefsetDescriptorMembers,
+            excludeLanguageRefsetIds: product.buildConfiguration.excludeLanguageRefsetIds,
             droolsRulesGroupNames: product.qaTestConfig.droolsRulesGroupNames,
             classifyOutputFiles: product.buildConfiguration.classifyOutputFiles,
             licenseStatement: product.buildConfiguration.licenceStatement,

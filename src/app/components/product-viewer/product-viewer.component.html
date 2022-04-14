@@ -215,6 +215,12 @@
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.excludeRefsetDescriptorMembers">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="font-weight-bold">Excluded Language refsets
+                        <span class="font-weight-light" title="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,...">(?)</span>
+                    </label>
+                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.excludeLanguageRefsetIds">
+                </div>
+                <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Namespace ID
                         <span class="font-weight-light" title="The namespace id for a given extension release">(?)</span>
                     </label>
