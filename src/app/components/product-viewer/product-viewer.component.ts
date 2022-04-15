@@ -294,7 +294,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 },
                 errorResponse => {
                     product.manifestFileUploading = false;
-                    this.message = 'Failed to upload the Manifest file. Error: ' + errorResponse.error.errorMessage;
+                    this.message = 'Failed to upload the Manifest file. Error: '
+                    + (errorResponse.error && errorResponse.error.errorMessage ? errorResponse.error.errorMessage : errorResponse.error);
                     this.openErrorModel();
                 }
             );
