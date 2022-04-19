@@ -284,6 +284,12 @@ div.badge {
     a span {
         color: #fff;
     }
+
+    &.footer {
+        a {
+            color: #fff;
+        }
+    }
 }
 
 .uat {
@@ -305,5 +311,11 @@ div.badge {
     color: #fff;
     a span {
         color: #fff;
+    }
+
+    &.footer {
+        a {
+            color: #fff;
+        }
     }
 }
