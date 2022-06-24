@@ -39,11 +39,12 @@ export class BuildService {
       return this.http.get(url, {responseType: 'arraybuffer'});
   }
 
-  createBuild(releaseCenterKey, productKey, buildName, effectiveDate, maxFailureExport): Observable<Build> {
+  createBuild(releaseCenterKey, productKey, buildName, effectiveDate, replaceExistingEffectiveTime, maxFailureExport): Observable<Build> {
     const data = {
       effectiveDate: effectiveDate,
       buildName: buildName,
       maxFailuresExport: maxFailureExport,
+      replaceExistingEffectiveTime: replaceExistingEffectiveTime,
       loadTermServerData: false,
       loadExternalRefsetData: false
     };

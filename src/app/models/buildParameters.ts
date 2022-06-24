@@ -6,4 +6,5 @@ export class BuildParameters {
     buildName: string;
     excludedModuleIds: string;
     enableTraceabilityValidation: boolean;
+    replaceExistingEffectiveTime: boolean;
 }

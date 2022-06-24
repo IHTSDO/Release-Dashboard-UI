@@ -211,6 +211,13 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <span class="font-weight-light" title="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">(?)</span>
             </div>
         </div>
+        <div class="p-3 m-3 text-left row" *ngIf="useLocalInputFiles">
+            <div class="w-75 d-inline pl-5 ml-2">
+                <input type="checkbox" [(ngModel)]="buildParams.replaceExistingEffectiveTime">
+                <span class="pl-2">Replace Existing Effective Time</span>&nbsp;
+                <span class="font-weight-light" title="This option will force the Release Service to conduct file transformation before packaging.  This transformation will replace all effectiveTimes that are already populated in the Release files with the value entered into the effectiveTime field above.  This should only be used in exceptional circumstances, as for most input files (especially those exported from the IHTSDO termServer) these dates will be correct for each record and therefore should be retained instead of being replaced">(?)</span>
+            </div>
+        </div>
     </div>
 
     <div footer>        

@@ -447,14 +447,16 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
         this.clearMessage();
         this.buildTriggering = true;
-        const formattedeffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
+        const formattedEffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');
         this.closeBuildModal();
         if (this.useLocalInputFiles) {
             this.buildService.createBuild(this.releaseCenterKey,
                         this.productKey,
                         this.buildParams.buildName,
-                        formattedeffectiveDate,
-                        this.buildParams.maxFailureExport).subscribe((response) => {
+                        formattedEffectiveDate,
+                        this.buildParams.replaceExistingEffectiveTime,
+                        this.buildParams.maxFailureExport
+                        ).subscribe((response) => {
                 this.openWaitingModel('Uploading input files');
                 this.uploadInputFiles(this.releaseCenterKey,
                     this.productKey,
@@ -502,7 +504,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.branch,
                                       this.buildParams.exportType,
                                       this.buildParams.maxFailureExport,
-                                      formattedeffectiveDate,
+                                      formattedEffectiveDate,
                                       this.buildParams.excludedModuleIds,
                                       this.buildParams.enableTraceabilityValidation).subscribe(
                 build => {
