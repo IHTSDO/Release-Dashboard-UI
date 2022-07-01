@@ -614,6 +614,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         window.open(build['url']);
     }
 
+    loadManifestFile(build: Build) {
+        window.open(build['manifest_url'] + '/file');
+    }
+
     openBuildVisibilityModal(build: Build) {
         this.selectedBuild = build;
         this.openModal('hide-build-confirmation-modal');

@@ -81,11 +81,12 @@
                 <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th>Configurations</th>
+                <th>Manifest</th>
                 <th *ngIf="canTriggerBuild()">Visibility</th>
                 <th class="w-10">Tags</th>
             </tr>
             <tr >
-                <td colspan="11"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="12"><div class="font-weight-bold loading">Loading</div></td>
             </tr>
         </table>
         <table class="table table-bordered" *ngIf="!buildsLoading">
@@ -99,6 +100,7 @@
                 <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
                 <th class="w-10">RVF Report</th>
                 <th>Configurations</th>
+                <th>Manifest</th>
                 <th *ngIf="canTriggerBuild()">Visibility</th>
                 <th class="w-15">Tags</th>
             </tr>
@@ -111,10 +113,11 @@
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
-                <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
-                <td class="pb-0 btn-download" *ngIf="canDownloadBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0" *ngIf="canDownloadBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
-                <td class="pb-0 btn-setting"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
+                <td class="pb-0"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
+                <td class="pb-0"><button class="btn-circle btn-green" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="material-icons">insert_drive_file</i></button></td>
                 <td class="pb-0" *ngIf="canTriggerBuild()"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>
                 <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && canTriggerBuild()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span>
                     <button *ngIf="!build.tags && canTriggerBuild()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>

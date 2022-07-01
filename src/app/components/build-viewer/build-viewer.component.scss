@@ -59,11 +59,6 @@ div.build-viewer {
             &.hasWarnings {
                 background-color: lighten($candlelight, 10%);
             }
-
-            &.btn-download, 
-            &.btn-setting {
-                padding: .2rem;
-            }
             div.btn-log-download {
                 background-color: $sea-buckthorn;
             }
