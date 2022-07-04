@@ -77,13 +77,13 @@
                 <th>Build Date</th>
                 <th>Status</th>
                 <th>User</th>
-                <th class="w-10" *ngIf="canDownloadBuild()">Log</th>
-                <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
-                <th class="w-10">RVF Report</th>
-                <th>Configurations</th>
+                <th *ngIf="canDownloadBuild()">Log</th>
+                <th *ngIf="canDownloadBuild()">Release</th>
+                <th >RVF Report</th>
+                <th>Config</th>
                 <th>Manifest</th>
                 <th *ngIf="canTriggerBuild()">Visibility</th>
-                <th class="w-10">Tags</th>
+                <th class="w-9">Tags</th>
             </tr>
             <tr >
                 <td colspan="12"><div class="font-weight-bold loading">Loading</div></td>
@@ -94,18 +94,18 @@
                 <th class="w-5" *ngIf="canDownloadBuild()">URL</th>
                 <th>Build Name</th>
                 <th>Build Date</th>
-                <th class="w-12">Status</th>
+                <th>Status</th>
                 <th>User</th>
                 <th class="w-5" *ngIf="canDownloadBuild()">Log</th>
-                <th class="w-10" *ngIf="canDownloadBuild()">Release</th>
-                <th class="w-10">RVF Report</th>
-                <th>Configurations</th>
+                <th *ngIf="canDownloadBuild()">Release</th>
+                <th class="w-8">RVF Report</th>
+                <th>Config</th>
                 <th>Manifest</th>
                 <th *ngIf="canTriggerBuild()">Visibility</th>
-                <th class="w-15">Tags</th>
+                <th class="w-9">Tags</th>
             </tr>
             <tr *ngIf="builds?.length === 0">
-                <td colspan="11">No builds found.</td>
+                <td colspan="12">No builds found.</td>
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalBuild}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
                 <td class="pb-0" *ngIf="canDownloadBuild()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
