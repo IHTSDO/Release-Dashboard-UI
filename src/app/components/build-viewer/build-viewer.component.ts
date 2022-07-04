@@ -771,11 +771,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     || (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
                     )
                 )
-            ||  (this.roles.hasOwnProperty(codeSystem) && (
-                        (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
-                    || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
-                    )
-                )
             );
     }
 
