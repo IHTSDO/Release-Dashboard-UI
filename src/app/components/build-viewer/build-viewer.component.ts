@@ -349,6 +349,41 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         });
     }
 
+    downloadMd5(build: Build) {
+        this.clearMessage();
+        this.buildService.listPackageOutputFiles(this.releaseCenterKey, this.productKey, build.id).subscribe(response  => {
+            if (response) {
+                const outputFiles = <object[]> response;
+                let md5FileFound = false;
+                outputFiles.forEach( (element) => {
+                    const url = <string> element['url'];
+                    if (url.endsWith('.md5')) {
+                        md5FileFound = true;
+                        const filename = url.split('/').pop();
+                        this.buildService.getBuildPackage(this.releaseCenterKey, this.productKey, build.id, filename).subscribe(data => {
+                            this.downLoadFile(data, 'application/zip', filename);
+                        });
+                        return;
+                    }
+                });
+
+                if (!md5FileFound) {
+                    this.message = 'The MD5 file isn\'t available';
+                    if (BuildStateEnum.BUILDING === build.status
+                        || BuildStateEnum.BEFORE_TRIGGER === build.status) {
+                        this.message += ' whilst the build is running. Please wait.';
+                    } else if (BuildStateEnum.RELEASE_COMPLETE !== build.status &&
+                                BuildStateEnum.RELEASE_COMPLETE_WITH_WARNINGS !== build.status) {
+                        this.message += ' due to the build failed to complete.';
+                    } else {
+                        this.message += '.';
+                    }
+                    this.openErrorModel();
+                }
+            }
+        });
+    }
+
     publishBuild(build: Build) {
         this.clearMessage();
         this.closePublishingBuildConfirmationModal();

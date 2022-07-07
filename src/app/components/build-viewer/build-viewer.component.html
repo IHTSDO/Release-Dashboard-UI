@@ -114,7 +114,13 @@
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
-                <td class="pb-0" *ngIf="canDownloadBuild()"><div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div><button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button></td>
+                <td class="pb-0" *ngIf="canDownloadBuild()" style="width: auto;">
+                    <div style="display: flex;border: none;">
+                        <div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div>
+                        <button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button>
+                        <button type="button" style="font-size: 9px;margin-left: 5px;width: 2.5em;height: 2.5em;color: black;" class="btn-circle btn-sea-buckthorn" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file">md5</button>
+                    </div>                    
+                </td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
                 <td class="pb-0"><button class="btn-circle btn-green" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="material-icons">insert_drive_file</i></button></td>
