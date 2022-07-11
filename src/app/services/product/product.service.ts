@@ -16,10 +16,12 @@ export class ProductService {
         return this.http.get<Product>('/release/centers/' + releaseCenterKey + '/products/' + productKey);
     }
 
-    getProducts(releaseCenterKey, pageNumber, pageSize): Observable<object> {
+    getProducts(releaseCenterKey, pageNumber, pageSize, sortField, sortDirection): Observable<object> {
         const params = new HttpParams()
                     .set('pageNumber', (pageNumber - 1).toString())
-                    .set('pageSize', pageSize);
+                    .set('pageSize', pageSize)
+                    .set('sortField', sortField)
+                    .set('sortDirection', sortDirection);
         return this.http.get<object>('/release/centers/' + releaseCenterKey + '/products', {params: params});
     }
 

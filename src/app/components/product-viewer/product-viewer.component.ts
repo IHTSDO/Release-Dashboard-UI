@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ProductService } from '../../services/product/product.service';
@@ -40,6 +40,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     pageSize = 20;
     pageNumber: Number;
     totalProduct: Number;
+    sortDirection: string;
 
     // global message
     message: string;
@@ -58,6 +59,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.productsWithManifestUploaded = [];
             this.pageNumber = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
             this.totalProduct = this.paginationService.EMPTY_ITEMS;
+            this.sortDirection = 'asc';
             this.productDataService.clearCachedProducts();
             this.customRefsetCompositeKeys = null;
             this.initializeEditingProduct();
@@ -158,7 +160,10 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     loadProducts() {
         this.productsLoading = true;
-        this.productService.getProducts(this.activeReleaseCenter.id, this.pageNumber, this.pageSize).subscribe(response => {
+        this.productService.getProducts(this.activeReleaseCenter.id,
+                                        this.pageNumber,
+                                        this.pageSize, 'name',
+                                        this.sortDirection).subscribe(response => {
             this.products = response['content'];
             this.totalProduct = response['totalElements'];
             this.productsLoading = false;
@@ -178,6 +183,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 }
             );
         }
+    }
+
+    handleSortClick(direction: string) {
+       this.sortDirection = direction;
+       this.loadProducts();
     }
 
     handlePageChange(event) {

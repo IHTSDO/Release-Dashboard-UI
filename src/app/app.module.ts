@@ -32,6 +32,7 @@ import { AuthenticationInterceptor } from './interceptors/authentication.interce
 import { EnvServiceProvider } from './providers/env.service.provider';
 import { PermissionService } from './services/permission/permission.service';
 import { WebsocketService } from './services/websocket/websocket.service';
+import { SortDirective } from './directive/sort.directive';
 
 export function startupServiceFactory(permissionService: PermissionService): Function {
     return () => permissionService.getRoles();
@@ -45,7 +46,8 @@ export function startupServiceFactory(permissionService: PermissionService): Fun
         LeftSidebarComponent,
         ProductViewerComponent,
         ModalComponent,
-        BuildViewerComponent
+        BuildViewerComponent,
+        SortDirective
     ],
     imports: [
         BrowserModule,
