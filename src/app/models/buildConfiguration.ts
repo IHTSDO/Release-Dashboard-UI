@@ -19,6 +19,7 @@ export class BuildConfiguration {
     licenceStatement: string;
     newRF2InputFiles: string;
     previousPublishedPackage: string;
+    additionalPreviousPublishedPackages: string;
     readmeEndDate: string;
     readmeHeader: string;
     additionalReleaseInformationFields: string;

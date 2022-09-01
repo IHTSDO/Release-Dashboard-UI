@@ -171,6 +171,12 @@
                     <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.buildConfiguration.previousPublishedPackage">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
+                    <label class="font-weight-bold" style="vertical-align: top; margin-bottom: 0px;">Additional Previous Published Packages
+                        <span class="font-weight-light" title="Set of the additional previous published packages separated by comma">(?)</span>
+                    </label>
+                    <input type="text" class="rounded-lg p-2" style="vertical-align: top;" [(ngModel)]="editedProduct.buildConfiguration.additionalPreviousPublishedPackages">
+                </div>
+                <div class="form-group mx-sm-3 mb-0">
                     <label class="font-weight-bold">Previous International Release
                         <span class="font-weight-light" title="Passes the previous international release version to the RVF for QA testing">(?)</span>
                     </label>
@@ -202,7 +208,7 @@
                     <input style="vertical-align: top" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">
                 </div>
                 
-                <div class="form-group mx-sm-3 mb-0 mt-1">
+                <div class="form-group mx-sm-3 mb-0">
                     <label class="font-weight-bold">Included Previous Release Files
                         <span class="font-weight-light" title="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">(?)</span>
                     </label>

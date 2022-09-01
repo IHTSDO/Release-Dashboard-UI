@@ -69,7 +69,8 @@ export class ProductService {
             conceptPreferredTerms : product.buildConfiguration.conceptPreferredTerms,
             customRefsetCompositeKeys : customRefsetCompositeKeys,
             previousPublishedPackage : product.buildConfiguration.previousPublishedPackage,
-            dependencyReleasePackage : product.buildConfiguration.extensionConfig.dependencyRelease
+            dependencyReleasePackage : product.buildConfiguration.extensionConfig.dependencyRelease,
+            additionalPreviousPublishedPackages: product.buildConfiguration.additionalPreviousPublishedPackages
         };
         if (product.buildConfiguration.extensionConfig &&
             product.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
