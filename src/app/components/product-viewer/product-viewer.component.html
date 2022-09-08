@@ -201,7 +201,7 @@
                     </label>
                     <input style="vertical-align: top" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">
                 </div>
-                
+
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Included Previous Release Files
                         <span class="font-weight-light" title="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">(?)</span>
@@ -255,24 +255,6 @@
                         <span class="font-weight-light" title="Passes to RVF to enable the validations with MRCM Validator">(?)</span>
                     </label>
                     <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableMRCMValidation">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Enable JIRA
-                        <span class="font-weight-light" title="Passes to RVF to allow RVF to automatically create a JIRA ticket for each of the failure found in RVF validation report">(?)</span>
-                    </label>
-                    <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.jiraIssueCreationFlag">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">JIRA Product Name
-                        <span class="font-weight-light" title="Passes to RVF if the Enable JIRA flag is checked. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
-                    </label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.productName">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">JIRA Reporting Stage
-                        <span class="font-weight-light" title="Passes to RVF if the Enable JIRA flag is checked. This value will be mapped to field &quot;SNOMED CT Product&quot; on ISRS ticket on JIRA">(?)</span>
-                    </label>
-                    <input type="text" class="rounded-lg p-2" [(ngModel)]="editedProduct.qaTestConfig.reportingStage">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Concept Preferred Terms

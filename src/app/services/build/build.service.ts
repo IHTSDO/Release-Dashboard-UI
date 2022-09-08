@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Build } from '../../models/build';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FailureJiraAssociation } from 'src/app/models/failureJiraAssociation';
 
 @Injectable({
   providedIn: 'root'
@@ -106,5 +107,15 @@ export class BuildService {
             .set('tags', tags.join(','));
     const url = '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/tags';
     return this.http.post(url, {}, {params: params});
+  }
+
+  getFailureJiraAssociations(releaseCenterKey, productKey, buildId): Observable<FailureJiraAssociation[]> {
+    const url = '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/failure-jira-associations';
+    return this.http.get<FailureJiraAssociation[]>(url);
+  }
+
+  generateJiraTickets(releaseCenterKey, productKey, buildId, assertionIds: String[]): Observable<FailureJiraAssociation[]> {
+    const url = '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/failure-jira-associations';
+    return this.http.post<FailureJiraAssociation[]>(url, assertionIds, {});
   }
 }

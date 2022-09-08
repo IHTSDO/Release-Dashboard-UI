@@ -18,6 +18,8 @@ import { ReleaseCenterService } from '../../services/releaseCenter/release-cente
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
+import { RVFServerService } from 'src/app/services/rvfServer/rvf-server.service';
+import { FailureJiraAssociation } from 'src/app/models/failureJiraAssociation';
 
 @Component({
   selector: 'app-build-viewer',
@@ -57,6 +59,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // Control flags and error handling flags
     action: string;
     message: string;
+    rvfReportLoading = false;
     buildTriggering = false;
     buildsLoading = false;
     hiddenBuildsLoading = false;
@@ -69,6 +72,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     pageNumber: Number;
     totalBuild = Number;
 
+    // RVF report
+    rvfFailures: object[];
+    failureJiraAssociations: FailureJiraAssociation[];
+
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
                 private productService: ProductService,
@@ -79,7 +86,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 private permissionService: PermissionService,
                 private envService: EnvService,
                 private websocketService: WebsocketService,
-                private paginationService: ProductPaginationService) {
+                private paginationService: ProductPaginationService,
+                private rvfServerService: RVFServerService) {
     }
 
     ngOnInit(): void {
@@ -636,6 +644,28 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.openBuildModal();
     }
 
+    loadRvfReport(build: Build) {
+        this.rvfFailures = [];
+        this.rvfReportLoading = true;
+        if (build.rvfURL.startsWith('https')) {
+            this.rvfServerService.getRVFReport(this.getRVFRunId(build.rvfURL), this.getRVFStorageLocation(build.rvfURL)).subscribe(
+            (rvfReport) => {
+                if (rvfReport['status'] === 'COMPLETE') {
+                    this.rvfFailures = rvfReport['rvfValidationResult']['TestResult']['assertionsFailed']
+                                .concat(rvfReport['rvfValidationResult']['TestResult']['assertionsWarning']);
+                    this.rvfFailures = this.rvfFailures.filter(item => item['assertionUuid']);
+                }
+                this.rvfReportLoading = false;
+            }, () => {
+                this.rvfReportLoading = false;
+            });
+        } else {
+            this.message = build.rvfURL;
+            this.rvfReportLoading = false;
+            this.openErrorModel();
+        }
+    }
+
     openRvfReport(build: Build) {
         if (build.rvfURL.startsWith('https')) {
             window.open(build.rvfURL);
@@ -643,6 +673,60 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.message = build.rvfURL;
             this.openErrorModel();
         }
+    }
+
+    generateJiraTickets() {
+        const selectedFailures = this.rvfFailures.filter(failure => {
+            return failure['checked'];
+        });
+        if (selectedFailures.length !== 0) {
+            this.openWaitingModel('Generating JIRA tickets');
+            const assertionIds = [];
+            for (let i = 0; i < selectedFailures.length; i++) {
+                assertionIds.push(selectedFailures[i]['assertionUuid']);
+            }
+
+            this.buildService.generateJiraTickets(this.releaseCenterKey, this.productKey, this.activeBuild.id, assertionIds).subscribe(
+                (response) => {
+                    this.closeWaitingModel();
+                    this.message = response.length + ' JIRA ticket(s) have been created successfully';
+                    this.openSuccessModel();
+                    this.getFailureJiraAssociations();
+                },
+                errorResponse => {
+                    this.message = errorResponse.error.errorMessage;
+                    this.closeWaitingModel();
+                    this.openErrorModel();
+                }
+            );
+        } else {
+            this.message = 'No selected failures.';
+            this.openErrorModel();
+        }
+    }
+
+    getFailureJiraAssociations() {
+        this.failureJiraAssociations = [];
+        this.buildService.getFailureJiraAssociations(this.releaseCenterKey, this.productKey, this.activeBuild.id).subscribe(
+            (response) => {
+                this.failureJiraAssociations = response;
+            }
+        );
+    }
+
+    getJiraUrl(buildId: string, assertionId: string) {
+        const foundAssociations =  this.failureJiraAssociations.filter(assoc => {
+            return assoc.buildId === buildId && assoc.assertionId === assertionId;
+        });
+        if (foundAssociations.length !== 0) {
+            return foundAssociations[0].jiraUrl;
+        }
+
+        return '';
+    }
+
+    openJiraUrl(url: string) {
+        window.open(url);
     }
 
     openBuildURL(build: Build) {
@@ -828,6 +912,25 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             );
     }
 
+    canGenerateJiraTicket() {
+        const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
+        return this.roles && codeSystem
+             && (
+                (this.roles.hasOwnProperty('GLOBAL') && (
+                        (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
+                    ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
+                    ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1
+                    )
+                )
+                || (this.roles.hasOwnProperty(codeSystem) && (
+                        (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
+                    ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
+                    ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
+                    )
+                )
+            );
+    }
+
     private uploadInputFiles(releaseCenterKey, productKey, buildId, buildService, localInputFiles) {
         const promise = new Promise(function(resolve, reject) {
             const upload = function(inputFiles, index) {
@@ -879,6 +982,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    private getRVFRunId(url: string) {
+        return url.substring(url.indexOf('result') + 7, url.indexOf('storageLocation') - 1);
+    }
+
+    private getRVFStorageLocation(url: string) {
+        return url.substring(url.indexOf('=') + 1);
     }
 
     private transferNewChangesIfAny(oldBuild: Build, newBuild: Build) {
