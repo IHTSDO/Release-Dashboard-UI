@@ -302,7 +302,20 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
     <div footer>
         <button type="button" class="btn-sea-buckthorn" (click)="closeModal('generate-jira-tickets-modal')">Cancel</button>
-        <button type="button" class="btn-blue" (click)="generateJiraTickets()">Generate</button>
+        <button type="button" class="btn-blue" (click)=" validateFailuresSelection()">Generate</button>
+    </div>
+</app-modal>
+
+<!--Jira generation confirmation-->
+<app-modal id="jira-generation-confirmation-modal" class="modal build-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Do you really want to generate the JIRA ticket(s) for the selected failure(s)?</p>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('jira-generation-confirmation-modal')">No</button>
+        <button type="button" class="btn-blue" (click)="generateJiraTickets()">Yes</button>
     </div>
 </app-modal>
 

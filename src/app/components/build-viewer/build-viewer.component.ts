@@ -675,7 +675,20 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    validateFailuresSelection() {
+        const selectedFailures = this.rvfFailures.filter(failure => {
+            return failure['checked'];
+        });
+        if (selectedFailures.length === 0) {
+            this.message = 'No selected failures.';
+            this.openErrorModel();
+        } else {
+            this.openModal('jira-generation-confirmation-modal');
+        }
+    }
+
     generateJiraTickets() {
+        this.closeModal('jira-generation-confirmation-modal');
         const selectedFailures = this.rvfFailures.filter(failure => {
             return failure['checked'];
         });
@@ -699,9 +712,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.openErrorModel();
                 }
             );
-        } else {
-            this.message = 'No selected failures.';
-            this.openErrorModel();
         }
     }
 
