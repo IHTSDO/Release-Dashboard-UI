@@ -4,6 +4,9 @@ app-modal {
     /* modals are hidden by default */
     display: none;
 
+    div.modal-xlarge {
+        max-width: 110rem;
+    }
     div.modal-large {
         max-width: 100rem;
     }

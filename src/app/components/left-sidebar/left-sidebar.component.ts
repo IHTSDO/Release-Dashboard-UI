@@ -107,7 +107,7 @@ export class LeftSidebarComponent implements OnInit {
         this.releaseCenterService.setActiveReleaseCenter(center);
     }
 
-    addReleaseCenter(name, shortName, codeSystem) {
+    addReleaseCenter(name, shortName, codeSystem, snomedCtProduct) {
         this.message = '';
         const missingFields = this.missingFieldsCheck(name, shortName, codeSystem);
         if (missingFields.length !== 0) {
@@ -116,7 +116,10 @@ export class LeftSidebarComponent implements OnInit {
             return;
         }
         this.savingCenter = true;
-        this.releaseServer.postCenter({name: name, shortName: shortName, codeSystem: codeSystem}).subscribe(
+        this.releaseServer.postCenter({name: name,
+                                        shortName: shortName,
+                                        codeSystem: codeSystem,
+                                        snomedCtProduct: snomedCtProduct}).subscribe(
             response => {
                 this.savingCenter = false;
                 this.releaseCenters.push(response);
@@ -138,7 +141,7 @@ export class LeftSidebarComponent implements OnInit {
         );
     }
 
-    saveReleaseCenter(name, shortName, codeSystem) {
+    saveReleaseCenter(name, shortName, codeSystem, snomedCtProduct) {
         this.message = '';
         const missingFields = this.missingFieldsCheck(name, shortName, codeSystem);
         if (missingFields.length !== 0) {
@@ -148,7 +151,10 @@ export class LeftSidebarComponent implements OnInit {
         }
 
         this.savingCenter = true;
-        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name, shortName: shortName, codeSystem: codeSystem}).subscribe(
+        this.releaseServer.putCenter(this.activeReleaseCenter.id, {name: name,
+                                                                    shortName: shortName,
+                                                                    codeSystem: codeSystem,
+                                                                    snomedCtProduct : snomedCtProduct}).subscribe(
             response => {
                 this.savingCenter = false;
                 const currentIndex = this.releaseCenters.indexOf(this.activeReleaseCenter);

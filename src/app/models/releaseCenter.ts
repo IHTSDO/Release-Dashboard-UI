@@ -6,5 +6,6 @@ export class ReleaseCenter {
     removed: string;
     shortName: string;
     codeSystem: string;
+    snomedCtProduct: string;
     url: string;
 }

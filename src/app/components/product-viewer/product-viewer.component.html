@@ -6,13 +6,12 @@
         <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
                 <th>Product</th>
-                <th class="w-15"></th>
             </tr>
             <tr>
-                <td colspan="2"><div class="font-weight-bold loading">Loading</div></td>
+                <td><div class="font-weight-bold loading">Loading</div></td>
             </tr>
         </table>
-        <table class="table table-bordered table-sortable" *ngIf="!productsLoading">
+        <table class="table table-bordered table-sortable" [hidden]="productsLoading">
             <tr>
                 <th [appSort] (sortClick)="handleSortClick($event)" [ngClass]="{'asc': sortDirection === 'asc', 'desc': sortDirection === 'desc'}">Product</th>
                 <th class="max-vw-15"></th>

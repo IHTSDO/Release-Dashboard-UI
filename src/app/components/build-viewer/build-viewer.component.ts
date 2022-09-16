@@ -20,6 +20,7 @@ import { WebsocketService } from '../../services/websocket/websocket.service';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 import { RVFServerService } from 'src/app/services/rvfServer/rvf-server.service';
 import { FailureJiraAssociation } from 'src/app/models/failureJiraAssociation';
+import { Sort } from 'src/app/util/sort';
 
 @Component({
   selector: 'app-build-viewer',
@@ -65,6 +66,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     hiddenBuildsLoading = false;
     buildLogLoading = false;
     useLocalInputFiles = false;
+    selectAll = false;
     allTags: object;
 
     // pagination
@@ -75,6 +77,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // RVF report
     rvfFailures: object[];
     failureJiraAssociations: FailureJiraAssociation[];
+
+    // Sorting
+    jiraGenerationTableSortingObj: object;
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -98,6 +103,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
         this.selectedTags = new Object();
+        this.jiraGenerationTableSortingObj = new Object();
         this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
         this.allTags = Object.keys(BuildTagEnum).map(key => ({ label: BuildTagEnum[key], value: key }));
@@ -654,6 +660,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.rvfFailures = rvfReport['rvfValidationResult']['TestResult']['assertionsFailed']
                                 .concat(rvfReport['rvfValidationResult']['TestResult']['assertionsWarning']);
                     this.rvfFailures = this.rvfFailures.filter(item => item['assertionUuid']);
+
+                    // sorting
+                    const sort = new Sort();
+                    const defualtSortColumn = 'testType';
+                    const defualtSortDirection =  'asc';
+                    this.rvfFailures.sort(sort.startSort(defualtSortColumn, defualtSortDirection));
+                    this.jiraGenerationTableSortingObj = new Object();
+                    this.jiraGenerationTableSortingObj[defualtSortColumn] = defualtSortDirection;
                 }
                 this.rvfReportLoading = false;
             }, () => {
@@ -664,6 +678,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.rvfReportLoading = false;
             this.openErrorModel();
         }
+    }
+
+    handleSortClickOnJiraGenerationTable(direction: string, column: string) {
+        this.jiraGenerationTableSortingObj = new Object();
+        this.jiraGenerationTableSortingObj[column] = direction;
     }
 
     openRvfReport(build: Build) {
@@ -685,6 +704,27 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         } else {
             this.openModal('jira-generation-confirmation-modal');
         }
+    }
+
+    toggleSelectAllFailures() {
+        this.selectAll = !this.selectAll;
+        for (let i = 0; i < this.rvfFailures.length; i++) {
+            if (!this.getJiraUrl(this.activeBuild.id, this.rvfFailures[i]['assertionUuid'])) {
+                this.rvfFailures[i]['checked'] = this.selectAll ? true : false;
+            }
+        }
+    }
+
+    toggleSelectFailure() {
+        setTimeout(() => {
+            const selectedFailures = this.rvfFailures.filter(failure => {
+                return !this.getJiraUrl(this.activeBuild.id, failure['assertionUuid']) && failure['checked'];
+            });
+            const failuresWithoutLink = this.rvfFailures.filter(failure => {
+                return !this.getJiraUrl(this.activeBuild.id, failure['assertionUuid']);
+            });
+            this.selectAll = failuresWithoutLink.length !== 0 && selectedFailures.length === failuresWithoutLink.length;
+        }, 0);
     }
 
     generateJiraTickets() {
