@@ -654,6 +654,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     loadRvfReport(build: Build) {
         this.rvfFailures = [];
         this.rvfReportLoading = true;
+        this.selectAll = false;
         if (build.rvfURL.startsWith('https')) {
             this.rvfServerService.getRVFReport(this.getRVFRunId(build.rvfURL), this.getRVFStorageLocation(build.rvfURL)).subscribe(
             (rvfReport) => {
