@@ -632,6 +632,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             const buildConfiguration = this.activeBuild.configuration;
             const qaTestConfig = this.activeBuild.qaTestConfig;
             this.buildParams.effectiveDate = new Date(buildConfiguration.effectiveTime);
+            this.buildParams.buildName = this.activeBuild.configuration.buildName ? this.activeBuild.configuration.buildName + '' : '';
             if (buildConfiguration.branchPath) {
                 this.buildParams.branch = buildConfiguration.branchPath;
             } else {
