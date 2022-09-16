@@ -27,4 +27,5 @@ export class BuildConfiguration {
     defaultBranchPath: string;
     exportType: string;
     buildName: String;
+    loadTermServerData: boolean;
 }
