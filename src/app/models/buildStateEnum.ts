@@ -1,5 +1,6 @@
 
 export enum BuildStateEnum {
+    QUEUED = 'QUEUED',
     BEFORE_TRIGGER = 'BEFORE_TRIGGER',
     BUILDING = 'BUILDING',
     BUILT = 'BUILT',

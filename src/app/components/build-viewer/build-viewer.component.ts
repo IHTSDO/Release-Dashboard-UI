@@ -77,6 +77,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // RVF report
     rvfFailures: object[];
     failureJiraAssociations: FailureJiraAssociation[];
+    newFailureJiraAssociations: FailureJiraAssociation[];
 
     // Sorting
     jiraGenerationTableSortingObj: object;
@@ -254,7 +255,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.message = 'The log isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
                         || BuildStateEnum.BEFORE_TRIGGER === build.status
-                        || BuildStateEnum.RVF_RUNNING === build.status) {
+                        || BuildStateEnum.RVF_RUNNING === build.status
+                        || BuildStateEnum.QUEUED === build.status) {
                             this.message += ' whilst the build is running. Please press View Process button to see the live logging';
                     } else if (BuildStateEnum.CANCEL_REQUESTED === build.status) {
                         this.message += ' due to the build is being canceled. Please wait until the status changes to Cancelled';
@@ -308,7 +310,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     this.message = 'The log file isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
                         || BuildStateEnum.BEFORE_TRIGGER === build.status
-                        || BuildStateEnum.RVF_RUNNING === build.status) {
+                        || BuildStateEnum.RVF_RUNNING === build.status
+                        || BuildStateEnum.QUEUED === build.status) {
                         this.message += ' whilst the build is running. Please press View Process button to see the live logging';
                     } else if (BuildStateEnum.CANCEL_REQUESTED === build.status) {
                         this.message += ' due to the build is being canceled. Please wait until the status changes to Cancelled';
@@ -347,7 +350,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     build.buildDownloadingPackage = false;
                     this.message = 'The package isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
-                        || BuildStateEnum.BEFORE_TRIGGER === build.status) {
+                        || BuildStateEnum.BEFORE_TRIGGER === build.status
+                        || BuildStateEnum.QUEUED === build.status) {
                         this.message += ' whilst the build is running. Please wait.';
                     } else if (BuildStateEnum.RELEASE_COMPLETE !== build.status &&
                                 BuildStateEnum.RELEASE_COMPLETE_WITH_WARNINGS !== build.status) {
@@ -384,7 +388,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 if (!md5FileFound) {
                     this.message = 'The MD5 file isn\'t available';
                     if (BuildStateEnum.BUILDING === build.status
-                        || BuildStateEnum.BEFORE_TRIGGER === build.status) {
+                        || BuildStateEnum.BEFORE_TRIGGER === build.status
+                        || BuildStateEnum.QUEUED === build.status) {
                         this.message += ' whilst the build is running. Please wait.';
                     } else if (BuildStateEnum.RELEASE_COMPLETE !== build.status &&
                                 BuildStateEnum.RELEASE_COMPLETE_WITH_WARNINGS !== build.status) {
@@ -665,11 +670,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
                     // sorting
                     const sort = new Sort();
-                    const defualtSortColumn = 'testType';
-                    const defualtSortDirection =  'asc';
-                    this.rvfFailures.sort(sort.startSort(defualtSortColumn, defualtSortDirection));
+                    const defaultSortColumn = 'testType';
+                    const defaultSortDirection =  'asc';
+                    this.rvfFailures.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
                     this.jiraGenerationTableSortingObj = new Object();
-                    this.jiraGenerationTableSortingObj[defualtSortColumn] = defualtSortDirection;
+                    this.jiraGenerationTableSortingObj[defaultSortColumn] = defaultSortDirection;
+                    this.populateJiraUrlToFailures();
                 }
                 this.rvfReportLoading = false;
             }, () => {
@@ -711,7 +717,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     toggleSelectAllFailures() {
         this.selectAll = !this.selectAll;
         for (let i = 0; i < this.rvfFailures.length; i++) {
-            if (!this.getJiraUrl(this.activeBuild.id, this.rvfFailures[i]['assertionUuid'])) {
+            if (!this.rvfFailures['jiraUrl']) {
                 this.rvfFailures[i]['checked'] = this.selectAll ? true : false;
             }
         }
@@ -720,16 +726,17 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     toggleSelectFailure() {
         setTimeout(() => {
             const selectedFailures = this.rvfFailures.filter(failure => {
-                return !this.getJiraUrl(this.activeBuild.id, failure['assertionUuid']) && failure['checked'];
+                return !this.rvfFailures['jiraUrl'] && failure['checked'];
             });
             const failuresWithoutLink = this.rvfFailures.filter(failure => {
-                return !this.getJiraUrl(this.activeBuild.id, failure['assertionUuid']);
+                return !this.rvfFailures['jiraUrl'];
             });
             this.selectAll = failuresWithoutLink.length !== 0 && selectedFailures.length === failuresWithoutLink.length;
         }, 0);
     }
 
     generateJiraTickets() {
+        this.newFailureJiraAssociations = [];
         this.closeModal('jira-generation-confirmation-modal');
         const selectedFailures = this.rvfFailures.filter(failure => {
             return failure['checked'];
@@ -745,7 +752,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 (response) => {
                     this.closeWaitingModel();
                     this.message = response.length + ' JIRA ticket(s) have been created successfully';
-                    this.openSuccessModel();
+                    this.newFailureJiraAssociations = response;
+                    this.openModal('jira-generation-summary-modal');
                     this.getFailureJiraAssociations();
                 },
                 errorResponse => {
@@ -762,19 +770,22 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.buildService.getFailureJiraAssociations(this.releaseCenterKey, this.productKey, this.activeBuild.id).subscribe(
             (response) => {
                 this.failureJiraAssociations = response;
+                this.populateJiraUrlToFailures();
             }
         );
     }
 
-    getJiraUrl(buildId: string, assertionId: string) {
-        const foundAssociations =  this.failureJiraAssociations.filter(assoc => {
-            return assoc.buildId === buildId && assoc.assertionId === assertionId;
-        });
-        if (foundAssociations.length !== 0) {
-            return foundAssociations[0].jiraUrl;
+    populateJiraUrlToFailures() {
+        if (this.rvfFailures.length !== 0 && this.failureJiraAssociations.length !== 0) {
+            for (let i = 0; i < this.rvfFailures.length; i++) {
+                for (let j = 0; j < this.failureJiraAssociations.length; j++) {
+                    if (this.rvfFailures[i]['assertionUuid'] === this.failureJiraAssociations[j]['assertionId']) {
+                        this.rvfFailures[i]['jiraUrl'] = this.failureJiraAssociations[j]['jiraUrl'];
+                        break;
+                    }
+                }
+            }
         }
-
-        return '';
     }
 
     openJiraUrl(url: string) {

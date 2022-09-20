@@ -18,7 +18,8 @@ export class Sort {
             if (type === 'date') {
                 return this.sortData(new Date(a[property]), new Date(b[property]));
             } else {
-                return this.collator.compare(a[property].trim(), b[property].trim()) * this.sortOrder;
+                return this.collator.compare(a[property] && isNaN(a[property]) ? a[property].trim() : a[property],
+                                                b[property] && isNaN(b[property]) ? b[property].trim() : b[property]) * this.sortOrder;
             }
         };
     }
