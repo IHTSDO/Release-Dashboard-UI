@@ -520,9 +520,9 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 </div>
                 <div class="mx-sm-3 mb-0 mt-2">
                     <label style="vertical-align: top; margin-bottom: 0px;" class="font-weight-bold">Previous Edition Dependency Effective Date
-                        <span class="font-weight-light" title="The Previous Edition Dependency Effective Date is the Date of the International Edition BEFORE the &quot;Previous International Release&quot; and &quot;Dependency Release Package&quot; date.  This field should ONLY be used for true &quot;Edition&quot; release packages">(?)</span>
+                        <span class="font-weight-light" title="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">(?)</span>
                     </label>
-                    <input type="text" style="vertical-align: top; width: 200px;" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">                    
+                    <input type="text" style="vertical-align: top; width: 200px;" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Included Previous Release Files

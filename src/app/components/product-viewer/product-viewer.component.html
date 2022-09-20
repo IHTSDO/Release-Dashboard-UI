@@ -196,7 +196,7 @@
 
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label style="vertical-align: top; margin-bottom: 0px;" class="font-weight-bold">Previous Edition Dependency Effective Date
-                        <span class="font-weight-light" title="The Previous Edition Dependency Effective Date is the Date of the International Edition BEFORE the &quot;Previous International Release&quot; and &quot;Dependency Release Package&quot; date.  This field should ONLY be used for true &quot;Edition&quot; release packages">(?)</span>
+                        <span class="font-weight-light" title="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">(?)</span>
                     </label>
                     <input style="vertical-align: top" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" type="text" class="w-25 rounded-lg p-2" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">
                 </div>
