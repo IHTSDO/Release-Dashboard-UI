@@ -704,7 +704,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     validateFailuresSelection() {
         const selectedFailures = this.rvfFailures.filter(failure => {
-            return failure['checked'];
+            return failure['checked'] && !failure['jiraUrl'];
         });
         if (selectedFailures.length === 0) {
             this.message = 'No selected failures.';

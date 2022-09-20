@@ -306,7 +306,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             </tr>
             <tr *ngFor="let failure of rvfFailures">
                 <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure()"></td>
-                <td class="pb-0 text-center">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
+                <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
                 <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
                 <td class="pb-0 text-left"> {{failure.assertionText}}</td>
                 <td class="pb-0 text-center">{{failure.failureCount}}</td>
