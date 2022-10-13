@@ -94,6 +94,13 @@ app-modal {
         div.success i {
             color:$fruit-salad;
         }
+        div.error {
+            white-space: pre-wrap;
+
+            i {
+                color:$mandy;
+            }
+        }
     }
     &.view-build-log-modal {
         white-space: pre-line;

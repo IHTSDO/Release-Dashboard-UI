@@ -66,7 +66,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     hiddenBuildsLoading = false;
     buildLogLoading = false;
     useLocalInputFiles = false;
-    selectAll = false;
+    selectAllError = false;
+    selectAllWarning = false;
     allTags: object;
 
     // pagination
@@ -75,12 +76,15 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     totalBuild = Number;
 
     // RVF report
-    rvfFailures: object[];
+    assertionsFailed: object[];
+    assertionsWarning: object[];
     failureJiraAssociations: FailureJiraAssociation[];
     newFailureJiraAssociations: FailureJiraAssociation[];
+    duplicatedFailureJiraAssociations: FailureJiraAssociation[];
 
     // Sorting
-    jiraGenerationTableSortingObj: object;
+    errorTableSortingObj: object;
+    warningTableSortingObj: object;
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -104,7 +108,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.selectedBuild = new Build();
         this.buildParams = new BuildParameters();
         this.selectedTags = new Object();
-        this.jiraGenerationTableSortingObj = new Object();
+        this.errorTableSortingObj = new Object();
+        this.warningTableSortingObj = new Object();
         this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
         this.allTags = Object.keys(BuildTagEnum).map(key => ({ label: BuildTagEnum[key], value: key }));
@@ -657,24 +662,30 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     loadRvfReport(build: Build) {
-        this.rvfFailures = [];
+        this.assertionsFailed = [];
+        this.assertionsWarning = [];
         this.rvfReportLoading = true;
-        this.selectAll = false;
+        this.selectAllError = false;
+        this.selectAllWarning = false;
         if (build.rvfURL.startsWith('https')) {
             this.rvfServerService.getRVFReport(this.getRVFRunId(build.rvfURL), this.getRVFStorageLocation(build.rvfURL)).subscribe(
             (rvfReport) => {
                 if (rvfReport['status'] === 'COMPLETE') {
-                    this.rvfFailures = rvfReport['rvfValidationResult']['TestResult']['assertionsFailed']
-                                .concat(rvfReport['rvfValidationResult']['TestResult']['assertionsWarning']);
-                    this.rvfFailures = this.rvfFailures.filter(item => item['assertionUuid']);
+                    this.assertionsFailed = rvfReport['rvfValidationResult']['TestResult']['assertionsFailed'];
+                    this.assertionsWarning = rvfReport['rvfValidationResult']['TestResult']['assertionsWarning'];
+                    this.assertionsFailed = this.assertionsFailed.filter(item => item['assertionUuid']);
+                    this.assertionsWarning = this.assertionsWarning.filter(item => item['assertionUuid']);
 
                     // sorting
                     const sort = new Sort();
                     const defaultSortColumn = 'testType';
                     const defaultSortDirection =  'asc';
-                    this.rvfFailures.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
-                    this.jiraGenerationTableSortingObj = new Object();
-                    this.jiraGenerationTableSortingObj[defaultSortColumn] = defaultSortDirection;
+                    this.assertionsFailed.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
+                    this.assertionsWarning.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
+                    this.errorTableSortingObj = new Object();
+                    this.warningTableSortingObj = new Object();
+                    this.errorTableSortingObj[defaultSortColumn] = defaultSortDirection;
+                    this.warningTableSortingObj[defaultSortColumn] = defaultSortDirection;
                     this.populateJiraUrlToFailures();
                 }
                 this.rvfReportLoading = false;
@@ -688,9 +699,15 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleSortClickOnJiraGenerationTable(direction: string, column: string) {
-        this.jiraGenerationTableSortingObj = new Object();
-        this.jiraGenerationTableSortingObj[column] = direction;
+    handleSortClickOnJiraGenerationTable(direction: string, column: string, type: string) {
+        if (type === 'error') {
+            this.errorTableSortingObj = new Object();
+            this.errorTableSortingObj[column] = direction;
+        }
+        if (type === 'warning') {
+            this.warningTableSortingObj = new Object();
+            this.warningTableSortingObj[column] = direction;
+        }
     }
 
     openRvfReport(build: Build) {
@@ -703,9 +720,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     validateFailuresSelection() {
-        const selectedFailures = this.rvfFailures.filter(failure => {
+        const selectedFailures = this.assertionsFailed.filter(failure => {
             return failure['checked'] && !failure['jiraUrl'];
-        });
+        }).concat(this.assertionsWarning.filter(failure => {
+            return failure['checked'] && !failure['jiraUrl'];
+        }));
         if (selectedFailures.length === 0) {
             this.message = 'No selected failures.';
             this.openErrorModel();
@@ -714,33 +733,59 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    toggleSelectAllFailures() {
-        this.selectAll = !this.selectAll;
-        for (let i = 0; i < this.rvfFailures.length; i++) {
-            if (!this.rvfFailures['jiraUrl']) {
-                this.rvfFailures[i]['checked'] = this.selectAll ? true : false;
+    toggleSelectAllFailures(type: string) {
+        if (type === 'error') {
+            this.selectAllError = !this.selectAllError;
+            for (let i = 0; i < this.assertionsFailed.length; i++) {
+                if (!this.assertionsFailed[i]['jiraUrl']) {
+                    this.assertionsFailed[i]['checked'] = this.selectAllError ? true : false;
+                }
+            }
+        }
+        if (type === 'warning') {
+            this.selectAllWarning = !this.selectAllWarning;
+            for (let i = 0; i < this.assertionsWarning.length; i++) {
+                if (!this.assertionsWarning[i]['jiraUrl']) {
+                    this.assertionsWarning[i]['checked'] = this.selectAllWarning ? true : false;
+                }
             }
         }
     }
 
-    toggleSelectFailure() {
-        setTimeout(() => {
-            const selectedFailures = this.rvfFailures.filter(failure => {
-                return !this.rvfFailures['jiraUrl'] && failure['checked'];
-            });
-            const failuresWithoutLink = this.rvfFailures.filter(failure => {
-                return !this.rvfFailures['jiraUrl'];
-            });
-            this.selectAll = failuresWithoutLink.length !== 0 && selectedFailures.length === failuresWithoutLink.length;
-        }, 0);
+    toggleSelectFailure(type: string) {
+        if (type === 'error') {
+            setTimeout(() => {
+                const selectedFailures = this.assertionsFailed.filter(failure => {
+                    return !failure['jiraUrl'] && failure['checked'];
+                });
+                const failuresWithoutLink = this.assertionsFailed.filter(failure => {
+                    return !failure['jiraUrl'];
+                });
+                this.selectAllError = failuresWithoutLink.length !== 0 && selectedFailures.length === failuresWithoutLink.length;
+            }, 0);
+        }
+        if (type === 'warning') {
+            setTimeout(() => {
+                const selectedFailures = this.assertionsWarning.filter(failure => {
+                    return !failure['jiraUrl'] && failure['checked'];
+                });
+                const failuresWithoutLink = this.assertionsWarning.filter(failure => {
+                    return !failure['jiraUrl'];
+                });
+                this.selectAllWarning = failuresWithoutLink.length !== 0 && selectedFailures.length === failuresWithoutLink.length;
+            }, 0);
+        }
     }
 
     generateJiraTickets() {
         this.newFailureJiraAssociations = [];
+        this.duplicatedFailureJiraAssociations = [];
         this.closeModal('jira-generation-confirmation-modal');
-        const selectedFailures = this.rvfFailures.filter(failure => {
-            return failure['checked'];
-        });
+        const selectedFailures = this.assertionsFailed.filter(failure => {
+            return failure['checked'] && !failure['jiraUrl'];
+        }).concat(this.assertionsWarning.filter(failure => {
+            return failure['checked'] && !failure['jiraUrl'];
+        }));
         if (selectedFailures.length !== 0) {
             this.openWaitingModel('Generating JIRA tickets');
             const assertionIds = [];
@@ -751,13 +796,18 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.buildService.generateJiraTickets(this.releaseCenterKey, this.productKey, this.activeBuild.id, assertionIds).subscribe(
                 (response) => {
                     this.closeWaitingModel();
-                    this.message = response.length + ' JIRA ticket(s) have been created successfully';
-                    this.newFailureJiraAssociations = response;
+                    this.newFailureJiraAssociations = response['newlyCreatedRVFFailureJiraAssociations'];
+                    this.message = this.newFailureJiraAssociations.length + ' JIRA ticket(s) have been created successfully';
+                    this.duplicatedFailureJiraAssociations = response['duplicatedRVFFailureJiraAssociations'];
                     this.openModal('jira-generation-summary-modal');
                     this.getFailureJiraAssociations();
                 },
                 errorResponse => {
                     this.message = errorResponse.error.errorMessage;
+                    if (this.message.includes('Connection timed out')) {
+                        this.message = this.message.replace('(Connection timed out)', '').trim();
+                        this.message += '. Please contact technical support to get help resolving this.';
+                    }
                     this.closeWaitingModel();
                     this.openErrorModel();
                 }
@@ -776,12 +826,24 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     populateJiraUrlToFailures() {
-        if (this.rvfFailures.length !== 0 && this.failureJiraAssociations.length !== 0) {
-            for (let i = 0; i < this.rvfFailures.length; i++) {
-                for (let j = 0; j < this.failureJiraAssociations.length; j++) {
-                    if (this.rvfFailures[i]['assertionUuid'] === this.failureJiraAssociations[j]['assertionId']) {
-                        this.rvfFailures[i]['jiraUrl'] = this.failureJiraAssociations[j]['jiraUrl'];
-                        break;
+        if (this.failureJiraAssociations.length !== 0) {
+            if (this.assertionsFailed.length !== 0) {
+                for (let i = 0; i < this.assertionsFailed.length; i++) {
+                    for (let j = 0; j < this.failureJiraAssociations.length; j++) {
+                        if (this.assertionsFailed[i]['assertionUuid'] === this.failureJiraAssociations[j]['assertionId']) {
+                            this.assertionsFailed[i]['jiraUrl'] = this.failureJiraAssociations[j]['jiraUrl'];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (this.assertionsWarning.length !== 0) {
+                for (let i = 0; i < this.assertionsWarning.length; i++) {
+                    for (let j = 0; j < this.failureJiraAssociations.length; j++) {
+                        if (this.assertionsWarning[i]['assertionUuid'] === this.failureJiraAssociations[j]['assertionId']) {
+                            this.assertionsWarning[i]['jiraUrl'] = this.failureJiraAssociations[j]['jiraUrl'];
+                            break;
+                        }
                     }
                 }
             }
