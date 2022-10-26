@@ -49,6 +49,13 @@ export class LeftSidebarComponent implements OnInit {
         });
         this.loadReleaseCenters(this.releaseCenterService, this.releaseServer).then(data => {
             this.releaseCenters = <ReleaseCenter[]> data;
+            this.releaseCenters.sort((a, b) => {
+                if (b['id'] === 'international') {
+                    return 1;
+                } else {
+                    return a['name'].localeCompare(b['name']);
+                }
+            });
             this.releaseCenterService.cacheReleaseCenters(this.releaseCenters);
             if (this.releaseCenters.length !== 0) {
                 if (releaseCenterKey) {
