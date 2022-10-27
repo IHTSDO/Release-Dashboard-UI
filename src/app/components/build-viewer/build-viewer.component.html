@@ -126,7 +126,7 @@
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
-                <td class="pb-0">{{build?.userRoles?.join(', ').replaceAll('_', ' ') | titlecase}}</td>
+                <td class="pb-0 text-left"><div  *ngFor="let role of build?.userRoles" >&bull; {{role.replaceAll('_', ' ') | titlecase}}</div></td>
                 <td class="pb-0" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
                 <td class="pb-0" *ngIf="canDownloadBuild()" style="width: auto;">
                     <div style="display: flex;border: none;">
