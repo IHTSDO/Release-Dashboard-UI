@@ -128,7 +128,7 @@
                 <td class="pb-0" *ngIf="canDownloadBuild()" style="width: auto;">
                     <div style="display: flex;border: none;">
                         <div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div>
-                        <button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package"><i class="material-icons">get_app</i></button>
+                        <button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="material-icons">get_app</i></button>
                         <button type="button" style="font-size: 9px;margin-left: 5px;width: 2.5em;height: 2.5em;color: black;" class="btn-circle btn-sea-buckthorn" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file">md5</button>
                     </div>
                 </td>
@@ -208,7 +208,7 @@
         <input [disabled]="buildTriggering" type="text" placeholder="Effective Time" class="w-75 rounded-lg p-3 m-3" bsDatepicker [(bsValue)]="buildParams.effectiveDate" value="{{ buildParams.effectiveDate | date:'yyyy-MM-dd' }}">
         <input *ngIf="useLocalInputFiles" class="w-75 rounded-lg p-3 m-3"  multiple #uploadInputFilesInput type="file" (change)="selectInputFiles($event.target.files)">
         <div class="w-100" *ngIf="!useLocalInputFiles">
-            <select  [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" (change)="buildParams.enableTraceabilityValidation= (buildParams.exportType === 'PUBLISHED' ? false : true)" [(ngModel)]="buildParams.exportType">
+            <select [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" (change)="buildParams.enableTraceabilityValidation= (buildParams.exportType === 'PUBLISHED' ? false : true)" [(ngModel)]="buildParams.exportType">
                 <option value="PUBLISHED">Published</option>
                 <option value="UNPUBLISHED">Unpublished</option>
                 <option value="FEEDBACK_FIX">Feedback Fix</option>
