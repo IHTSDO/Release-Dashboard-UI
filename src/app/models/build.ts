@@ -4,6 +4,7 @@ import { QAConfiguration } from './qaConfiguration';
 export class Build {
     id: string;
     buildUser: string;
+    userRoles: string[];
     status: string;
     tags: string[];
     rvfURL: string;
