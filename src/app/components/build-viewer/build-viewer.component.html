@@ -314,7 +314,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
                 <td class="pb-0 text-left"> {{failure.assertionText}}</td>
                 <td class="pb-0 text-center">{{failure.failureCount}}</td>
-                <td class="pb-0 text-center" style="width: 10rem;"><a [routerLink]="" *ngIf="failure.jiraUrl" (click)="openJiraUrl(failure.jiraUrl); $event.stopPropagation()" title="JIRA URL">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
+                <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
             </tr>
         </table>
         <br/>
@@ -334,7 +334,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
                 <td class="pb-0 text-left"> {{failure.assertionText}}</td>
                 <td class="pb-0 text-center">{{failure.failureCount}}</td>
-                <td class="pb-0 text-center" style="width: 10rem;"><a [routerLink]="" *ngIf="failure.jiraUrl" (click)="openJiraUrl(failure.jiraUrl); $event.stopPropagation()" title="JIRA URL">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
+                <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
             </tr>
         </table>
     </div>
@@ -363,13 +363,13 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     <div body class="p-5">
         <div class="success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
         <div class="pl-5" *ngFor="let failureJiraAssociation of newFailureJiraAssociations">
-            <a [routerLink]="" (click)="openJiraUrl(failureJiraAssociation.jiraUrl);">{{failureJiraAssociation.jiraUrl}}</a>
+            <a href="{{failureJiraAssociation.jiraUrl}}" target="_blank">{{failureJiraAssociation.jiraUrl}}</a>
         </div>
         <br/>
         <div *ngIf="duplicatedFailureJiraAssociations?.length !== 0">
             <div class="error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">Errors:</div></div>
             <div class="pl-5" *ngFor="let duplicateJiraAssociation of duplicatedFailureJiraAssociations">
-                <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created in the build {{duplicateJiraAssociation.buildId}} (<a [routerLink]="" (click)="openJiraUrl(duplicateJiraAssociation.jiraUrl);">{{duplicateJiraAssociation?.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
+                <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created in the build {{duplicateJiraAssociation.buildId}} (<a href="{{duplicateJiraAssociation.jiraUrl}}" target="_blank">{{duplicateJiraAssociation?.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
             </div>
             
         </div>
