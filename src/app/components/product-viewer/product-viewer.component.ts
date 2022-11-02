@@ -113,7 +113,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         errorResponse => {
             this.savingProduct = false;
             if (errorResponse.status === 409) {
-                this.message = 'There was already a product name \'' + productName + '\'. Please select another one.';
+                if (errorResponse.error && errorResponse.error.errorMessage) {
+                    this.message = errorResponse.error.errorMessage;
+                } else {
+                    this.message = 'There was already a product name \'' + productName + '\'. Please select another one.';
+                }
             } else {
                 this.message = errorResponse.error.errorMessage;
             }
