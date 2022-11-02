@@ -174,6 +174,78 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.loadBuilds();
     }
 
+    getStatusColumnWidth() {
+        // FAILED_INPUT_PREPARE_REPORT_VALIDATION
+        // FAILED_INPUT_GATHER_REPORT_VALIDATION
+        // RELEASE_COMPLETE_WITH_WARNINGS
+        // FAILED_POST_CONDITIONS
+        // FAILED_PRE_CONDITIONS
+        // CANCEL_REQUESTED
+        // RELEASE_COMPLETE
+        // BEFORE_TRIGGER
+        // RVF_RUNNING
+        // RVF_QUEUED
+        // RVF_FAILED
+        // CANCELLED
+        // BUILDING
+        // UNKNOWN
+        // PENDING
+        // FAILED
+        // QUEUED
+        // BUILT
+        const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
+        const isReleaseAdminOrManagerOrLead = this.roles && codeSystem && (
+            (this.roles.hasOwnProperty('GLOBAL') && (
+                    (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
+                ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
+                ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1)
+                )
+            || (this.roles.hasOwnProperty(codeSystem) && (
+                    (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
+                ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
+                ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1)
+                )
+        );
+
+        if (isReleaseAdminOrManagerOrLead && this.builds.length !== 0) {
+            if (this.builds.filter(item => item.status === 'FAILED_INPUT_PREPARE_REPORT_VALIDATION').length !== 0) {
+                return '132px';
+            } else if (this.builds.filter(item => item.status === 'FAILED_INPUT_GATHER_REPORT_VALIDATION').length !== 0) {
+                return '126px';
+            } else if (this.builds.filter(item => item.status === 'RELEASE_COMPLETE_WITH_WARNINGS').length !== 0) {
+                return '121px';
+            } else if (this.builds.filter(item => item.status === 'FAILED_POST_CONDITIONS').length !== 0) {
+                return '81px';
+            } else if (this.builds.filter(item => item.status === 'FAILED_PRE_CONDITIONS').length !== 0) {
+                return '78px';
+            } else if (this.builds.filter(item => item.status === 'CANCEL_REQUESTED').length !== 0) {
+                return '77px';
+            } else if (this.builds.filter(item => item.status === 'RELEASE_COMPLETE').length !== 0) {
+                return '71px';
+            } else if (this.builds.filter(item => item.status === 'BEFORE_TRIGGER').length !== 0) {
+                return '57px';
+            } else if (this.builds.filter(item => item.status === 'RVF_RUNNING').length !== 0) {
+                return '87px';
+            } else if (this.builds.filter(item => item.status === 'RVF_QUEUED').length !== 0) {
+                return '83px';
+            } else if (this.builds.filter(item => item.status === 'RVF_FAILED').length !== 0) {
+                return '74px';
+            } else if (this.builds.filter(item => item.status === 'CANCELLED').length !== 0) {
+                return '73px';
+            } else if (this.builds.filter(item => item.status === 'BUILDING').length !== 0
+                        || this.builds.filter(item => item.status === 'UNKNOWN').length !== 0
+                        || this.builds.filter(item => item.status === 'PENDING').length !== 0) {
+                return '63px';
+            } else if (this.builds.filter(item => item.status === 'FAILED').length !== 0
+                        || this.builds.filter(item => item.status === 'QUEUED').length !== 0
+                        || this.builds.filter(item => item.status === 'BUILT').length !== 0) {
+                return '50px';
+            }
+        }
+
+        return 'unset';
+    }
+
     loadBuilds() {
         this.buildsLoading = true;
         this.builds = [];

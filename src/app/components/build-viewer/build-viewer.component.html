@@ -106,7 +106,7 @@
                 <th class="w-5" *ngIf="canDownloadBuild()">URL</th>
                 <th>Build Name</th>
                 <th style="min-width: 83px;">Build ID</th>
-                <th>Status</th>
+                <th [style.min-width]="getStatusColumnWidth()">Status</th>
                 <th>User</th>
                 <th class="w-10">User Roles</th>
                 <th class="w-5" *ngIf="canDownloadBuild()">Log</th>
@@ -124,7 +124,7 @@
                 <td class="pb-0" *ngIf="canDownloadBuild()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
                 <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="pb-0 text-left" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
-                <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
+                <td class="pb-0 text-left" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0 text-left"><div  *ngFor="let role of build?.userRoles" >&bull; {{role.replaceAll('_', ' ') | titlecase}}</div></td>
                 <td class="pb-0" *ngIf="canDownloadBuild()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
