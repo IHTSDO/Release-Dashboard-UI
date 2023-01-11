@@ -332,6 +332,26 @@ div.badge {
     position: relative;
 }
 
+.table-sortable > tr > th > .priority {
+    position: absolute;
+    right: 11px;
+    top: 0;
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.table-sortable > tr > th > .clear-sort > i {
+    position: absolute;
+    right: 0;
+    font-size: 10px;
+    top: 2px;
+    color: grey;
+}
+
+.table-sortable > tr > th > .clear-sort > i:hover {
+    color: unset;
+}
+
 .table-sortable > tr > th:after,
 .table-sortable > tr > th:after,
 .table-sortable > tr > th:after {

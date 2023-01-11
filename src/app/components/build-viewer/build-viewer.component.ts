@@ -85,6 +85,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // Sorting
     errorTableSortingObj: object;
     warningTableSortingObj: object;
+    buildTableSortingObj: object;
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -113,6 +114,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
         this.allTags = Object.keys(BuildTagEnum).map(key => ({ label: BuildTagEnum[key], value: key }));
+        this.constructBuildTableSortingObj();
 
         this.route.paramMap.subscribe(paramMap => {
             this.productKey = paramMap['params']['productKey'];
@@ -139,6 +141,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
 
         this.websocketService.messageEvent.removeListener('build-status-change-event', () => {});
+    }
+
+    constructBuildTableSortingObj(): void {
+        this.buildTableSortingObj = new Object();
+        this.buildTableSortingObj['buildName'] = new Object();
+        this.buildTableSortingObj['creationTime'] = new Object();
+        this.buildTableSortingObj['status'] = new Object();
+        this.buildTableSortingObj['buildUser'] = new Object();
     }
 
     // find product from cache, other from server
@@ -250,8 +260,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.buildsLoading = true;
         this.builds = [];
         this.clearMessage();
+        const sorting = this.getSorting();
         this.buildService.getBuilds(this.releaseCenterKey, this.productKey,
-                                    true, true, true, this.view, this.pageNumber, this.pageSize).subscribe(response => {
+                                    true, true, true, this.view, this.pageNumber, this.pageSize, sorting).subscribe(response => {
                 this.builds = response['content'];
                 this.totalBuild = response['totalElements'];
                 // Update Build Status in case the status has been changed
@@ -281,8 +292,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.hiddenBuildsLoading = true;
         this.hiddenBuilds = [];
         this.clearMessage();
+        const sorting = ['creationTime,desc'];
         this.buildService.getBuilds(this.releaseCenterKey, this.productKey,
-                                    true, false, false, 'ALL_RELEASES', 1, 100).subscribe(response => {
+                                    true, false, false, 'ALL_RELEASES', 1, 100, sorting).subscribe(response => {
                 this.hiddenBuilds = response['content'];
             },
             errorResponse => {
@@ -771,6 +783,29 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    handleSortClickOnBuildTable(direction: string, column: string) {
+        let priority = 0;
+        let existing = false;
+        for (const prop of Object.keys(this.buildTableSortingObj)) {
+            if (prop !== column && this.buildTableSortingObj[prop]['priority'] >= priority) {
+                priority =  this.buildTableSortingObj[prop]['priority'] + 1;
+            }
+            if (prop === column && this.buildTableSortingObj[prop]['priority'] >= 0) {
+                existing = true;
+            }
+        }
+        if (priority > 1) {
+            this.constructBuildTableSortingObj();
+            this.buildTableSortingObj[column]['priority'] = 0;
+        } else if (!existing) {
+            this.buildTableSortingObj[column]['priority'] = priority;
+        } else {
+            // do nothing
+        }
+        this.buildTableSortingObj[column]['direction'] = direction;
+        this.loadBuilds();
+    }
+
     handleSortClickOnJiraGenerationTable(direction: string, column: string, type: string) {
         if (type === 'error') {
             this.errorTableSortingObj = new Object();
@@ -1044,7 +1079,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
-    canDownloadBuild() {
+    isAdminOrManagerOrLead() {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
         return this.roles && codeSystem && (
             (this.roles.hasOwnProperty('GLOBAL') && (
@@ -1056,24 +1091,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
                 ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1)
-                )
-        );
-    }
-
-    canTriggerBuild() {
-        const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
-        return this.roles && codeSystem && (
-            (this.roles.hasOwnProperty('GLOBAL') && (
-                    (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
-                ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
-                ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1
-                    )
-                )
-            || (this.roles.hasOwnProperty(codeSystem) && (
-                    (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
-                ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
-                ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
-                    )
                 )
         );
     }
@@ -1179,6 +1196,40 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+    }
+
+    clearSort(column) {
+        this.buildTableSortingObj[column] = {};
+        for (const prop of Object.keys(this.buildTableSortingObj)) {
+            if (prop !== column && this.buildTableSortingObj[prop]['priority'] > 0) {
+                this.buildTableSortingObj[prop]['priority'] = 0;
+            }
+        }
+        this.loadBuilds();
+    }
+
+    hasSortingPriority(property) {
+        return this.buildTableSortingObj.hasOwnProperty(property) && this.buildTableSortingObj[property]['priority'] >= 0;
+    }
+
+    private getSorting() {
+        const result = [];
+        const sortingArr = [];
+        for (const prop of Object.keys(this.buildTableSortingObj)) {
+            const obj = {};
+            obj['field'] = prop;
+            obj['direction'] = this.buildTableSortingObj[prop]['direction'];
+            obj['priority'] = this.buildTableSortingObj[prop]['priority'];
+            sortingArr.push(obj);
+        }
+        sortingArr.sort((a, b) => a['priority'] - b['priority']);
+        for (let i = 0; i < sortingArr.length; i++) {
+            if (sortingArr[i]['priority'] >= 0) {
+                result.push(sortingArr[i]['field'] + ',' + sortingArr[i]['direction']);
+            }
+        }
+
+        return result;
     }
 
     private getRVFRunId(url: string) {
