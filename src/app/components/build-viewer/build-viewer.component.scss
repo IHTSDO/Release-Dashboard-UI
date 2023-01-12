@@ -44,6 +44,9 @@ div.build-viewer {
                 &.asc, &.desc, &.sortable {
                     padding-right: 25px;
                 }
+                &.asc::after, &.desc::after {
+                    right: 10px;
+                }
             }
         }
         tr.active {
