@@ -39,6 +39,13 @@ div.build-viewer {
     }
 
     table {
+        tr {
+            th {
+                &.asc, &.desc, &.sortable {
+                    padding-right: 25px;
+                }
+            }
+        }
         tr.active {
             background-color: $anakiwa;
     

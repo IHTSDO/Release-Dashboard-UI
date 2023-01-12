@@ -794,7 +794,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 existing = true;
             }
         }
-        if (priority > 1) {
+        if (priority > 1 && !existing) {
             this.constructBuildTableSortingObj();
             this.buildTableSortingObj[column]['priority'] = 0;
         } else if (!existing) {

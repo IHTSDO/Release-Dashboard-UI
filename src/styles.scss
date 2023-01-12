@@ -359,23 +359,50 @@ div.badge {
     position: absolute;
     height: 0;
     width: 0;
-    right: 10px;
+    right: 5px;
     top: 16px;
 }
 
 .table-sortable > tr > th.asc:after {
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
     border-top: 0px solid transparent;
-    border-bottom: 5px solid #333;
+    border-bottom: 4px solid #333;
 }
+
 .table-sortable > tr > th.asc:hover:after {
     border-bottom: 5px solid #888;
 }
 
 .table-sortable > tr > th.desc:after {    
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #333;
-    border-bottom: 5px solid transparent;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #333;
+    border-bottom: 4px solid transparent;
+}
+
+.table-sortable > tr > th.sortable:after {
+    border: 4px solid transparent;
+    content: "";
+    display: block;
+    height: 0;
+    right: 5px;
+    top: 50%;
+    position: absolute;
+    width: 0;
+    border-top-color: grey;
+    margin-top: 1px
+
+}
+.table-sortable > tr > th.sortable:before {
+    border: 4px solid transparent;
+    content: "";
+    display: block;
+    height: 0;
+    right: 5px;
+    top: 50%;
+    position: absolute;
+    width: 0;
+    border-bottom-color: grey;
+    margin-top: -9px;
 }

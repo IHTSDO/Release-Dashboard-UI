@@ -81,13 +81,21 @@
                 <button type="button" class="btn-green ml-3 my-1 mr-1" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
             </div>
         </div>
-        <table class="table table-bordered" *ngIf="buildsLoading">
+        <table class="table table-bordered table-sortable" *ngIf="buildsLoading">
             <tr>
                 <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
-                <th>Build Name</th>
-                <th>Build ID</th>
-                <th>Status</th>
-                <th>User</th>
+                <th [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name
+                    <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
+                </th>
+                <th [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc'}">Build ID
+                    <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
+                </th>
+                <th [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc'}">Status
+                    <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
+                </th>
+                <th [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc'}">User
+                    <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
+                </th>
                 <th *ngIf="isAdminOrManagerOrLead()">User Roles</th>
                 <th *ngIf="isAdminOrManagerOrLead()">Log</th>
                 <th *ngIf="isAdminOrManagerOrLead()">Release</th>
@@ -104,21 +112,21 @@
         <table class="table table-bordered table-sortable" *ngIf="!buildsLoading">
             <tr>
                 <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
-                <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name &nbsp;&nbsp;
+                <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildName']['direction']}">Build Name
                     <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('buildName')" class="clear-sort"><i class="material-icons" (click)="clearSort('buildName'); $event.stopPropagation()">cancel</i></span>
+                    <span *ngIf="hasSortingPriority('buildName')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildName'); $event.stopPropagation()">cancel</i></span>
                 </th>
-                <th style="min-width: 87px;" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'creationTime')" [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc'}">Build ID &nbsp;&nbsp;
+                <th style="min-width: 87px;" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'creationTime')" [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc', 'sortable': !buildTableSortingObj['creationTime']['direction']}">Build ID
                     <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('creationTime')" class="clear-sort"><i class="material-icons" (click)="clearSort('creationTime'); $event.stopPropagation()">cancel</i></span>
+                    <span *ngIf="hasSortingPriority('creationTime')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('creationTime'); $event.stopPropagation()">cancel</i></span>
                 </th>
-                <th [style.min-width]="getStatusColumnWidth()" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'status')" [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc'}">Status &nbsp;&nbsp;
+                <th [style.min-width]="getStatusColumnWidth()" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'status')" [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc', 'sortable': !buildTableSortingObj['status']['direction']}">Status
                     <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('status')" class="clear-sort"><i class="material-icons" (click)="clearSort('status'); $event.stopPropagation()">cancel</i></span>
+                    <span *ngIf="hasSortingPriority('status')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('status'); $event.stopPropagation()">cancel</i></span>
                 </th>
-                <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildUser')" [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc'}">User &nbsp;&nbsp;
+                <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildUser')" [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildUser']['direction']}">User
                     <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('buildUser')" class="clear-sort"><i class="material-icons" (click)="clearSort('buildUser'); $event.stopPropagation()">cancel</i></span>
+                    <span *ngIf="hasSortingPriority('buildUser')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildUser'); $event.stopPropagation()">cancel</i></span>
                 </th>
                 <th class="w-10" *ngIf="isAdminOrManagerOrLead()">User Roles</th>
                 <th class="w-5" *ngIf="isAdminOrManagerOrLead()">Log</th>
@@ -314,11 +322,11 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <table class="table table-bordered table-sortable" *ngIf="!rvfReportLoading">
             <tr class="text-center">
                 <th><input type="checkbox" [(ngModel)]="selectAllError" (click)="toggleSelectAllFailures('error')"></th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'error')" [ngClass]="{'asc': errorTableSortingObj['testType'] === 'asc', 'desc': errorTableSortingObj['testType'] === 'desc'}" data-name="testType">Type</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionUuid'] === 'asc', 'desc': errorTableSortingObj['assertionUuid'] === 'desc'}" data-name="assertionUuid">Assertion ID</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionText'] === 'asc', 'desc': errorTableSortingObj['assertionText'] === 'desc'}" data-name="assertionText">Assertion Text</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'error')" [ngClass]="{'asc': errorTableSortingObj['failureCount'] === 'asc', 'desc': errorTableSortingObj['failureCount'] === 'desc'}" data-name="failureCount">Total Failures</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'error')" [ngClass]="{'asc': errorTableSortingObj['jiraUrl'] === 'asc', 'desc': errorTableSortingObj['jiraUrl'] === 'desc'}" data-name="jiraUrl">JIRA Link</th>
+                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'error')" [ngClass]="{'asc': errorTableSortingObj['testType'] === 'asc', 'desc': errorTableSortingObj['testType'] === 'desc', 'sortable': !errorTableSortingObj['testType']}" data-name="testType">Type</th>
+                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionUuid'] === 'asc', 'desc': errorTableSortingObj['assertionUuid'] === 'desc', 'sortable': !errorTableSortingObj['assertionUuid']}" data-name="assertionUuid">Assertion ID</th>
+                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionText'] === 'asc', 'desc': errorTableSortingObj['assertionText'] === 'desc', 'sortable': !errorTableSortingObj['assertionText']}" data-name="assertionText">Assertion Text</th>
+                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'error')" [ngClass]="{'asc': errorTableSortingObj['failureCount'] === 'asc', 'desc': errorTableSortingObj['failureCount'] === 'desc', 'sortable': !errorTableSortingObj['failureCount']}" data-name="failureCount" style="min-width: 9.5em;">Total Failures</th>
+                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'error')" [ngClass]="{'asc': errorTableSortingObj['jiraUrl'] === 'asc', 'desc': errorTableSortingObj['jiraUrl'] === 'desc', 'sortable': !errorTableSortingObj['jiraUrl']}" data-name="jiraUrl">JIRA Link</th>
             </tr>
             <tr *ngFor="let failure of assertionsFailed">
                 <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure('error')"></td>
@@ -334,11 +342,11 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <table class="table table-bordered table-sortable" *ngIf="!rvfReportLoading">
             <tr class="text-center">
                 <th><input type="checkbox" [(ngModel)]="selectAllWarning" (click)="toggleSelectAllFailures('warning')"></th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'warning')" [ngClass]="{'asc': warningTableSortingObj['testType'] === 'asc', 'desc': warningTableSortingObj['testType'] === 'desc'}" data-name="testType">Type</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionUuid'] === 'asc', 'desc': warningTableSortingObj['assertionUuid'] === 'desc'}" data-name="assertionUuid">Assertion ID</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionText'] === 'asc', 'desc': warningTableSortingObj['assertionText'] === 'desc'}" data-name="assertionText">Assertion Text</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'warning')" [ngClass]="{'asc': warningTableSortingObj['failureCount'] === 'asc', 'desc': warningTableSortingObj['failureCount'] === 'desc'}" data-name="failureCount">Total Failures</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'warning')" [ngClass]="{'asc': warningTableSortingObj['jiraUrl'] === 'asc', 'desc': warningTableSortingObj['jiraUrl'] === 'desc'}" data-name="jiraUrl">JIRA Link</th>
+                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'warning')" [ngClass]="{'asc': warningTableSortingObj['testType'] === 'asc', 'desc': warningTableSortingObj['testType'] === 'desc', 'sortable': !warningTableSortingObj['testType']}" data-name="testType">Type</th>
+                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionUuid'] === 'asc', 'desc': warningTableSortingObj['assertionUuid'] === 'desc', 'sortable': !warningTableSortingObj['assertionUuid']}" data-name="assertionUuid">Assertion ID</th>
+                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionText'] === 'asc', 'desc': warningTableSortingObj['assertionText'] === 'desc', 'sortable': !warningTableSortingObj['assertionText']}" data-name="assertionText">Assertion Text</th>
+                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'warning')" [ngClass]="{'asc': warningTableSortingObj['failureCount'] === 'asc', 'desc': warningTableSortingObj['failureCount'] === 'desc', 'sortable': !warningTableSortingObj['failureCount']}" data-name="failureCount" style="min-width: 9.5em;">Total Failures</th>
+                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'warning')" [ngClass]="{'asc': warningTableSortingObj['jiraUrl'] === 'asc', 'desc': warningTableSortingObj['jiraUrl'] === 'desc', 'sortable': !warningTableSortingObj['jiraUrl']}" data-name="jiraUrl">JIRA Link</th>
             </tr>
             <tr *ngFor="let failure of assertionsWarning">
                 <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure('warning')"></td>
