@@ -75,7 +75,7 @@ export class BuildService {
   }
 
   runBuild(releaseCenterKey, productKey, buildName, branch, exportType,
-          maxFailureExport, effectiveDate, excludedModuleIds, enableTraceabilityValidation): Observable<Build> {
+          maxFailureExport, effectiveDate, enableTraceabilityValidation): Observable<Build> {
       const data = {
           effectiveDate: effectiveDate,
           exportCategory: exportType,
@@ -86,10 +86,6 @@ export class BuildService {
           loadExternalRefsetData: true,
           enableTraceabilityValidation: enableTraceabilityValidation
       };
-      if (excludedModuleIds) {
-        const array = excludedModuleIds.replace(/\s/g, '').split(',');
-        data['excludedModuleIds'] = array;
-      }
       return this.http.post<Build>('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/release', data);
   }
 

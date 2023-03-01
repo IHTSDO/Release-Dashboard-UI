@@ -1,6 +1,6 @@
 export class ExtensionConfig {
     dependencyRelease: string;
-    moduleId: string;
+    moduleIds: string;
     namespaceId: string;
     releaseAsAnEdition: boolean;
     previousEditionDependencyEffectiveDate: Date;

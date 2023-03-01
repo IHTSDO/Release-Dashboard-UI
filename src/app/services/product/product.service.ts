@@ -51,7 +51,7 @@ export class ProductService {
             assertionGroupNames: product.qaTestConfig.assertionGroupNames,
             extensionDependencyRelease: product.qaTestConfig.extensionDependencyRelease,
             namespaceId: product.buildConfiguration.extensionConfig.namespaceId,
-            moduleId: product.buildConfiguration.extensionConfig.moduleId,
+            moduleIds: product.buildConfiguration.extensionConfig.moduleIds,
             releaseExtensionAsAnEdition: product.buildConfiguration.extensionConfig.releaseAsAnEdition,
             enableDrools: product.qaTestConfig.enableDrools,
             enableMRCMValidation: product.qaTestConfig.enableMRCMValidation,
