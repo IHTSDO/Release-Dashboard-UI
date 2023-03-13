@@ -1,10 +1,7 @@
-<nav class="navbar sticky-top p-2 pr-2" [ngClass]="{'local': environment === 'local',
-                                                    'dev': environment === 'dev',
-                                                    'uat': environment === 'uat',
-                                                    'prod': environment === 'prod'}">
-    <a class="logo" routerLink="/">
+<nav class="navbar sticky-top p-0" [class]="environment">
+    <a class="logo m-2" routerLink="/">
         <img class="logo mr-2 p-0" src="/assets/small_logo.png">
-        <span class="title">SNOMED CT Release Dashboard - {{environment === 'prod' ? 'PRODUCTION' : environment | uppercase}}</span>
+        <span class="title">SNOMED CT Release Dashboard <span class="environment rounded px-3 py-2 ml-5" [class]="environment">{{environment === 'prod' ? 'PRODUCTION ENVIRONMENT' : environment + ' ENVIRONMENT' | uppercase}}</span></span>
     </a>
 
     <ng-container [ngSwitch]="environment">
@@ -15,7 +12,7 @@
         <div *ngSwitchDefault class="banner text-white d-none"></div>
     </ng-container>
 
-    <div *ngIf="user" class="float-right mx-3">
+    <div *ngIf="user" class="p-2">
         <div class="logout d-inline-block m-2" (click)="logout()">
             <span class="px-2">Logout</span>
         </div>
@@ -25,3 +22,28 @@
         </div>
     </div>
 </nav>
+
+<!--Build deletion confirmation-->
+<app-modal id="publish-danger-modal" class="modal">
+    <h3 header class="mb-0">Are you absolutely sure?</h3>
+    <div body class="text-center mx-0">
+        <p class="px-3 py-4 danger-text"><i class="fas fa-exclamation-triangle pr-3"></i>Unexpectedly bad things will happen if you don't read this!</p>
+        <p class="px-5 py-1 information-text text-left">- This action <B>cannot</B> be undone.</p>
+        <p class="px-5 py-1 information-text text-left">- The following changes are permanent.</p>
+        <p class="px-5 py-1 information-text text-left">- You are about to publish a SNOMED-CT release package.</p>
+        <p class="px-5 py-1 information-text text-left">- Please enter the release package name to confirm you understand this:</p>
+
+        <div class="input-group input-group-lg px-5 mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Release Package</span>
+            </div>
+            <input #input type="text" class="form-control" placeholder="">
+        </div>
+
+    </div>
+
+    <div footer>
+        <button *ngIf="input.value" type="button" [disabled]="false" class="btn danger-button px-3">I understand the consequences, publish the release.</button>
+        <button *ngIf="!input.value" type="button" [disabled]="true" class="btn danger-button px-3">I understand the consequences, publish the release.</button>
+    </div>
+</app-modal>

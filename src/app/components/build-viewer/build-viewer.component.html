@@ -1,14 +1,12 @@
 <div *ngIf="activeProduct" class="build-viewer text-center">
-    <div class="container">
-        <h2 class="mt-3">{{activeProduct?.name}}</h2>
+    <div class="container-fluid px-5">
+        <h1 class="p-3 mb-0">{{activeProduct?.name}}</h1>
         <div class="row">
             <div class="col-6">
-                <a class="link-back float-left mt-1" routerLink="/{{releaseCenterKey}}">
-                    <span class="font-weight-bold">&lt;&lt;&nbsp;</span> Back To Release Center
-                </a>
+                <button class="float-left btn blue m-2" routerLink="/{{releaseCenterKey}}"><i class="fas fa-chevron-left pr-3"></i>BACK</button>
             </div>
             <div class="col-6">
-                <button type="button" *ngIf="isAdminOrManagerOrLead()" class="btn-green ml-3 my-1 mr-1 justify-content-end float-right" (click)="doOpeningBuildModal(true)">Run New Build</button>
+                <button type="button" *ngIf="isAdminOrManagerOrLead()" class="btn green m-2 float-right" (click)="doOpeningBuildModal(true)">RUN NEW BUILD</button>
             </div>
         </div>
         <div class="panel-top mb-3">
@@ -391,7 +389,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             <div class="pl-5" *ngFor="let duplicateJiraAssociation of duplicatedFailureJiraAssociations">
                 <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created in the build {{duplicateJiraAssociation.buildId}} (<a href="{{duplicateJiraAssociation.jiraUrl}}" target="_blank">{{duplicateJiraAssociation?.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
             </div>
-            
+
         </div>
 
     </div>

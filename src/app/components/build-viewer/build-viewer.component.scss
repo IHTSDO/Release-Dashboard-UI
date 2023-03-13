@@ -9,17 +9,58 @@ div.build-viewer {
         padding: .75rem;
     }
 
-    a.link-back {
-        width: 17rem;
-        height: 3rem;
-        text-decoration: none;
-        background-color: $blue;
+    button {
         color: $white;
-        border-radius: 0.4rem;
-        padding-top: 0.5rem;        
-        font-weight: 500;
+
+        &.blue {
+            background-color: lighten($cerulean, 10%);
+
+            i {
+                color: lighten($cerulean, 30%);
+            }
+
+            &:hover {
+                background-color: $cerulean;
+            }
+        }
+
+        &.green {
+            background-color: lighten($fruit-salad, 10%);
+
+            i {
+                color: lighten($fruit-salad, 30%);
+            }
+
+            &:hover {
+                background-color: $fruit-salad;
+            }
+        }
+
+        &.orange {
+            background-color: lighten($sea-buckthorn, 10%);
+
+            i {
+                color: lighten($sea-buckthorn, 30%);
+            }
+
+            &:hover {
+                background-color: $sea-buckthorn;
+            }
+        }
+
+        &.purple {
+            background-color: lighten($wisteria, 15%);
+
+            i {
+                color: lighten($wisteria, 30%);
+            }
+
+            &:hover {
+                background-color: $wisteria;
+            }
+        }
     }
-    
+
     div.panel-top {
         border: 1px solid #dee2e6;
 
@@ -27,13 +68,13 @@ div.build-viewer {
         div.panel-footer {
             height: 3.5rem;
             background: #E0E0E0;
-            
+
             select {
                 margin-top: 4px;
             }
-        }        
+        }
     }
-    
+
     div.pb-18 {
         padding-bottom: 18px;
     }
@@ -51,7 +92,7 @@ div.build-viewer {
         }
         tr.active {
             background-color: $anakiwa;
-    
+
             &:hover {
                 background-color: darken($anakiwa, 5%);
             }
@@ -79,7 +120,7 @@ div.build-viewer {
                 cursor: pointer;
             }
         }
-    }   
+    }
 }
 
 app-modal {
@@ -127,6 +168,6 @@ app-modal {
         label {
             width: 27%;
         }
-    }    
+    }
 }
 

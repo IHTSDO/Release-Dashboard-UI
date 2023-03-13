@@ -1,6 +1,22 @@
 @import '~src/variables.scss';
 
-nav {    
+nav {
+    &.local {
+        border-bottom: 4px solid $slate-grey;
+    }
+
+    &.dev {
+        border-bottom: 4px solid $mandy;
+    }
+
+    &.uat {
+        border-bottom: 4px solid $sea-buckthorn;
+    }
+
+    &.prod {
+        border-bottom: 4px solid $cerulean;
+    }
+
     a.logo {
         height: 4rem;
         font-size: 1.6rem;
@@ -14,6 +30,22 @@ nav {
             letter-spacing: 1.5px;
             line-height: 4rem;
             vertical-align: top;
+
+            span.local {
+                background-color: $slate-grey;
+            }
+
+            span.dev {
+                background-color: $mandy;
+            }
+
+            span.uat {
+                background-color: $sea-buckthorn;
+            }
+
+            span.prod {
+                background-color: $cerulean;
+            }
         }
 
         img.logo {
@@ -90,5 +122,21 @@ nav {
                 color: $cerulean;
             }
         }
+    }
+}
+
+app-modal#publish-danger-modal {
+    p.danger-text {
+        background-color: $sea-buckthorn;
+        color: $black;
+        font-size: 1.6rem;
+
+        i {
+            font-size: 2rem;
+        }
+    }
+
+    p.information-text {
+        font-size: 1.4rem;
     }
 }

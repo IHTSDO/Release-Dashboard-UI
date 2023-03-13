@@ -1,9 +1,24 @@
 @import '~src/variables.scss';
 
 div.product-viewer {
-    margin-left: 24rem;
+    margin-left: 36rem;
     height: calc(100vh - 12rem);
     overflow: auto;
+
+    button {
+        &.green {
+            color: $white;
+            background-color: lighten($fruit-salad, 10%);
+
+            i {
+                color: lighten($fruit-salad, 30%);
+            }
+
+            &:hover {
+                background-color: $fruit-salad;
+            }
+        }
+    }
 
     div.error {
         color: $mandy;
@@ -11,11 +26,74 @@ div.product-viewer {
     }
 
     table {
+        tbody {
+            tr.product {
+                cursor: pointer;
+
+                &:hover {
+                    background-color: lighten($anakiwa, 5%);
+                }
+            }
+        }
+
         td {
             padding: 1.1rem .8rem .8rem .8rem;
 
             &.btn-groups{
                 padding: .3rem;
+                width: 32.5rem;
+
+                button {
+                    color: $white;
+
+                    &.edit {
+                        background-color: lighten($sea-buckthorn, 10%);
+
+                        i {
+                            color: lighten($sea-buckthorn, 30%);
+                        }
+
+                        &:hover {
+                            background-color: $sea-buckthorn;
+                        }
+                    }
+
+                    &.view {
+                        background-color: lighten($wisteria, 15%);
+
+                        i {
+                            color: lighten($wisteria, 30%);
+                        }
+
+                        &:hover {
+                            background-color: $wisteria;
+                        }
+                    }
+
+                    &.upload {
+                        background-color: lighten($cerulean, 15%);
+
+                        i {
+                            color: lighten($cerulean, 30%);
+                        }
+
+                        &:hover {
+                            background-color: $cerulean;
+                        }
+                    }
+
+                    &.hide {
+                        background-color: lighten($slate-grey, 15%);
+
+                        i {
+                            color: lighten($slate-grey, 30%);
+                        }
+
+                        &:hover {
+                            background-color: $slate-grey;
+                        }
+                    }
+                }
             }
             div.badge {
                 background-color: $blue;

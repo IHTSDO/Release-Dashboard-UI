@@ -2,8 +2,8 @@
 
 nav#sidebar {
     position: fixed;
-    width: 24rem;
-    height: calc(100vh - 9rem);
+    width: 36rem;
+    height: calc(100vh - 9rem - 4px);
     background: $alto-white;
 
     div.error {
@@ -27,7 +27,7 @@ nav#sidebar {
     div.center {
         font-size: 1.4rem;
         width: 100%;
-        color: $grey;
+        color: $river-bed;
         cursor: pointer;
         border-bottom: 1px $ghost-grey solid;
 
@@ -46,7 +46,35 @@ nav#sidebar {
 
     div.sidebar-buttons {
         position: absolute;
-        bottom: 0;      
+        bottom: 0;
+
+        button {
+            color: $white;
+
+            &.add {
+                background-color: lighten($fruit-salad, 5%);
+
+                i {
+                    color: lighten($fruit-salad, 30%);
+                }
+            }
+
+            &.edit {
+                background-color: lighten($sea-buckthorn, 5%);
+
+                i {
+                    color: lighten($sea-buckthorn, 30%);
+                }
+            }
+
+            &.delete {
+                background-color: lighten($mandy, 5%);
+
+                i {
+                    color: lighten($mandy, 30%);
+                }
+            }
+        }
     }
 }
 

@@ -24,6 +24,7 @@ app-modal {
                 background-color: $river-bed;
                 border-top-left-radius: initial;
                 border-top-right-radius: initial;
+                border-bottom: 0;
 
                 h3 {
                     color: $white;
@@ -66,6 +67,18 @@ app-modal {
                     font-weight: 300;
                     margin-right: 0.5rem;
                     width: 8rem;
+
+                    &.danger-button {
+                        width: initial;
+                        background-color: $mandy;
+                        color: $white;
+                        font-size: 1.4rem;
+
+                        &:disabled {
+                            background-color: $alto-white;
+                            color: $black;
+                        }
+                    }
                 }
             }
         }
