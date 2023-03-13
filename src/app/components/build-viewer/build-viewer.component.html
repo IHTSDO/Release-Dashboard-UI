@@ -245,7 +245,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <div class="w-100">
             <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
             <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
-        </div>        
+        </div>
         <div class="p-3 m-3 text-left row" *ngIf="!useLocalInputFiles">
             <div class="w-75 d-inline pl-5 ml-2">
                 <input type="checkbox" [disabled]="buildParams.exportType === 'PUBLISHED'" [(ngModel)]="buildParams.enableTraceabilityValidation">
@@ -390,7 +390,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             <div class="pl-5" *ngFor="let duplicateJiraAssociation of duplicatedFailureJiraAssociations">
                 <p>The assertion with id {{duplicateJiraAssociation.assertionId}} has been created in the build {{duplicateJiraAssociation.buildId}} (<a href="{{duplicateJiraAssociation.jiraUrl}}" target="_blank">{{duplicateJiraAssociation?.jiraUrl.substring(duplicateJiraAssociation.jiraUrl.lastIndexOf('/') + 1)}}</a>) </p>
             </div>
-            
+
         </div>
 
     </div>
@@ -547,25 +547,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.previousPublishedPackage">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Previous International Release
-                        <span class="font-weight-light" title="Passes the previous international release version to the RVF for QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousInternationalRelease">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Previous Extension Release
-                        <span class="font-weight-light" title="Passes the previous extension release version to the RVF for  QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousExtensionRelease">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Extension Dependency Release
-                        <span class="font-weight-light" title="Passes the international release version (that the extension is dependent upon) to the RVF for QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.extensionDependencyRelease">
-                </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Dependency Release Package
                         <span class="font-weight-light" title="The published international release package which an extension release is dependent on">(?)</span>
                     </label>
                     <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.dependencyRelease">
