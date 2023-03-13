@@ -648,7 +648,6 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                       this.buildParams.exportType,
                                       this.buildParams.maxFailureExport,
                                       formattedEffectiveDate,
-                                      this.buildParams.excludedModuleIds,
                                       this.buildParams.enableTraceabilityValidation).subscribe(
                 build => {
                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(

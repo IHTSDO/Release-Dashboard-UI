@@ -243,8 +243,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <div class="w-100">
             <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
             <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
-        </div>
-        <input *ngIf="!useLocalInputFiles" [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.excludedModuleIds" placeholder="Excluded Module Ids">
+        </div>        
         <div class="p-3 m-3 text-left row" *ngIf="!useLocalInputFiles">
             <div class="w-75 d-inline pl-5 ml-2">
                 <input type="checkbox" [disabled]="buildParams.exportType === 'PUBLISHED'" [(ngModel)]="buildParams.enableTraceabilityValidation">
@@ -603,7 +602,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <label class="font-weight-bold">Module ID(s)
                         <span class="font-weight-light" title="The module id(s) for a given extension. These should be comma separated">(?)</span>
                     </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.moduleId">
+                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.moduleIds">
                 </div>
                 <div class="form-group mx-sm-3 mb-0 mt-1">
                     <label class="font-weight-bold">Assertion Groups
