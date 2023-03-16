@@ -9,77 +9,94 @@
                 <button type="button" *ngIf="isAdminOrManagerOrLead()" class="btn green m-2 float-right" (click)="doOpeningBuildModal(true)">RUN NEW BUILD</button>
             </div>
         </div>
-        <div class="panel-top mb-3">
-            <div class="panel-header text-left pl-2 pt-3">
-                <div class="font-weight-bold">{{activeBuild.configuration?.buildName}} {{activeBuild.id}}</div>
+
+        <ng-container *ngIf="!activeBuild.configuration?.buildName">
+            <div class="active-build rounded-lg text-center py-5 mb-3">
+                <h2 class="font-weight-light m-5 py-5 text-slate-grey">- Please select a build below -</h2>
             </div>
-            <div>
-                <div class="row mx-0">
-                    <div class="col-6 text-left pb-18">
-                        <div class="form-group mx-sm-3 mb-2 mt-2">
-                            <label class="w-25 font-weight-bold">Effective Time:</label>
-                            <span class="font-weight-bold">{{activeBuild.configuration?.effectiveTime}}</span>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2" *ngIf="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
-                            <label class="w-25 font-weight-bold">Use Local Input Files</label>
-                            <input class="ml-2" type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2" *ngIf="activeBuild.configuration?.branchPath && activeBuild.configuration.loadTermServerData">
-                            <label class="w-25 font-weight-bold">Export Type:</label>
-                            <span class="font-weight-bold">{{activeBuild.configuration ? (activeBuild.configuration.exportType ? (activeBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''}}</span>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2" *ngIf="activeBuild.configuration?.branchPath && activeBuild.configuration.loadTermServerData">
-                            <label class="w-25 font-weight-bold">Branch:</label>
-                            <span class="font-weight-bold">{{activeBuild.configuration?.branchPath}}</span>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2" *ngIf="!activeBuild.configuration">
-                            <label class="w-25 font-weight-bold">Export Type:</label>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2" *ngIf="!activeBuild.configuration">
-                            <label class="w-25 font-weight-bold">Branch:</label>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2">
-                            <label class="w-25 font-weight-bold">Failure Max:</label>
-                            <span class="font-weight-bold">{{activeBuild.qaTestConfig?.maxFailureExport}}</span>
-                        </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeBuild.configuration?.buildName">
+            <div class="active-build rounded-lg mb-3">
+                <div class="row text-left">
+                    <div class="col-5 px-5">
+                        <h3 class="my-3 mx-5"><b>INFO</b></h3>
+                        <ul *ngIf="activeBuild.configuration?.buildName" class="list-group list-group-horizontal m-3">
+                            <li class="list-group-item bg-alto-white w-25"><b>BUILD NAME</b></li>
+                            <li class="list-group-item w-75">{{activeBuild.configuration?.buildName}} {{activeBuild.id}}</li>
+                        </ul>
+                        <ul *ngIf="activeBuild.configuration?.effectiveTime" class="list-group list-group-horizontal m-3">
+                            <li class="list-group-item bg-alto-white w-25"><b>EFFECTIVE TIME</b></li>
+                            <li class="list-group-item w-75">{{activeBuild.configuration?.effectiveTime}}</li>
+                        </ul>
+                        <ul *ngIf="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath" class="list-group list-group-horizontal m-3">
+                            <li class="list-group-item bg-alto-white w-25"><b>LOCAL INPUT FILES</b></li>
+                            <li class="list-group-item w-75">
+                                <input class="ml-2" type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
+                            </li>
+                        </ul>
+                        <ul *ngIf="activeBuild.configuration?.branchPath && activeBuild.configuration.loadTermServerData" class="list-group list-group-horizontal m-3">
+                            <li class="list-group-item bg-alto-white w-25"><b>EXPORT TYPE</b></li>
+                            <li class="list-group-item w-75">{{activeBuild.configuration ? (activeBuild.configuration.exportType ? (activeBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''}}</li>
+                        </ul>
+                        <ul *ngIf="activeBuild.configuration?.branchPath && activeBuild.configuration.loadTermServerData" class="list-group list-group-horizontal m-3">
+                            <li class="list-group-item bg-alto-white w-25"><b>BRANCH</b></li>
+                            <li class="list-group-item w-75">{{activeBuild.configuration?.branchPath}}</li>
+                        </ul>
+                        <ul *ngIf="activeBuild.qaTestConfig?.maxFailureExport" class="list-group list-group-horizontal m-3">
+                            <li class="list-group-item bg-alto-white w-25"><b>FAILURE MAX</b></li>
+                            <li class="list-group-item w-75">{{activeBuild.qaTestConfig?.maxFailureExport}}</li>
+                        </ul>
                     </div>
-                    <div class="col-6 text-left">
-                        <div class="form-group mx-sm-3 mb-2 mt-2">
-                            <label class="w-25 font-weight-bold">Status:</label>
-                            <span class="font-weight-bold">{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</span>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2 mb-5">
-                            <label class="w-25 font-weight-bold"></label>
-                            <button type="button" class="btn-blue" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)">View Process</button>
-                            <button type="button" class="btn-mandy ml-3" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')">{{activeBuild.buildCanceling ? 'Canceling Build...' : 'Stop Build' }}</button>
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2 mt-2 mb-3">
-                            <label class="w-25 font-weight-bold">Result:</label>
-                            <button type="button" class="btn-green"
-                                    *ngIf="canPublishBuild()"
-                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)"
-                                    (click)="openPublishingBuildConfirmationModal()">{{activeBuild.buildPublishing ? 'Publishing...' : 'Publish Build'}}</button>
-                            <button type="button" *ngIf="canDeleteBuild()" class="btn-mandy ml-3" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')">{{activeBuild.buildDeleting? 'Deleting...' : 'Delete Build'}}</button>
-                            <button type="button" *ngIf="canGenerateJiraTicket() && activeBuild.rvfURL" class="btn-blue" [class.ml-3]="!activeBuild.id || !activeBuild.tags || activeBuild.tags.indexOf('PUBLISHED') === -1" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="getFailureJiraAssociations(); loadRvfReport(activeBuild); openModal('generate-jira-tickets-modal')">Generate JIRA Tickets</button>
-                        </div>
+
+                    <div class="col-4 px-5">
+                        <h3 class="my-3 mx-5"><b>STATUS</b></h3>
+                        <ul *ngIf="activeBuild?.status" class="list-group list-group-horizontal m-2 status">
+                            <li class="list-group-item bg-alto-white w-25"><b>STATUS</b></li>
+                            <li class="list-group-item w-75">
+                                <h3 class="mb-0"><i class="fas fa-check text-fruit-salad pr-3"></i>{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</h3>
+                            </li>
+                        </ul>
+                        <button type="button" class="btn blue m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)"><i class="fas fa-external-link-alt pr-2"></i>VIEW PROCESS</button>
+                        <button type="button" class="btn red m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')"><i class="fas fa-times pr-2"></i>{{activeBuild.buildCanceling ? 'STOPPING...' : 'STOP BUILD' }}</button>
+                    </div>
+
+                    <div class="col-3 px-5">
+                        <h3 class="my-3 mx-5"><b>RESULT</b></h3>
+                        <button type="button" class="btn green m-2 d-block"
+                                *ngIf="canPublishBuild()"
+                                [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)"
+                                (click)="openPublishingBuildConfirmationModal()"><i class="fas fa-paper-plane pr-2"></i>{{activeBuild.buildPublishing ? 'PUBLISHING...' : 'PUBLISH BUILD'}}</button>
+                        <button type="button" *ngIf="canDeleteBuild()" class="btn red m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')"><i class="fas fa-times pr-2"></i>{{activeBuild.buildDeleting? 'DELETING...' : 'DELETE BUILD'}}</button>
+                        <button type="button" *ngIf="canGenerateJiraTicket() && activeBuild.rvfURL" class="btn blue m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="getFailureJiraAssociations(); loadRvfReport(activeBuild); openModal('generate-jira-tickets-modal')"><i class="fas fa-ticket-alt pr-2"></i>GENERATE JIRA TICKETS</button>
                     </div>
                 </div>
             </div>
-            <div class="panel-footer text-right">
-                <label for="view" class="float-left font-weight-bold p-3">View</label>
-                <select [(ngModel)]="view" id="view" class="rounded-lg p-2 float-left" (change)="pageNumber = 1; loadBuilds();">
-                    <option value="DEFAULT">Default</option>
-                    <option value="ALL_RELEASES">All Releases</option>
-                    <option value="PUBLISHED">Published</option>
-                    <option value="UNPUBLISHED">Unpublished</option>
-                </select>
-                <button type="button" class="btn-sea-buckthorn ml-3 my-1" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">View Log</button>
-                <button type="button" class="btn-blue ml-3 my-1" *ngIf="isAdminOrManagerOrLead()" (click)="openModal('hidden-builds-modal'); loadHiddenBuilds()">View Hidden</button>
-                <button type="button" class="btn-blue ml-3 my-1" (click)="loadBuilds()">View All</button>
-                <button type="button" class="btn-green ml-3 my-1 mr-1" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">Clone</button>
+        </ng-container>
+
+        <div class="row">
+            <div class="col text-left">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle m-2 float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{view}}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" (click)="view = 'DEFAULT'; pageNumber = 1; loadBuilds()">DEFAULT</a>
+                        <a class="dropdown-item" (click)="view = 'ALL_RELEASES'; pageNumber = 1; loadBuilds()">ALL_RELEASES</a>
+                        <a class="dropdown-item" (click)="view = 'PUBLISHED'; pageNumber = 1; loadBuilds()">PUBLISHED</a>
+                        <a class="dropdown-item" (click)="view = 'UNPUBLISHED'; pageNumber = 1; loadBuilds()">UNPUBLISHED</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col text-right">
+                <button type="button" class="btn orange m-2" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">VIEW LOG</button>
+                <button type="button" class="btn blue m-2" *ngIf="isAdminOrManagerOrLead()" (click)="openModal('hidden-builds-modal'); loadHiddenBuilds()">VIEW HIDDEN</button>
+                <button type="button" class="btn blue m-2" (click)="loadBuilds()">VIEW ALL</button>
+                <button type="button" class="btn green m-2" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">CLONE</button>
             </div>
         </div>
-        <table class="table table-bordered table-sortable" *ngIf="buildsLoading">
+
+        <table class="table table-bordered table-striped table-sortable" *ngIf="buildsLoading">
             <tr>
                 <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
                 <th [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name
@@ -107,7 +124,7 @@
                 <td colspan="13"><div class="font-weight-bold loading">Loading</div></td>
             </tr>
         </table>
-        <table class="table table-bordered table-sortable" *ngIf="!buildsLoading">
+        <table class="table table-bordered table-striped table-sortable" *ngIf="!buildsLoading">
             <tr>
                 <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
                 <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildName']['direction']}">Build Name
@@ -129,7 +146,7 @@
                 <th class="w-10" *ngIf="isAdminOrManagerOrLead()">User Roles</th>
                 <th class="w-5" *ngIf="isAdminOrManagerOrLead()">Log</th>
                 <th *ngIf="isAdminOrManagerOrLead()">Release</th>
-                <th class="w-8">RVF Report</th>
+                <th>RVF Report</th>
                 <th>Config</th>
                 <th>Manifest</th>
                 <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
@@ -139,26 +156,65 @@
                 <td colspan="13">No builds found.</td>
             </tr>
             <tr *ngFor="let build of builds | paginate: {id: 'builds_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalBuild}" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
-                <td class="pb-0" *ngIf="isAdminOrManagerOrLead()"><button type="button" class="btn-circle btn-blue" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="material-icons">open_in_new</i></button></td>
-                <td class="pb-0 text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
-                <td class="pb-0 text-left" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
-                <td class="pb-0 text-left" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
-                <td class="pb-0">{{build?.buildUser}}</td>
-                <td class="pb-0 text-left" *ngIf="isAdminOrManagerOrLead()"><div  *ngFor="let role of build?.userRoles" >&bull; {{role.replaceAll('_', ' ') | titlecase}}</div></td>
-                <td class="pb-0" *ngIf="isAdminOrManagerOrLead()"><div class="btn-log-download badge loading" *ngIf="build.buildDownloadingLog">Downloading</div><button type="button" class="btn-circle btn-sea-buckthorn" *ngIf="!build.buildDownloadingLog" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="material-icons">get_app</i></button></td>
-                <td class="pb-0" *ngIf="isAdminOrManagerOrLead()" style="width: auto;">
-                    <div style="display: flex;border: none;">
-                        <div class="btn-package-download badge loading" *ngIf="build.buildDownloadingPackage">Downloading</div>
-                        <button type="button" class="btn-circle btn-blue" *ngIf="!build.buildDownloadingPackage" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="material-icons">get_app</i></button>
-                        <button type="button" style="font-size: 9px;margin-left: 5px;width: 2.5em;height: 2.5em;color: black;" class="btn-circle btn-sea-buckthorn" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file">md5</button>
+                <td class="pb-0" *ngIf="isAdminOrManagerOrLead()">
+                    <button type="button" class="btn blue text-nowrap" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="fas fa-external-link-alt pr-2"></i>OPEN</button>
+                </td>
+                <td class="text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
+                <td class="text-left" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
+                <td class="text-left" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
+                <td class="">{{build?.buildUser}}</td>
+                <td class="text-left" *ngIf="isAdminOrManagerOrLead()">
+                    <ng-container *ngFor="let role of build?.userRoles" >
+                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{role.replaceAll('_', ' ') | titlecase}}</div>
+                    </ng-container>
+                </td>
+                <td class="" *ngIf="isAdminOrManagerOrLead()">
+                    <ng-container *ngIf="build.buildDownloadingLog">
+<!--                        <div class="btn-log-download badge loading">Downloading</div>-->
+                        <button type="button" class="btn purple text-nowrap" title="Download Log"><span class="pr-2"><i class="fas fa-circle-notch fa-spin" style="width: 12px; height: 12px"></i></span>DOWNLOADING</button>
+                    </ng-container>
+                    <ng-container *ngIf="!build.buildDownloadingLog">
+                        <button type="button" class="btn purple text-nowrap" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="fas fa-download pr-2"></i>.TXT</button>
+                    </ng-container>
+                </td>
+                <td class="" *ngIf="isAdminOrManagerOrLead()" style="width: auto;">
+                    <div class="d-block mb-2">
+                        <ng-container *ngIf="build.buildDownloadingPackage">
+                            <button type="button" class="btn purple text-nowrap w-100" title="Download Log"><span class="pr-2"><i class="fas fa-circle-notch fa-spin" style="width: 12px; height: 12px"></i></span>DOWNLOADING</button>
+<!--                            <div class="btn-package-download badge loading">Downloading</div>-->
+                        </ng-container>
+                        <ng-container *ngIf="!build.buildDownloadingPackage">
+                            <button type="button" class="btn purple text-nowrap w-100" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="fas fa-download pr-2"></i>.ZIP</button>
+                        </ng-container>
+                    </div>
+                    <div class="d-block">
+                        <button type="button" class="btn purple text-nowrap w-100" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file"><i class="fas fa-download pr-2"></i>.MD5</button>
                     </div>
                 </td>
-                <td class="pb-0"><button type="button" class="btn-circle btn-blue" *ngIf="build.rvfURL" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="material-icons">open_in_new</i></button></td>
-                <td class="pb-0"><button type="button" class="btn-circle btn-grey" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="material-icons">settings</i></button></td>
-                <td class="pb-0"><button class="btn-circle btn-green" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="material-icons">insert_drive_file</i></button></td>
-                <td class="pb-0" *ngIf="isAdminOrManagerOrLead()"><button type="button" class="btn-circle btn-mandy" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="material-icons">visibility_off</i></button></td>
-                <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && isAdminOrManagerOrLead()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span>
-                    <button *ngIf="!build.tags && isAdminOrManagerOrLead()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>
+                <td class="">
+                    <ng-container *ngIf="build.rvfURL">
+                        <button type="button" class="btn blue text-nowrap" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="fas fa-external-link-alt pr-2"></i>OPEN</button>
+                    </ng-container>
+                </td>
+                <td class="">
+                    <button type="button" class="btn slate text-nowrap" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="fas fa-cog pr-2"></i>SETTINGS</button>
+                </td>
+                <td class="">
+                    <button class="btn blue text-nowrap" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pr-2"></i>OPEN</button>
+                </td>
+                <td class="" *ngIf="isAdminOrManagerOrLead()">
+                    <button type="button" class="btn slate text-nowrap" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="fas fa-eye-slash pr-2"></i>HIDE</button>
+                </td>
+<!--                <td class=""><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && isAdminOrManagerOrLead()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span>-->
+<!--                    <button *ngIf="!build.tags && isAdminOrManagerOrLead()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>-->
+<!--                </td>-->
+                <td>
+                    <ng-container *ngFor="let tag of build?.tags" >
+                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag | uppercase}}</div>
+                    </ng-container>
+                    <div *ngIf="isAdminOrManagerOrLead()" class="rounded-pill px-2 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">
+                        <i class="fas fa-plus pr-2"></i>ADD
+                    </div>
                 </td>
             </tr>
         </table>
@@ -243,7 +299,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <div class="w-100">
             <input [disabled]="buildTriggering" class="w-75 rounded-lg p-3 m-3" type="text" [(ngModel)]="buildParams.maxFailureExport" placeholder="Failure Max">
             <span class="font-weight-light position-absolute" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
-        </div>        
+        </div>
         <div class="p-3 m-3 text-left row" *ngIf="!useLocalInputFiles">
             <div class="w-75 d-inline pl-5 ml-2">
                 <input type="checkbox" [disabled]="buildParams.exportType === 'PUBLISHED'" [(ngModel)]="buildParams.enableTraceabilityValidation">

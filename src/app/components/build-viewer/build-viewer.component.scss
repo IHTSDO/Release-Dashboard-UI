@@ -36,6 +36,18 @@ div.build-viewer {
             }
         }
 
+        &.red {
+            background-color: lighten($mandy, 10%);
+
+            i {
+                color: lighten($mandy, 30%);
+            }
+
+            &:hover {
+                background-color: $mandy;
+            }
+        }
+
         &.orange {
             background-color: lighten($sea-buckthorn, 10%);
 
@@ -59,6 +71,23 @@ div.build-viewer {
                 background-color: $wisteria;
             }
         }
+
+        &.slate {
+            background-color: lighten($slate-grey, 10%);
+
+            i {
+                color: lighten($slate-grey, 30%);
+            }
+
+            &:hover {
+                background-color: $slate-grey;
+            }
+        }
+    }
+
+    div.active-build {
+        height: 27rem;
+        background-color: lighten($alto-white, 5%);
     }
 
     div.panel-top {
@@ -66,13 +95,17 @@ div.build-viewer {
 
         div.panel-header,
         div.panel-footer {
-            height: 3.5rem;
+            min-height: 4rem;
             background: #E0E0E0;
 
             select {
                 margin-top: 4px;
             }
         }
+    }
+
+    ul.status {
+        //width: fit-content;
     }
 
     div.pb-18 {
@@ -91,10 +124,10 @@ div.build-viewer {
             }
         }
         tr.active {
-            background-color: $anakiwa;
+            background-color: lighten($anakiwa, 5%);
 
             &:hover {
-                background-color: darken($anakiwa, 5%);
+                background-color: $anakiwa;
             }
         }
         td:nth-child(2) {
@@ -118,6 +151,17 @@ div.build-viewer {
             i.material-icons.text-fruit-salad {
                 font-size: 16px;
                 cursor: pointer;
+            }
+
+            div.tag {
+                max-width: fit-content;
+                color: $white;
+                background-color: lighten($fruit-salad, 10%);
+
+                &.add:hover {
+                    background-color: $fruit-salad;
+                    cursor: pointer;
+                }
             }
         }
     }

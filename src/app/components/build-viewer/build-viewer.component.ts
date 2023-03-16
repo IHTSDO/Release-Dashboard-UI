@@ -693,7 +693,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    doOpeningBuildModal(isNewBuild) {
+    doOpeningBuildModal(isNewBuild?) {
         this.clearMessage();
         this.buildParams = new BuildParameters();
         this.useLocalInputFiles = false;
