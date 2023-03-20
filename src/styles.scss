@@ -1,6 +1,7 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import "~ngx-bootstrap/datepicker/bs-datepicker.css";
 @import '~material-design-icons/iconfont/material-icons.css';
+@import '~src/material-theme.scss';
 @import '~src/variables.scss';
 
 html {
@@ -12,7 +13,7 @@ html {
 }
 
 body {
-    font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+    font-family: 'Poppins', 'Helvetica Neue', 'Arial', sans-serif;
     font-size: 1.2rem;
     font-weight: 300;
     color: $black;
@@ -20,14 +21,62 @@ body {
 }
 
 @font-face {
-    font-family: 'Roboto';
-    src: url('assets/Roboto-Light.ttf');
+    font-family: 'Poppins';
+    src: url('assets/Poppins-Thin.ttf');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-ExtraLight.ttf');
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-Light.ttf');
     font-weight: 300;
 }
 
 @font-face {
-    font-family: 'Roboto';
-    src: url('assets/Roboto-Regular.ttf');
+    font-family: 'Poppins';
+    src: url('assets/Poppins-Regular.ttf');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-Medium.ttf');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-SemiBold.ttf');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-Bold.ttf');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-ExtraBold.ttf');
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('assets/Poppins-Black.ttf');
+    font-weight: 900;
+}
+
+h1 {
+    font-size: 2.4rem;
+    font-weight: 300;
 }
 
 h2 {
@@ -87,8 +136,8 @@ button {
     border-radius: 0.4rem;
     color: $white;
     height: 3rem;
-    font-weight: 500;    
-        
+    font-weight: 500;
+
     &:disabled {
         color: $grey;
     }
@@ -99,10 +148,10 @@ button {
         padding: 0.3rem 0rem;
         border-radius: 1.5rem;
         text-align: center;
-        color: $white;        
+        color: $white;
     }
-    &.btn-blue {            
-        background-color: $blue;        
+    &.btn-blue {
+        background-color: $blue;
         &:hover {
             background-color: darken($blue, 5%);
         }
@@ -110,11 +159,11 @@ button {
             background-color: lighten($blue, 30%);
             &:hover {
                 background-color: lighten($blue, 30%);
-            } 
+            }
         }
     }
     &.btn-green {
-        background-color: $green;        
+        background-color: $green;
         &:hover {
             background-color: darken($green, 5%);
         }
@@ -126,13 +175,13 @@ button {
         }
     }
     &.btn-light-red {
-        background-color: #f85c4d;         
+        background-color: #f85c4d;
         &:hover {
            background-color: darken(#f85c4d, 5%);
         }
     }
     &.btn-mandy {
-        background-color: $mandy;         
+        background-color: $mandy;
         &:hover {
            background-color: darken($mandy, 5%);
         }
@@ -140,11 +189,11 @@ button {
             background-color: lighten($mandy, 20%);
             &:hover {
                 background-color: lighten($mandy, 20%);
-            } 
+            }
         }
     }
     &.btn-sea-buckthorn {
-        background-color: $sea-buckthorn;        
+        background-color: $sea-buckthorn;
         &:hover {
             background-color: darken($sea-buckthorn, 5%);
         }
@@ -152,11 +201,11 @@ button {
             background-color: lighten($sea-buckthorn, 20%);
             &:hover {
                 background-color: lighten($sea-buckthorn, 20%);
-            } 
+            }
         }
     }
     &.btn-grey {
-        background-color: $grey;        
+        background-color: $grey;
         &:hover {
             background-color: darken($grey, 5%);
         }
@@ -164,7 +213,7 @@ button {
             background-color: lighten($grey, 20%);
             &:hover {
                 background-color: lighten($grey, 20%);
-            } 
+            }
         }
     }
 }
@@ -173,7 +222,7 @@ input, textarea {
 }
 
 button, input, textarea {
-    font-size: 1.2rem;    
+    font-size: 1.2rem;
     letter-spacing: 0.5px;
     border: none;
     resize: none;
@@ -206,7 +255,7 @@ ngb-typeahead-window.dropdown-menu {
     content: '.';
     animation: black-dots 1s steps(5, end) infinite;
 }
-  
+
 @keyframes black-dots {
     0%, 20% {
       color: rgba(0,0,0,0);
@@ -374,7 +423,7 @@ div.badge {
     border-bottom: 5px solid #888;
 }
 
-.table-sortable > tr > th.desc:after {    
+.table-sortable > tr > th.desc:after {
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 4px solid #333;
@@ -406,3 +455,15 @@ div.badge {
     border-bottom-color: grey;
     margin-top: -9px;
 }
+
+div.cdk-overlay-container {
+    z-index: 1200;
+
+    .mat-tooltip {
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: $white !important;
+        max-width: 30rem !important;
+    }
+}
+

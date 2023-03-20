@@ -136,17 +136,36 @@ app-modal {
 
     }
     &.update-modal {
-        input, select , textarea, select:focus{
-            border: 1px $ghost-grey solid;
+        h2 {
+            font-size: 2rem;
+
+            span {
+                font-size: 1.2rem;
+            }
         }
-        input[type=text], textarea {
-            width: 73%;
+
+        span.input-group-text {
+            cursor: default;
+            font-size: 1.4rem;
         }
-        label {
-            width: 27%;
+
+        input[type=checkbox] {
+            cursor: default;
         }
-        textarea {
-            white-space: pre-line;
-        }
+
+
+
+        //input, select , textarea, select:focus{
+        //    border: 1px $ghost-grey solid;
+        //}
+        //input[type=text], textarea {
+        //    width: 73%;
+        //}
+        //label {
+        //    width: 27%;
+        //}
+        //textarea {
+        //    white-space: pre-line;
+        //}
     }
 }

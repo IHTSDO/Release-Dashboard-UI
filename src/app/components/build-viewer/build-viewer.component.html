@@ -121,7 +121,7 @@
                 <th class="w-9">Tags</th>
             </tr>
             <tr >
-                <td colspan="13"><div class="font-weight-bold loading">Loading</div></td>
+                <td colspan="13"><div class="loading">Loading</div></td>
             </tr>
         </table>
         <table class="table table-bordered table-striped table-sortable" *ngIf="!buildsLoading">
@@ -470,7 +470,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <app-modal id="view-build-log-modal" class="modal view-build-log-modal" size="large">
     <h3 header class="mb-0">Log</h3>
     <div body class="text-left p-5" [class.text-center]="buildLogLoading">
-        <div class="font-weight-bold loading" *ngIf="buildLogLoading">Loading</div>
+        <div class="loading" *ngIf="buildLogLoading">Loading</div>
         <p *ngIf="!buildLogLoading">{{buildLog}}</p>
     </div>
 
@@ -482,7 +482,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <!--Waiting Model-->
 <app-modal id="waiting-modal" class="modal" hideHeader="true" hideFooter="true" disableBackgroundClickEvent="true" size="small">
     <div body class="text-left p-5 text-center">
-        <div class="font-weight-bold loading">{{action}}</div>
+        <div class="loading">{{action}}</div>
     </div>
 </app-modal>
 

@@ -115,6 +115,8 @@ div.build-viewer {
     table {
         tr {
             th {
+                font-weight: 400;
+
                 &.asc, &.desc, &.sortable {
                     padding-right: 25px;
                 }
