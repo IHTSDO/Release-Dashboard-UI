@@ -266,7 +266,7 @@
         </pagination-controls>
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('hidden-builds-modal')">Close</button>
+        <button type="button" class="btn" (click)="closeModal('hidden-builds-modal')">CLOSE</button>
     </div>
 </app-modal>
 
@@ -317,8 +317,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" [disabled]="buildTriggering" (click)="closeModal('build-modal')">Cancel</button>
-        <button type="button" class="btn-blue" [disabled]="buildTriggering" (click)="runBuild()">Run</button>
+        <button type="button" class="btn" [disabled]="buildTriggering" (click)="closeModal('build-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" [disabled]="buildTriggering" (click)="runBuild()">RUN</button>
     </div>
 </app-modal>
 
@@ -330,8 +330,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('delete-confirmation-modal')">No</button>
-        <button type="button" class="btn-blue" (click)="deleteBuild(activeBuild)">Yes</button>
+        <button type="button" class="btn" (click)="closeModal('delete-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="deleteBuild(activeBuild)">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -343,8 +343,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('publish-build-confirmation-modal')">No</button>
-        <button type="button" class="btn-blue" (click)="publishBuild(activeBuild)">Yes</button>
+        <button type="button" class="btn" (click)="closeModal('publish-build-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="publishBuild(activeBuild)">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -361,8 +361,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-tagging-modal')">Cancel</button>
-        <button type="button" class="btn-blue" (click)="saveTags()">Save</button>
+        <button type="button" class="btn" (click)="closeModal('build-tagging-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="saveTags()">SAVE</button>
     </div>
 </app-modal>
 
@@ -412,8 +412,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         </table>
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('generate-jira-tickets-modal')">Cancel</button>
-        <button type="button" class="btn-blue" (click)=" validateFailuresSelection()">Generate</button>
+        <button type="button" class="btn" (click)="closeModal('generate-jira-tickets-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="validateFailuresSelection()">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -425,8 +425,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('jira-generation-confirmation-modal')">No</button>
-        <button type="button" class="btn-blue" (click)="generateJiraTickets()">Yes</button>
+        <button type="button" class="btn" (click)="closeModal('jira-generation-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="generateJiraTickets()">CONFIRM</button>
     </div>
 </app-modal>
 
@@ -449,7 +449,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('jira-generation-summary-modal')">Close</button>
+        <button type="button" class="btn" (click)="closeModal('jira-generation-summary-modal')">CLOSE</button>
     </div>
 </app-modal>
 
@@ -457,12 +457,12 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 <app-modal id="stop-build-confirmation-modal" class="modal build-modal">
     <h3 header class="mb-0">Confirmation</h3>
     <div body class="text-center p-5">
-        <p>Are you sure you want to cancel this build?</p>
+        <p>Are you sure you want to stop this build?</p>
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('stop-build-confirmation-modal')">No</button>
-        <button type="button" class="btn-blue" (click)="stopBuild(activeBuild)">Yes</button>
+        <button type="button" class="btn" (click)="closeModal('stop-build-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn reject ml-3" (click)="stopBuild(activeBuild)">STOP</button>
     </div>
 </app-modal>
 
@@ -475,7 +475,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('view-build-log-modal')">Close</button>
+        <button type="button" class="btn" (click)="closeModal('view-build-log-modal')">CLOSE</button>
     </div>
 </app-modal>
 
@@ -488,231 +488,576 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
 <app-modal id="view-build-configuration-modal" class="modal view-build-configuration-modal" size="large">
     <h3 header class="mb-0">Build Configurations</h3>
-    <div body class="text-center p-5">
-        <div class="row mx-0" *ngIf="selectedBuild">
-            <div class="col-12 text-left">
-                <div class="mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Build Name</label>
-                    <div class="d-inline">{{selectedBuild.configuration?.buildName}}</div>
+<!--    <div body class="text-center p-5">-->
+<!--        <div class="row mx-0" *ngIf="selectedBuild">-->
+<!--            <div class="col-12 text-left">-->
+<!--                <div class="mx-sm-3 mb-0 mt-0">-->
+<!--                    <label class="font-weight-bold">Build Name</label>-->
+<!--                    <div class="d-inline">{{selectedBuild.configuration?.buildName}}</div>-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-0">-->
+<!--                    <label class="font-weight-bold">Effective Time-->
+<!--                        <span class="font-weight-light" title="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. EXample: 2015-07-31">(?)</span>-->
+<!--                    </label>-->
+<!--                    <div class="d-inline">{{selectedBuild.configuration?.effectiveTime}}</div>-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1" *ngIf="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">-->
+<!--                    <label class="font-weight-bold">Use Local Input Files</label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-0" *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData">-->
+<!--                    <label class="font-weight-bold">Export Type-->
+<!--                        <span class="font-weight-light" title="Passes the type of export to Term Server to export the contents. Possible values are &quot;Published&quot;, &quot;Unpublished&quot;, &quot;Feedback Fix&quot;.-->
+<!--Use &quot;Published&quot; to retrieve all Production data that has been versioned with the &quot;Effective Time&quot;.-->
+<!--Use &quot;Unpublished&quot; to retrieve all data from the term server regardless of versioned dates.-->
+<!--Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">(?)</span>-->
+<!--                    </label>-->
+<!--                    <div class="d-inline">{{selectedBuild.configuration ? (selectedBuild.configuration.exportType ? (selectedBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''}}</div>-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-0" *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData">-->
+<!--                    <label class="font-weight-bold">Branch</label>-->
+<!--                    <div class="d-inline">{{selectedBuild.configuration?.branchPath}}</div>-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-0">-->
+<!--                    <label class="font-weight-bold">Failure Max-->
+<!--                        <span class="font-weight-light" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>-->
+<!--                    </label>-->
+<!--                    <div class="d-inline">{{selectedBuild.qaTestConfig?.maxFailureExport}}</div>-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold align-top">Readme Header-->
+<!--                        <span class="font-weight-light" title="The readme header which will be used in Readme.txt">(?)</span>-->
+<!--                    </label>-->
+<!--                    <textarea rows="5" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.readmeHeader"></textarea>-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-0">-->
+<!--                    <label class="font-weight-bold">Readme End Date-->
+<!--                        <span class="font-weight-light" title="The year of release. Example: 2015">(?)</span>-->
+<!--                    </label>-->
+<!--                    <div class="d-inline">{{selectedBuild.configuration?.readmeEndDate}}</div>-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">First Time Release-->
+<!--                        <span class="font-weight-light" title="Indicates whether or not this is a first time release for a given product">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.firstTimeRelease">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-2">-->
+<!--                    <label class="font-weight-bold">Just Package-->
+<!--                        <span class="font-weight-light" title="Indicates if the input files should just be packaged up (with no processing applied to them)">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.justPackage">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Beta Release-->
+<!--                        <span class="font-weight-light" title="Indicate whether or not the release is a beta release">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.betaRelease">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Input Files Fixes Required-->
+<!--                        <span class="font-weight-light" title="Indicates whether  or not input file fixes are required">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.inputFilesFixesRequired">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Create Legacy Ids-->
+<!--                        <span class="font-weight-light" title="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.createLegacyIds">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Use Classifier Precondition Checks-->
+<!--                        <span class="font-weight-light" title="Allows classification in the preCondition checks">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.useClassifierPreConditionChecks">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Classify Output Files-->
+<!--                        <span class="font-weight-light" title="Indicates whether or not to run a classification against the output files">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.classifyOutputFiles">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Release As An Edition-->
+<!--                        <span class="font-weight-light" title="Indicates whether the release build is an edition release or not">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.releaseAsAnEdition">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-0">-->
+<!--                    <label class="font-weight-bold">Custom Refset Composite Keys</label>-->
+<!--                    <input #customRefsetCompositeKeys type="text" disabled class="rounded-lg p-2">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">New RF2 Input Files-->
+<!--                        <span class="font-weight-light" title="The new files to be released for the first time for an existing product in subsequent releases">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.newRF2InputFiles">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Previous Published Release-->
+<!--                        <span class="font-weight-light" title="Passes the previous published package name to the SRS">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.previousPublishedPackage">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Previous International Release-->
+<!--                        <span class="font-weight-light" title="Passes the previous international release version to the RVF for QA testing">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousInternationalRelease">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Previous Extension Release-->
+<!--                        <span class="font-weight-light" title="Passes the previous extension release version to the RVF for  QA testing">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousExtensionRelease">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Extension Dependency Release-->
+<!--                        <span class="font-weight-light" title="Passes the international release version (that the extension is dependent upon) to the RVF for QA testing">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.extensionDependencyRelease">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Dependency Release Package-->
+<!--                        <span class="font-weight-light" title="The published international release package which an extension release is dependent on">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.dependencyRelease">-->
+<!--                </div>-->
+<!--                <div class="mx-sm-3 mb-0 mt-2">-->
+<!--                    <label style="vertical-align: top; margin-bottom: 0px;" class="font-weight-bold">Previous Edition Dependency Effective Date-->
+<!--                        <span class="font-weight-light" title="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" style="vertical-align: top; width: 200px;" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Included Previous Release Files-->
+<!--                        <span class="font-weight-light" title="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.includePrevReleaseFiles">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Excluded Refset Descriptor members-->
+<!--                        <span class="font-weight-light" title="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.excludeRefsetDescriptorMembers">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Excluded Language refsets-->
+<!--                        <span class="font-weight-light" title="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,....">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.excludeLanguageRefsetIds">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Namespace ID-->
+<!--                        <span class="font-weight-light" title="The namespace id for a given extension release">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.namespaceId">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Module ID(s)-->
+<!--                        <span class="font-weight-light" title="The module id(s) for a given extension. These should be comma separated">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.moduleIds">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Assertion Groups-->
+<!--                        <span class="font-weight-light" title="Passes the assertion group name(s) to the RVF for QA testing">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.assertionGroupNames">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Enable Drools-->
+<!--                        <span class="font-weight-light" title="Passes to RVF to enable the validations with Drools rules">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableDrools">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Drools Rules Group Names-->
+<!--                        <span class="font-weight-light" title="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.droolsRulesGroupNames">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Enable MRCM-->
+<!--                        <span class="font-weight-light" title="Passes to RVF to enable the validations with MRCM Validator">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableMRCMValidation">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Enable Traceability Validation-->
+<!--                        <span class="font-weight-light" title="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableTraceabilityValidation">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold">Concept Preferred Terms-->
+<!--                        <span class="font-weight-light" title="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">(?)</span>-->
+<!--                    </label>-->
+<!--                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.conceptPreferredTerms">-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold align-top">Release Information Fields-->
+<!--                        <span class="font-weight-light" title="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file.">(?)</span>-->
+<!--                    </label>-->
+<!--                    <textarea rows="5" style="resize: vertical;" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.additionalReleaseInformationFields"></textarea>-->
+<!--                </div>-->
+<!--                <div class="form-group mx-sm-3 mb-0 mt-1">-->
+<!--                    <label class="font-weight-bold align-top">License Statement-->
+<!--                        <span class="font-weight-light" title="The licence statement which will be used in the Release Package Information file">(?)</span>-->
+<!--                    </label>-->
+<!--                    <textarea rows="5" style="resize: vertical;" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.licenceStatement"></textarea>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+    <div body>
+        <ng-container *ngIf="selectedBuild.configuration">
+            <h2 class="m-3">{{selectedBuild.configuration.buildName}}<span class="px-3 m-3 font-italic">See&nbsp;<a href="https://confluence.ihtsdotools.org/pages/viewpage.action?spaceKey=RMT&title=SRS+Script+Client+parameter+documentation">confluence</a>&nbsp;page for more information about these parameters.</span></h2>
+            <div class="row mx-0">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.effectiveTime">
+                    </div>
                 </div>
-                <div class="mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Effective Time
-                        <span class="font-weight-light" title="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. EXample: 2015-07-31">(?)</span>
-                    </label>
-                    <div class="d-inline">{{selectedBuild.configuration?.effectiveTime}}</div>
+                <div *ngIf="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath" class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Use Local Input Files</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1" *ngIf="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">
-                    <label class="font-weight-bold">Use Local Input Files</label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">
-                </div>
-                <div class="mx-sm-3 mb-0 mt-0" *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData">
-                    <label class="font-weight-bold">Export Type
-                        <span class="font-weight-light" title="Passes the type of export to Term Server to export the contents. Possible values are &quot;Published&quot;, &quot;Unpublished&quot;, &quot;Feedback Fix&quot;.
+                <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text" matTooltip="Passes the type of export to Term Server to export the contents. Possible values are &quot;Published&quot;, &quot;Unpublished&quot;, &quot;Feedback Fix&quot;.
 Use &quot;Published&quot; to retrieve all Production data that has been versioned with the &quot;Effective Time&quot;.
 Use &quot;Unpublished&quot; to retrieve all data from the term server regardless of versioned dates.
-Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">(?)</span>
-                    </label>
-                    <div class="d-inline">{{selectedBuild.configuration ? (selectedBuild.configuration.exportType ? (selectedBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''}}</div>
+Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">Export Type</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [value]="selectedBuild.configuration ? (selectedBuild.configuration.exportType ? (selectedBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''">
+                    </div>
                 </div>
-                <div class="mx-sm-3 mb-0 mt-0" *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData">
-                    <label class="font-weight-bold">Branch</label>
-                    <div class="d-inline">{{selectedBuild.configuration?.branchPath}}</div>
+                <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Branch</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.branchPath">
+                    </div>
                 </div>
-                <div class="mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Failure Max
-                        <span class="font-weight-light" title="Defines the number of errors that are seen/displayed (RVF)">(?)</span>
-                    </label>
-                    <div class="d-inline">{{selectedBuild.qaTestConfig?.maxFailureExport}}</div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Failure Max</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.maxFailureExport">
+                    </div>
                 </div>
-                <div class="mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold align-top">Readme Header
-                        <span class="font-weight-light" title="The readme header which will be used in Readme.txt">(?)</span>
-                    </label>
-                    <textarea rows="5" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.readmeHeader"></textarea>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeHeader">
+                    </div>
                 </div>
-                <div class="mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Readme End Date
-                        <span class="font-weight-light" title="The year of release. Example: 2015">(?)</span>
-                    </label>
-                    <div class="d-inline">{{selectedBuild.configuration?.readmeEndDate}}</div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
+                        </div>
+                        <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeEndDate">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">First Time Release
-                        <span class="font-weight-light" title="Indicates whether or not this is a first time release for a given product">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.firstTimeRelease">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.firstTimeRelease">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-2">
-                    <label class="font-weight-bold">Just Package
-                        <span class="font-weight-light" title="Indicates if the input files should just be packaged up (with no processing applied to them)">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.justPackage">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.justPackage">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Beta Release
-                        <span class="font-weight-light" title="Indicate whether or not the release is a beta release">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.betaRelease">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.betaRelease">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Input Files Fixes Required
-                        <span class="font-weight-light" title="Indicates whether  or not input file fixes are required">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.inputFilesFixesRequired">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.inputFilesFixesRequired">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Create Legacy Ids
-                        <span class="font-weight-light" title="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.createLegacyIds">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.createLegacyIds">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Use Classifier Precondition Checks
-                        <span class="font-weight-light" title="Allows classification in the preCondition checks">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.useClassifierPreConditionChecks">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Classify Output Files
-                        <span class="font-weight-light" title="Indicates whether or not to run a classification against the output files">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.classifyOutputFiles">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.classifyOutputFiles">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Release As An Edition
-                        <span class="font-weight-light" title="Indicates whether the release build is an edition release or not">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-0">
-                    <label class="font-weight-bold">Custom Refset Composite Keys</label>
-                    <input #customRefsetCompositeKeys type="text" disabled class="rounded-lg p-2">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Custom Refset Composite Keys</span>
+                        </div>
+                        <input #customRefsetCompositeKeys  type="text" disabled class="form-control">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">New RF2 Input Files
-                        <span class="font-weight-light" title="The new files to be released for the first time for an existing product in subsequent releases">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.newRF2InputFiles">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The new files to be released for the first time for an existing product in subsequent releases">New RF2 Input Files</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.newRF2InputFiles">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Previous Published Release
-                        <span class="font-weight-light" title="Passes the previous published package name to the SRS">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.previousPublishedPackage">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes the previous published package name to the SRS">Previous Published Release</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.previousPublishedPackage">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Previous International Release
-                        <span class="font-weight-light" title="Passes the previous international release version to the RVF for QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousInternationalRelease">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes the previous international release version to the RVF for QA testing">Previous International Release</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.previousInternationalRelease">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Previous Extension Release
-                        <span class="font-weight-light" title="Passes the previous extension release version to the RVF for  QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.previousExtensionRelease">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes the previous extension release version to the RVF for  QA testing">Previous Extension Release</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.previousExtensionRelease">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Extension Dependency Release
-                        <span class="font-weight-light" title="Passes the international release version (that the extension is dependent upon) to the RVF for QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.extensionDependencyRelease">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes the international release version (that the extension is dependent upon) to the RVF for QA testing">Extension Dependency Release</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.extensionDependencyRelease">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Dependency Release Package
-                        <span class="font-weight-light" title="The published international release package which an extension release is dependent on">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.dependencyRelease">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Dependency Release Package</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.dependencyRelease">
+                    </div>
                 </div>
-                <div class="mx-sm-3 mb-0 mt-2">
-                    <label style="vertical-align: top; margin-bottom: 0px;" class="font-weight-bold">Previous Edition Dependency Effective Date
-                        <span class="font-weight-light" title="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">(?)</span>
-                    </label>
-                    <input type="text" style="vertical-align: top; width: 200px;" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Included Previous Release Files
-                        <span class="font-weight-light" title="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.includePrevReleaseFiles">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">Included Previous Release Files</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.includePrevReleaseFiles">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Excluded Refset Descriptor members
-                        <span class="font-weight-light" title="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.excludeRefsetDescriptorMembers">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">Excluded Refset Descriptor Members</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.excludeRefsetDescriptorMembers">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Excluded Language refsets
-                        <span class="font-weight-light" title="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,....">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.excludeLanguageRefsetIds">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,...">Excluded Language refsets</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.excludeLanguageRefsetIds">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Namespace ID
-                        <span class="font-weight-light" title="The namespace id for a given extension release">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.namespaceId">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The namespace id for a given extension release">Namespace ID</span>
+                        </div>
+                        <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.namespaceId">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Module ID(s)
-                        <span class="font-weight-light" title="The module id(s) for a given extension. These should be comma separated">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.extensionConfig && selectedBuild.configuration.extensionConfig.moduleIds">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The module id(s) for a given extension. These should be comma separated">Module ID(s)</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.moduleIds">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Assertion Groups
-                        <span class="font-weight-light" title="Passes the assertion group name(s) to the RVF for QA testing">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.assertionGroupNames">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes the assertion group name(s) to the RVF for QA testing">Assertion Groups</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.assertionGroupNames">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Enable Drools
-                        <span class="font-weight-light" title="Passes to RVF to enable the validations with Drools rules">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableDrools">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableDrools">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Drools Rules Group Names
-                        <span class="font-weight-light" title="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.droolsRulesGroupNames">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">Drools Rules Group Names</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.droolsRulesGroupNames">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Enable MRCM
-                        <span class="font-weight-light" title="Passes to RVF to enable the validations with MRCM Validator">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableMRCMValidation">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableMRCMValidation">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Enable Traceability Validation
-                        <span class="font-weight-light" title="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">(?)</span>
-                    </label>
-                    <input type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="selectedBuild.qaTestConfig && selectedBuild.qaTestConfig.enableTraceabilityValidation">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold">Concept Preferred Terms
-                        <span class="font-weight-light" title="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">(?)</span>
-                    </label>
-                    <input type="text" disabled class="rounded-lg p-2" [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.conceptPreferredTerms">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
+                        </div>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.conceptPreferredTerms">
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold align-top">Release Information Fields
-                        <span class="font-weight-light" title="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file.">(?)</span>
-                    </label>
-                    <textarea rows="5" style="resize: vertical;" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">Release Information Fields</span>
+                        </div>
+                        <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
+                    </div>
                 </div>
-                <div class="form-group mx-sm-3 mb-0 mt-1">
-                    <label class="font-weight-bold align-top">License Statement
-                        <span class="font-weight-light" title="The licence statement which will be used in the Release Package Information file">(?)</span>
-                    </label>
-                    <textarea rows="5" style="resize: vertical;" disabled [(ngModel)]="selectedBuild.configuration && selectedBuild.configuration.licenceStatement"></textarea>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The licence statement which will be used in the Release Package Information file">License Statement</span>
+                        </div>
+                        <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.licenceStatement"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
     </div>
+
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('view-build-configuration-modal')">Close</button>
+        <button type="button" class="btn" (click)="closeModal('view-build-configuration-modal')">CLOSE</button>
     </div>
 </app-modal>
 
@@ -722,7 +1067,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-success-modal')">Ok</button>
+        <button type="button" class="btn" (click)="closeModal('build-success-modal')">CLOSE</button>
     </div>
 </app-modal>
 
@@ -732,7 +1077,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <div class="text-left error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('build-error-modal')">Ok</button>
+        <button type="button" class="btn" (click)="closeModal('build-error-modal')">CLOSE</button>
     </div>
 </app-modal>
 
@@ -742,8 +1087,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <p>Do you want to hide the build '{{selectedBuild?.id}}'?</p>
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('hide-build-confirmation-modal')">No</button>
-        <button type="button" class="btn-blue" (click)="hideBuild()">Yes</button>
+        <button type="button" class="btn" (click)="closeModal('hide-build-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="hideBuild()">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -753,7 +1098,33 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <p>Do you want to un-hide the build '{{selectedBuild?.id}}'?</p>
     </div>
     <div footer>
-        <button type="button" class="btn-sea-buckthorn" (click)="closeModal('unhide-build-confirmation-modal')">No</button>
-        <button type="button" class="btn-blue" (click)="unHideBuild()">Yes</button>
+        <button type="button" class="btn" (click)="closeModal('unhide-build-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="unHideBuild()">ACCEPT</button>
     </div>
 </app-modal>
+
+<!--Build deletion confirmation-->
+<app-modal id="publish-danger-modal" class="modal">
+    <h3 header class="mb-0">Are you absolutely sure?</h3>
+    <div body class="text-center mx-0">
+        <p class="px-3 py-4 danger-text"><i class="fas fa-exclamation-triangle pr-3"></i>Unexpectedly bad things will happen if you don't read this!</p>
+        <p class="px-5 py-1 information-text text-left">- This action <B>cannot</B> be undone.</p>
+        <p class="px-5 py-1 information-text text-left">- The following changes are permanent.</p>
+        <p class="px-5 py-1 information-text text-left">- You are about to publish a SNOMED-CT release package.</p>
+        <p class="px-5 py-1 information-text text-left">- Please enter the release package name to confirm you understand this:</p>
+
+        <div class="input-group input-group-lg px-5 mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Release Package</span>
+            </div>
+            <input #input type="text" class="form-control" placeholder="">
+        </div>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('publish-danger-modal')">CANCEL</button>
+        <button *ngIf="input.value" type="button" [disabled]="false" class="btn danger-button ml-3">I understand the consequences, publish the release.</button>
+        <button *ngIf="!input.value" type="button" [disabled]="true" class="btn danger-button ml-3">I understand the consequences, publish the release.</button>
+    </div>
+</app-modal>
+
