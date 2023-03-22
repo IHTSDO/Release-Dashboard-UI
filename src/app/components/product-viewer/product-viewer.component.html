@@ -253,31 +253,7 @@
             <div class="col-6">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes the previous international release version to the RVF for QA testing">Previous International Release</span>
-                    </div>
-                    <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.previousInternationalRelease">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes the previous extension release version to the RVF for  QA testing">Previous Extension Release</span>
-                    </div>
-                    <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.previousExtensionRelease">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes the international release version (that the extension is dependent upon) to the RVF for QA testing">Extension Dependency Release</span>
-                    </div>
-                    <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.extensionDependencyRelease">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Dependency Release Package</span>
+                        <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
                     </div>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease">
                 </div>

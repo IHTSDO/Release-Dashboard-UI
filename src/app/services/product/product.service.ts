@@ -46,10 +46,7 @@ export class ProductService {
             inputFilesFixesRequired: product.buildConfiguration.inputFilesFixesRequired,
             createLegacyIds: product.buildConfiguration.createLegacyIds,
             newRF2InputFiles: product.buildConfiguration.newRF2InputFiles,
-            previousInternationalRelease: product.qaTestConfig.previousInternationalRelease,
-            previousExtensionRelease: product.qaTestConfig.previousExtensionRelease,
             assertionGroupNames: product.qaTestConfig.assertionGroupNames,
-            extensionDependencyRelease: product.qaTestConfig.extensionDependencyRelease,
             namespaceId: product.buildConfiguration.extensionConfig.namespaceId,
             moduleIds: product.buildConfiguration.extensionConfig.moduleIds,
             releaseExtensionAsAnEdition: product.buildConfiguration.extensionConfig.releaseAsAnEdition,
@@ -66,7 +63,7 @@ export class ProductService {
             conceptPreferredTerms : product.buildConfiguration.conceptPreferredTerms,
             customRefsetCompositeKeys : customRefsetCompositeKeys,
             previousPublishedPackage : product.buildConfiguration.previousPublishedPackage,
-            dependencyReleasePackage : product.buildConfiguration.extensionConfig.dependencyRelease
+            extensionDependencyRelease : product.buildConfiguration.extensionConfig.dependencyRelease
         };
         if (product.buildConfiguration.extensionConfig &&
             product.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
