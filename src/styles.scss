@@ -326,56 +326,56 @@ div.badge {
         animation: white-dots 1s steps(5, end) infinite;
     }
 }
-
-.local {
-    background-color: $river-bed;
-    color: #fff;
-    a span {
-        color: #fff;
-    }
-}
-
-.dev {
-    background-color: $mandy;
-    color: #fff;
-    a span {
-        color: #fff;
-    }
-
-    &.footer {
-        a {
-            color: #fff;
-        }
-    }
-}
-
-.uat {
-    background-color: $sea-buckthorn;
-    color: #fff;
-    a span {
-        color: #fff;
-    }
-
-    &.footer {
-        a {
-            color: #fff;
-        }
-    }
-}
-
-.prod {
-    background-color : $blue;
-    color: #fff;
-    a span {
-        color: #fff;
-    }
-
-    &.footer {
-        a {
-            color: #fff;
-        }
-    }
-}
+//
+//.local {
+//    background-color: $river-bed;
+//    color: #fff;
+//    a span {
+//        color: #fff;
+//    }
+//}
+//
+//.dev {
+//    background-color: $mandy;
+//    color: #fff;
+//    a span {
+//        color: #fff;
+//    }
+//
+//    &.footer {
+//        a {
+//            color: #fff;
+//        }
+//    }
+//}
+//
+//.uat {
+//    background-color: $sea-buckthorn;
+//    color: #fff;
+//    a span {
+//        color: #fff;
+//    }
+//
+//    &.footer {
+//        a {
+//            color: #fff;
+//        }
+//    }
+//}
+//
+//.prod {
+//    background-color : $blue;
+//    color: #fff;
+//    a span {
+//        color: #fff;
+//    }
+//
+//    &.footer {
+//        a {
+//            color: #fff;
+//        }
+//    }
+//}
 .table-sortable > tr > th {
     cursor: pointer;
     position: relative;
