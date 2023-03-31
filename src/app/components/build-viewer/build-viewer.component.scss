@@ -170,14 +170,14 @@ div.build-viewer {
 }
 
 app-modal {
-    &.build-modal {
-        input, select , select:focus{
-            border: 1px $ghost-grey solid;
-        }
-        span {
-            margin-top: 1.8em;
-        }
-    }
+    //&.build-modal {
+    //    input, select , select:focus{
+    //        border: 1px $ghost-grey solid;
+    //    }
+    //    span {
+    //        margin-top: 1.8em;
+    //    }
+    //}
     &.error-modal {
         div.error {
             white-space: pre-wrap;
@@ -203,17 +203,40 @@ app-modal {
         white-space: pre-line;
         line-height: 2.4rem;
     }
-    &.view-build-configuration-modal {
-        input, select , textarea, select:focus{
-            border: 1px $ghost-grey solid;
+
+    &.view-build-configuration-modal, &.build-modal {
+        h2 {
+            font-size: 2rem;
+
+            span {
+                font-size: 1.2rem;
+            }
+        }
+
+        span.input-group-text {
+            cursor: default;
+            font-size: 1.4rem;
+        }
+
+        input[type=checkbox] {
             cursor: default;
         }
-        input[type=text], textarea {
-            width: 73%;
+    }
+
+    &#publish-danger-modal {
+        p.danger-text {
+            background-color: $sea-buckthorn;
+            color: $black;
+            font-size: 1.6rem;
+            margin: -10px -10px 10px -10px;
+
+            i {
+                font-size: 2rem;
+            }
         }
-        label {
-            width: 27%;
+
+        p.information-text {
+            font-size: 1.4rem;
         }
     }
 }
-

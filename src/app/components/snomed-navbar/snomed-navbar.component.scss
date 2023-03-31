@@ -129,18 +129,4 @@ nav {
     }
 }
 
-app-modal#publish-danger-modal {
-    p.danger-text {
-        background-color: $sea-buckthorn;
-        color: $black;
-        font-size: 1.6rem;
 
-        i {
-            font-size: 2rem;
-        }
-    }
-
-    p.information-text {
-        font-size: 1.4rem;
-    }
-}

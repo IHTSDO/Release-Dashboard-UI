@@ -34,6 +34,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     RF2_DATE_FORMAT = 'yyyyMMdd';
     DATA_DOG_URL = 'https://app.datadoghq.com/dashboard/dm6-vs3-bz3/release-dashboard';
 
+    dangerInput: string;
+
     // params map
     releaseCenterKey: string;
     productKey: string;
@@ -997,7 +999,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 this.message = this.message.replace(/env_placehoder/g, 'PRODUCTION ');
                 break;
         }
-        this.openModal('publish-build-confirmation-modal');
+        // this.openModal('publish-build-confirmation-modal');
+        this.openModal('publish-danger-modal');
     }
 
     openTaggingModal(build: Build) {
