@@ -78,11 +78,11 @@
             <div class="col text-left">
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle m-2 float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{view}}
+                        {{view === 'ALL_RELEASES' ? 'ALL RELEASES' : view}}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" (click)="view = 'DEFAULT'; pageNumber = 1; loadBuilds()">DEFAULT</a>
-                        <a class="dropdown-item" (click)="view = 'ALL_RELEASES'; pageNumber = 1; loadBuilds()">ALL_RELEASES</a>
+                        <a class="dropdown-item" (click)="view = 'ALL_RELEASES'; pageNumber = 1; loadBuilds()">ALL RELEASES</a>
                         <a class="dropdown-item" (click)="view = 'PUBLISHED'; pageNumber = 1; loadBuilds()">PUBLISHED</a>
                         <a class="dropdown-item" (click)="view = 'UNPUBLISHED'; pageNumber = 1; loadBuilds()">UNPUBLISHED</a>
                     </div>
@@ -252,7 +252,11 @@
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
                 <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span></td>
-                <td class="pb-0 pt-0"><button style="margin-top: 1px; margin-bottom: 1px;" type="button" class="btn-blue" (click)="openUnhideBuildConfirmationModal(build)">Un-hide</button></td>
+<!--                <td class="pb-0 pt-0"><button style="margin-top: 1px; margin-bottom: 1px;" type="button" class="btn-blue" (click)="openUnhideBuildConfirmationModal(build)">Un-hide</button></td>-->
+                <td class="pb-2">
+                    <button class="btn hide" (click)="openUnhideBuildConfirmationModal(build)"><i class="fas fa-eye pr-2"></i>UN-HIDE</button>
+                </td>
+
             </tr>
         </table>
         <pagination-controls id="hidden_builds_table"
@@ -603,14 +607,6 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
-                        </div>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeHeader">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
                             <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
                         </div>
                         <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeEndDate">
@@ -851,6 +847,14 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
+                        </div>
+                        <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeHeader"></textarea>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
                             <span class="input-group-text" matTooltip="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">Release Information Fields</span>
                         </div>
                         <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
@@ -935,7 +939,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('publish-danger-modal')">CANCEL</button>
-        <button *ngIf="dangerInput === activeBuild?.configuration?.effectiveTime" type="button" [disabled]="false" (click)="publishBuild(activeBuild)" class="btn reject ml-3">I understand, publish the release</button>
+        <button *ngIf="dangerInput === activeBuild?.configuration?.effectiveTime" type="button" [disabled]="false" (click)="publishBuild(activeBuild); closeModal('publish-danger-modal')" class="btn reject ml-3">I understand, publish the release</button>
         <button *ngIf="dangerInput !== activeBuild?.configuration?.effectiveTime" type="button" [disabled]="true" class="btn ml-3">I understand, publish the release</button>
     </div>
 </app-modal>

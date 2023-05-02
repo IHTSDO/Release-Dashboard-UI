@@ -114,14 +114,7 @@
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
                 </div>
             </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
-                    </div>
-                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.readmeHeader">
-                </div>
-            </div>
+
             <div class="col-6">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -352,6 +345,14 @@
                         <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
                     </div>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.conceptPreferredTerms">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
+                    </div>
+                    <textarea rows="5" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.readmeHeader"></textarea>
                 </div>
             </div>
             <div class="col-6">

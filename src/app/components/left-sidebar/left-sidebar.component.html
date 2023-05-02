@@ -15,15 +15,9 @@
                 <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="message = ''; openModal('edit-modal')" class="btn w-100 edit"><i class="fas fa-pen pr-2"></i>EDIT</button>
             </div>
             <div class="col mr-2 mb-2">
-                <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Remove Release Center" (click)="openModal('remove-relese-center-confirmation-modal')" class="btn w-100 delete"><i class="fas fa-times pr-2"></i>DELETE</button>
+                <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Remove Release Center" (click)="openModal('remove-release-center-confirmation-modal')" class="btn w-100 delete"><i class="fas fa-times pr-2"></i>DELETE</button>
             </div>
         </div>
-
-<!--        <div class="row justify-content-center align-items-center mb-2">-->
-<!--            <button class="btn-circle btn-blue text-center float-left mr-5" *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; message = ''; openModal('add-modal')" title="Add New Release Center"><i class="material-icons">add</i></button>-->
-<!--            <button class="btn-circle btn-green text-center float-right ml-5 mr-5" *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="message = ''; openModal('edit-modal')"><i class="material-icons">edit</i></button>-->
-<!--            <button class="btn-circle btn-mandy text-center float-right ml-5" *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Remove Release Center" (click)="openModal('remove-relese-center-confirmation-modal')"><i class="material-icons">remove</i></button>-->
-<!--        </div>-->
     </div>
 </nav>
 
@@ -32,15 +26,57 @@
     <h3 header class="mb-0">Create New Release Center</h3>
     <div body class="text-center p-5">
         <p>Please enter the details for the new Release Center</p>
-        <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">
-        <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" title="Short Name must be unique across system and a single word">
-        <select #addCodeSystem class="w-75 rounded-lg p-3 m-3">
-            <option value=""></option>
-            <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName">
-              {{codeSystem.name}}
-            </option>
-        </select>
-        <input #addSNOMEDCTProduct class="w-75 rounded-lg p-3 m-3" type="text" placeholder="SNOMED CT Product">
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Name</span>
+                </div>
+                <input #addName type="text" class="form-control">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Short Name</span>
+                </div>
+                <input #addShortName type="text" class="form-control">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Codesystem</span>
+                </div>
+                <select #addCodeSystem class="form-control">
+                    <option value=""></option>
+                    <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName">
+                        {{codeSystem.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">SNOMED CT Product</span>
+                </div>
+                <input #addSNOMEDCTProduct type="text" class="form-control">
+            </div>
+        </div>
+
+<!--        <input #addName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name">-->
+<!--        <input #addShortName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Short Name" title="Short Name must be unique across system and a single word">-->
+<!--        <select #addCodeSystem class="w-75 rounded-lg p-3 m-3">-->
+<!--            <option value=""></option>-->
+<!--            <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName">-->
+<!--              {{codeSystem.name}}-->
+<!--            </option>-->
+<!--        </select>-->
+<!--        <input #addSNOMEDCTProduct class="w-75 rounded-lg p-3 m-3" type="text" placeholder="SNOMED CT Product">-->
     </div>
 
     <div footer>
@@ -70,13 +106,13 @@
     </div>
 </app-modal>
 
-<app-modal id="remove-relese-center-confirmation-modal" class="modal add-modal">
+<app-modal id="remove-release-center-confirmation-modal" class="modal add-modal">
     <h3 header class="mb-0">Confirmation</h3>
-    <div body class="text-center p-5">
+    <div body class="text-center p-3">
         <p>Do you want to remove the release center '{{activeReleaseCenter?.name}}'?</p>
     </div>
     <div footer>
-        <button type="button" class="btn" (click)="closeModal('remove-relese-center-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn" (click)="closeModal('remove-release-center-confirmation-modal')">CANCEL</button>
         <button type="button" class="btn accept ml-3" (click)="removeReleaseCenter()">ACCEPT</button>
     </div>
 </app-modal>

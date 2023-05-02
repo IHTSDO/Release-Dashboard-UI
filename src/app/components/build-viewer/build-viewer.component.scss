@@ -178,6 +178,28 @@ app-modal {
     //        margin-top: 1.8em;
     //    }
     //}
+
+    &#hidden-builds-modal {
+        table {
+            tr {
+                td {
+                    button.hide {
+                        background-color: lighten($slate-grey, 10%);
+                        color: $white;
+
+                        i {
+                            color: lighten($slate-grey, 30%);
+                        }
+
+                        &:hover {
+                            background-color: $slate-grey;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     &.error-modal {
         div.error {
             white-space: pre-wrap;
@@ -213,9 +235,15 @@ app-modal {
             }
         }
 
+        div.input-group {
+            input {
+                font-size: 1.2rem;
+            }
+        }
+
         span.input-group-text {
             cursor: default;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         input[type=checkbox] {

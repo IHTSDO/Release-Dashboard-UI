@@ -192,11 +192,11 @@ export class LeftSidebarComponent implements OnInit {
                 this.releaseCenterService.clearCachedReleaseCenters();
                 this.ngOnInit();
                 this.message = 'The release center ' + response.name + ' has been removed successfully.';
-                this.closeModal('remove-relese-center-confirmation-modal');
+                this.closeModal('remove-release-center-confirmation-modal');
                 this.openSuccessModel();
             },
             errorResponse => {
-                this.closeModal('remove-relese-center-confirmation-modal');
+                this.closeModal('remove-release-center-confirmation-modal');
                 this.message = errorResponse.error.errorMessage;
                 this.openErrorModel();
             }

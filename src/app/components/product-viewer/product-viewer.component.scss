@@ -144,9 +144,16 @@ app-modal {
             }
         }
 
+        div.input-group {
+            input {
+                font-size: 1.2rem;
+            }
+        }
+
+
         span.input-group-text {
             cursor: default;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
 
         input[type=checkbox] {
