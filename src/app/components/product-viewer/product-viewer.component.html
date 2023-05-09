@@ -3,6 +3,7 @@
     <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
     <div class="container">
         <button *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')" class="btn green float-right m-2"><i class="fas fa-plus pr-2"></i>ADD NEW PRODUCT</button>
+        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="View Hidden Products" (click)="resetHiddenProductTable(); loadHiddenProducts(); openModal('hidden-products-modal')" class="btn blue float-right m-2"><i class="fas fa-eye pr-2"></i>VIEW HIDDEN</button>
 <!--        <button class="btn-circle ml-3 mb-3 btn-blue float-right" *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>-->
         <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
@@ -15,20 +16,20 @@
         <table class="table table-bordered table-striped table-sortable" [hidden]="productsLoading">
             <thead>
             <tr>
-                <th [appSort] (sortClick)="handleSortClick($event)" [ngClass]="{'asc': sortDirection === 'asc', 'desc': sortDirection === 'desc'}"><h3 class="mb-0">PRODUCT</h3></th>
+                <th [appSort] (sortClick)="handleSortClickOnProductTable($event)" [ngClass]="{'asc': sortDirectionOnProductTable === 'asc', 'desc': sortDirectionOnProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></th>
                 <th class="max-vw-15"></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalProduct}" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}" class="product">
+            <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: pageSize, currentPage: pageNumberOnProductTable, totalItems: totalProduct}" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}" class="product">
                 <td class="pb-0 text-left">{{product?.name}}</td>
                 <td class=" btn-groups">
                     <div *ngIf="canAddProduct()" class="d-inline-block m-1">
                         <button class="btn edit" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="fas fa-pen pr-2"></i>EDIT</button>
                     </div>
                     <div class="d-inline-block m-1">
-                        <button *ngIf="!productsWithManifestUploaded.includes(product.id)" class="btn bg-alto-white" (click)="loadManifestFile(product); $event.stopPropagation()" title="The manifest has not yet been uploaded"><i class="fas fa-external-link-alt pr-2"></i>VIEW</button>
-                        <button *ngIf="productsWithManifestUploaded.includes(product.id)" class="btn view" (click)="loadManifestFile(product); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pr-2"></i>VIEW</button>
+                        <button *ngIf="!productsWithManifestUploaded.includes(product.id)" class="btn bg-alto-white" (click)="loadManifestFile(product); $event.stopPropagation()" title="The manifest has not yet been uploaded"><i class="fas fa-external-link-alt pr-2"></i>MANIFEST</button>
+                        <button *ngIf="productsWithManifestUploaded.includes(product.id)" class="btn view" (click)="loadManifestFile(product); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pr-2"></i>MANIFEST</button>
                     </div>
                     <div *ngIf="!product.manifestFileUploading && canAddProduct()" class="d-inline-block m-1">
                         <button class="btn upload" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="fas fa-file-upload pr-2"></i>UPLOAD</button>
@@ -56,7 +57,7 @@
 
         </table>
         <pagination-controls id="products_table"
-                      (pageChange)="handlePageChange($event)"
+                      (pageChange)="handlePageChangeOnProductTable($event)"
                       directionLinks="true"
                       autoHide="true"
                       responsive="true"
@@ -67,6 +68,54 @@
         <input class="d-none" #uploadManifestFileInput type="file" (change)="uploadManifestFile($event)">
     </div>
 </div>
+
+<app-modal id="hidden-products-modal" class="modal update-modal product-viewer text-center" size="large">
+    <h3 header class="mb-0">Hidden Products</h3>
+    <div body class="text-center p-5">
+        <table class="table table-bordered" *ngIf="hiddenProductsLoading">
+            <tr>
+                <th><h3 class="mb-0">PRODUCT</h3></th>
+            </tr>
+            <tr>
+                <td><div class="loading">Loading</div></td>
+            </tr>
+        </table>
+        <table class="table table-bordered table-striped table-sortable" [hidden]="hiddenProductsLoading">
+            <thead>
+            <tr>
+                <th [appSort] (sortClick)="handleSortClickOnHiddenProductTable($event)" [ngClass]="{'asc': sortDirectionOnHiddenProductTable === 'asc', 'desc': sortDirectionOnHiddenProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></th>
+                <th class="w-13"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let product of hiddenProducts | paginate: {id: 'hidden_products_table', itemsPerPage: pageSize, currentPage: pageNumberOnHiddenProductTable, totalItems: totalHiddenProduct}" class="product">
+                <td class="pb-0 text-left">{{product?.name}}</td>
+                <td class=" btn-groups">
+                    <div *ngIf="canAddProduct()" class="d-inline-block m-1">
+                        <button class="btn hide" (click)="openHiddenProductVisibilityModal(product);" title="Un-hide Product"><i class="fas fa-eye pr-2"></i>UN-HIDE</button>
+                    </div>
+                </td>
+            </tr>
+            <tr *ngIf="hiddenProducts?.length === 0">
+                <td colspan="2">No products found.</td>
+            </tr>
+            </tbody>
+
+        </table>
+        <pagination-controls id="hidden_products_table"
+                      (pageChange)="handlePageChangeOnHiddenProductTable($event)"
+                      directionLinks="true"
+                      autoHide="true"
+                      responsive="true"
+                      previousLabel="Previous"
+                      nextLabel="Next"
+                      *ngIf="totalHiddenProduct !== 0">
+        </pagination-controls>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('hidden-products-modal')">CLOSE</button>
+    </div>
+</app-modal>
 
 <!-- ADD MODAL -->
 <app-modal id="add-product-modal" class="modal add-modal">
@@ -420,6 +469,18 @@
         <button type="button" class="btn accept ml-3" (click)="hideProduct()">ACCEPT</button>
     </div>
 </app-modal>
+
+<app-modal id="unhide-product-confirmation-modal" class="modal add-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Do you want to unhide the product '{{selectedProduct?.name}}'?</p>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('unhide-product-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ml-3" (click)="unhideProduct()">ACCEPT</button>
+    </div>
+</app-modal>
+
 
 <!--Waiting Model-->
 <app-modal id="product-waiting-modal" class="modal" hideHeader="true" hideFooter="true" disableBackgroundClickEvent="true" size="small">

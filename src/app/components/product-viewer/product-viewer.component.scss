@@ -6,16 +6,24 @@ div.product-viewer {
     overflow: auto;
 
     button {
+        color: $white;
         &.green {
-            color: $white;
             background-color: lighten($fruit-salad, 10%);
 
             i {
                 color: lighten($fruit-salad, 30%);
             }
-
             &:hover {
                 background-color: $fruit-salad;
+            }
+        }
+        &.blue {
+            background-color: lighten($cerulean, 10%);
+            i {
+                color: lighten($cerulean, 30%);
+            }
+            &:hover {
+                background-color: $cerulean;
             }
         }
     }
@@ -41,7 +49,7 @@ div.product-viewer {
 
             &.btn-groups{
                 padding: .3rem;
-                width: 32.5rem;
+                width: 36.5rem;
 
                 button {
                     color: $white;
@@ -158,6 +166,40 @@ app-modal {
 
         input[type=checkbox] {
             cursor: default;
+        }
+    }
+    table {
+        tbody {
+            tr.product {
+                &:hover {
+                    background-color: lighten($anakiwa, 5%);
+                }
+            }
+        }
+
+        td {
+            padding: 1.1rem .8rem .8rem .8rem;
+
+            &.btn-groups{
+                padding: .3rem;
+                width: 32.5rem;
+
+                button {
+                    color: $white;
+
+                    &.hide {
+                        background-color: lighten($slate-grey, 15%);
+
+                        i {
+                            color: lighten($slate-grey, 30%);
+                        }
+
+                        &:hover {
+                            background-color: $slate-grey;
+                        }
+                    }
+                }
+            }
         }
     }
 }

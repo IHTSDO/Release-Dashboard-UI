@@ -25,22 +25,30 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     activeReleaseCenter: ReleaseCenter;
     products: Product[];
+    hiddenProducts: Product[];
     selectedProduct: Product;
     editedProduct: Product;
     customRefsetCompositeKeys: string;
     roles: Object;
     productsWithManifestUploaded: string[];
 
-    productsLoading = false;
-
     // animations
     savingProduct = false;
 
-    // pagination
     pageSize = 20;
-    pageNumber: Number;
+
+    // pagination for product table
+    productsLoading = false;
+    pageNumberOnProductTable: Number;
     totalProduct: Number;
-    sortDirection: string;
+    sortDirectionOnProductTable: string;
+
+
+     // pagination for hidden product table
+     hiddenProductsLoading = false;
+     totalHiddenProduct: Number;
+     sortDirectionOnHiddenProductTable: string;
+     pageNumberOnHiddenProductTable: Number;
 
     // global message
     message: string;
@@ -54,12 +62,23 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 private paginationService: ProductPaginationService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
-            this.products = [];
+
+
             this.message = '';
             this.productsWithManifestUploaded = [];
-            this.pageNumber = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
+
+            // Products
+            this.products = [];
             this.totalProduct = this.paginationService.EMPTY_ITEMS;
-            this.sortDirection = 'asc';
+            this.pageNumberOnProductTable = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
+            this.sortDirectionOnProductTable = 'asc';
+
+            // Hidden products
+            this.hiddenProducts = [];
+            this.totalHiddenProduct = this.paginationService.EMPTY_ITEMS;
+            this.pageNumberOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+            this.sortDirectionOnHiddenProductTable = 'asc';
+
             this.productDataService.clearCachedProducts();
             this.customRefsetCompositeKeys = null;
             this.initializeEditingProduct();
@@ -89,7 +108,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     onSelectProduct() {
-        this.paginationService.cacheSelectedPage(this.activeReleaseCenter.id, this.pageNumber);
+        this.paginationService.cacheSelectedPage(this.activeReleaseCenter.id, this.pageNumberOnProductTable);
     }
 
     createProduct(productName) {
@@ -104,7 +123,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.savingProduct = true;
         this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(data => {
             this.selectedProduct = data;
-            this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
+            this.pageNumberOnProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
             this.loadProducts();
             this.message = 'Product ' + productName + ' has been created successfully. Please update the configurations';
             this.closeAddProductModal();
@@ -165,14 +184,33 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     loadProducts() {
         this.productsLoading = true;
         this.productService.getProducts(this.activeReleaseCenter.id,
-                                        this.pageNumber,
+                                        this.pageNumberOnProductTable,
                                         this.pageSize, 'name',
-                                        this.sortDirection).subscribe(response => {
+                                        this.sortDirectionOnProductTable).subscribe(response => {
             this.products = response['content'];
             this.totalProduct = response['totalElements'];
             this.productsLoading = false;
             this.productDataService.cacheProducts(this.products);
             this.loadProductManifestFilesInfo(this.products);
+        });
+    }
+
+    resetHiddenProductTable() {
+        this.hiddenProducts = [];
+        this.totalHiddenProduct = this.paginationService.EMPTY_ITEMS;
+        this.pageNumberOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        this.sortDirectionOnHiddenProductTable = 'asc';
+    }
+
+    loadHiddenProducts() {
+        this.hiddenProductsLoading = true;
+        this.productService.getHiddenProducts(this.activeReleaseCenter.id,
+                                        this.pageNumberOnHiddenProductTable,
+                                        this.pageSize, 'name',
+                                        this.sortDirectionOnHiddenProductTable).subscribe(response => {
+            this.hiddenProducts = response['content'];
+            this.totalHiddenProduct = response['totalElements'];
+            this.hiddenProductsLoading = false;
         });
     }
 
@@ -189,14 +227,24 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    handleSortClick(direction: string) {
-       this.sortDirection = direction;
+    handleSortClickOnProductTable(direction: string) {
+       this.sortDirectionOnProductTable = direction;
        this.loadProducts();
     }
 
-    handlePageChange(event) {
-        this.pageNumber = event;
+    handlePageChangeOnProductTable(event) {
+        this.pageNumberOnProductTable = event;
         this.loadProducts();
+    }
+
+    handleSortClickOnHiddenProductTable(direction: string) {
+        this.sortDirectionOnHiddenProductTable = direction;
+        this.loadHiddenProducts();
+    }
+
+    handlePageChangeOnHiddenProductTable(event) {
+        this.pageNumberOnHiddenProductTable = event;
+        this.loadHiddenProducts();
     }
 
     openUpdateConfigurationsModal(product: Product) {
@@ -245,16 +293,44 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.openModal('hide-product-confirmation-modal');
     }
 
+    openHiddenProductVisibilityModal(product: Product) {
+        this.selectedProduct = product;
+        this.openModal('unhide-product-confirmation-modal');
+    }
+
     hideProduct() {
         this.openWaitingModel('Hiding product');
         this.closeModal('hide-product-confirmation-modal');
         this.productService.updateProductVisibility(this.activeReleaseCenter.id, this.selectedProduct.id, false).subscribe(
             () => {
-                if (this.pageNumber.valueOf() !== this.paginationService.DEFAULT_PAGE_NUMBER && this.products.length === 1) {
-                    this.pageNumber = this.pageNumber.valueOf() - 1;
+                if (this.pageNumberOnProductTable.valueOf() !== this.paginationService.DEFAULT_PAGE_NUMBER && this.products.length === 1) {
+                    this.pageNumberOnProductTable = this.pageNumberOnProductTable.valueOf() - 1;
                 }
                 this.loadProducts();
                 this.message = 'Product \'' + this.selectedProduct.name + '\' has been hidden successfully.';
+                this.closeWaitingModel();
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                this.message = errorResponse.error.errorMessage;
+                this.closeWaitingModel();
+                this.openErrorModel();
+            }
+        );
+    }
+
+    unhideProduct() {
+        this.openWaitingModel('Unhiding product');
+        this.closeModal('unhide-product-confirmation-modal');
+        this.productService.updateProductVisibility(this.activeReleaseCenter.id, this.selectedProduct.id, true).subscribe(
+            () => {
+                if (this.pageNumberOnHiddenProductTable.valueOf() !== this.paginationService.DEFAULT_PAGE_NUMBER
+                    && this.hiddenProducts.length === 1) {
+                    this.pageNumberOnHiddenProductTable = this.pageNumberOnHiddenProductTable.valueOf() - 1;
+                }
+                this.loadHiddenProducts();
+                this.loadProducts();
+                this.message = 'Product \'' + this.selectedProduct.name + '\' has been marked as visible successfully.';
                 this.closeWaitingModel();
                 this.openSuccessModel();
             },

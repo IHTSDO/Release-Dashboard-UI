@@ -25,6 +25,15 @@ export class ProductService {
         return this.http.get<object>('/release/centers/' + releaseCenterKey + '/products', {params: params});
     }
 
+    getHiddenProducts(releaseCenterKey, pageNumber, pageSize, sortField, sortDirection): Observable<object> {
+        const params = new HttpParams()
+                    .set('pageNumber', (pageNumber - 1).toString())
+                    .set('pageSize', pageSize)
+                    .set('sortField', sortField)
+                    .set('sortDirection', sortDirection);
+        return this.http.get<object>('/release/centers/' + releaseCenterKey + '/products/hidden', {params: params});
+    }
+
     postProduct(releaseCenterKey, product): Observable<Product> {
         return this.http.post<Product>('/release/centers/' + releaseCenterKey + '/products', product);
     }
