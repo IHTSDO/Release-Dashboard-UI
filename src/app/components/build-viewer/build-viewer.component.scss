@@ -178,10 +178,15 @@ app-modal {
     //        margin-top: 1.8em;
     //    }
     //}
-
+    
+    &#generate-jira-tickets-modal,
     &#hidden-builds-modal {
         table {
             tr {
+                th {
+                    font-weight: 400;
+                }
+
                 td {
                     button.hide {
                         background-color: lighten($slate-grey, 10%);
@@ -193,6 +198,16 @@ app-modal {
 
                         &:hover {
                             background-color: $slate-grey;
+                        }
+                    }
+                    div.tag {
+                        max-width: fit-content;
+                        color: $white;
+                        background-color: lighten($fruit-salad, 10%);
+        
+                        &.add:hover {
+                            background-color: $fruit-salad;
+                            cursor: pointer;
                         }
                     }
                 }

@@ -233,7 +233,7 @@
 <app-modal id="hidden-builds-modal" class="modal add-modal" size="large">
     <h3 header class="mb-0">Hidden Builds</h3>
     <div body class="text-center p-5">
-        <div *ngIf="hiddenBuildsLoading" class="font-weight-bold loading">Loading</div>
+        <div *ngIf="hiddenBuildsLoading" class="loading">Loading</div>
         <table class="table table-bordered" *ngIf="!hiddenBuildsLoading">
             <tr>
                 <th>Build Name</th>
@@ -251,7 +251,11 @@
                 <td class="pb-0">{{build?.id}}</td>
                 <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="pb-0">{{build?.buildUser}}</td>
-                <td class="pb-0"><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span></td>
+                <td class="pb-0">
+                    <ng-container *ngFor="let tag of build?.tags" >
+                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
+                    </ng-container>
+                </td>
 <!--                <td class="pb-0 pt-0"><button style="margin-top: 1px; margin-bottom: 1px;" type="button" class="btn-blue" (click)="openUnhideBuildConfirmationModal(build)">Un-hide</button></td>-->
                 <td class="pb-2">
                     <button class="btn hide" (click)="openUnhideBuildConfirmationModal(build)"><i class="fas fa-eye pr-2"></i>UN-HIDE</button>
@@ -436,7 +440,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     <h3 header class="mb-0">Generate JIRA Tickets</h3>
     <div body class="text-left p-5">
         <p class="text-center loading" *ngIf="rvfReportLoading">Loading</p>
-        <h4 *ngIf="!rvfReportLoading" class="font-weight-bold">Errors</h4>
+        <h4 *ngIf="!rvfReportLoading"><b>ERRORS</b></h4>
         <table class="table table-bordered table-sortable" *ngIf="!rvfReportLoading">
             <tr class="text-center">
                 <th><input type="checkbox" [(ngModel)]="selectAllError" (click)="toggleSelectAllFailures('error')"></th>
@@ -456,7 +460,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
             </tr>
         </table>
         <br/>
-        <h4 *ngIf="!rvfReportLoading" class="font-weight-bold">Warnings</h4>
+        <h4 *ngIf="!rvfReportLoading"><b>WARNINGS</b></h4>
         <table class="table table-bordered table-sortable" *ngIf="!rvfReportLoading">
             <tr class="text-center">
                 <th><input type="checkbox" [(ngModel)]="selectAllWarning" (click)="toggleSelectAllFailures('warning')"></th>
