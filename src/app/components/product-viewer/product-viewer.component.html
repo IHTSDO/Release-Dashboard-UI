@@ -23,7 +23,7 @@
             <tbody>
             <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: pageSize, currentPage: pageNumberOnProductTable, totalItems: totalProduct}" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}" class="product">
                 <td class="pb-0 text-left">{{product?.name}}</td>
-                <td class=" btn-groups">
+                <td class=" btn-groups fit-content">
                     <div *ngIf="canAddProduct()" class="d-inline-block m-1">
                         <button class="btn edit" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="fas fa-pen pr-2"></i>EDIT</button>
                     </div>

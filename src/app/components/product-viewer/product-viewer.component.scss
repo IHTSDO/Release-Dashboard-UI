@@ -49,8 +49,11 @@ div.product-viewer {
 
             &.btn-groups{
                 padding: .3rem;
-                width: 36.5rem;
 
+                &.fit-content {
+                    width: 1%;
+                    white-space: nowrap;
+                }
                 button {
                     color: $white;
 
@@ -182,7 +185,8 @@ app-modal {
 
             &.btn-groups{
                 padding: .3rem;
-                width: 32.5rem;
+                width: 1%;
+                white-space: nowrap;
 
                 button {
                     color: $white;
