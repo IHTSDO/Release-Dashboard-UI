@@ -210,7 +210,7 @@
 <!--                </td>-->
                 <td>
                     <ng-container *ngFor="let tag of build?.tags" >
-                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag | uppercase}}</div>
+                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
                     </ng-container>
                     <div *ngIf="isAdminOrManagerOrLead()" class="rounded-pill px-2 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">
                         <i class="fas fa-plus pr-2"></i>ADD
