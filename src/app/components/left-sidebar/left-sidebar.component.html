@@ -90,15 +90,47 @@
     <h3 header class="mb-0">Edit Current Release Center</h3>
     <div body class="text-center p-5">
         <p>Would you like to edit this release center?</p>
-        <input #editName class="w-75 rounded-lg p-3 m-3" type="text" placeholder="Name" [value]="activeReleaseCenter?.name">
-        <input #editShortName class="w-75 rounded-lg p-3 m-3" type="text" disabled placeholder="Short Name" [value]="activeReleaseCenter?.shortName">
-        <select #editCodeSystem class="w-75 rounded-lg p-3 m-3" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">
-            <option value=""></option>
-            <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName" [selected]="codeSystem.shortName == activeReleaseCenter?.codeSystem">
-              {{codeSystem.name}}
-            </option>
-        </select>
-        <input #editSnomedCtProduct class="w-75 rounded-lg p-3 m-3" type="text" placeholder="SNOMED CT Product" [value]="activeReleaseCenter?.snomedCtProduct">
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Name</span>
+                </div>
+                <input #editName type="text" class="form-control" [value]="activeReleaseCenter?.name">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Short Name</span>
+                </div>
+                <input #editShortName type="text" disabled class="form-control" [value]="activeReleaseCenter?.shortName">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Codesystem</span>
+                </div>
+                <select #editCodeSystem class="form-control" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">
+                    <option value=""></option>
+                    <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName" [selected]="codeSystem.shortName == activeReleaseCenter?.codeSystem">
+                        {{codeSystem.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">SNOMED CT Product</span>
+                </div>
+                <input #editSnomedCtProduct type="text" class="form-control" [value]="activeReleaseCenter?.snomedCtProduct">
+            </div>
+        </div>
     </div>
     <div footer>
         <button type="button" class="btn" [disabled]="savingCenter" (click)="closeModal('edit-modal')">CANCEL</button>

@@ -72,6 +72,18 @@ div.build-viewer {
             }
         }
 
+        &.pink {
+            background-color: lighten(#E2389F, 15%);
+
+            i {
+                color: lighten(#E2389F, 30%);
+            }
+
+            &:hover {
+                background-color: #E2389F;
+            }
+        }
+
         &.slate {
             background-color: lighten($slate-grey, 10%);
 
@@ -178,7 +190,7 @@ app-modal {
     //        margin-top: 1.8em;
     //    }
     //}
-    
+
     &#generate-jira-tickets-modal,
     &#hidden-builds-modal {
         table {
@@ -204,7 +216,7 @@ app-modal {
                         max-width: fit-content;
                         color: $white;
                         background-color: lighten($fruit-salad, 10%);
-        
+
                         &.add:hover {
                             background-color: $fruit-salad;
                             cursor: pointer;
