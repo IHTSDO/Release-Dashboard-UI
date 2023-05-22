@@ -80,9 +80,13 @@ nav#sidebar {
 
 app-modal {
     &.add-modal, &.edit-modal {
-        input {
-            border: 1px $ghost-grey solid;
+        div.input-group {
+            input, textarea, label, select {
+                border: 1px $ghost-grey solid;
+                font-size: 1.2rem;
+            }
         }
+
     }
     &.success-modal {
         div.success i {

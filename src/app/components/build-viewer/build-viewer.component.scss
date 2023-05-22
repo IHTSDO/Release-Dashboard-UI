@@ -95,6 +95,11 @@ div.build-viewer {
                 background-color: $slate-grey;
             }
         }
+
+        &.narrow {
+            height: 2rem;
+            padding-top: 0;
+        }
     }
 
     div.active-build {

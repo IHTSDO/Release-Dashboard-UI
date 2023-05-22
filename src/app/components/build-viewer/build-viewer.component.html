@@ -53,9 +53,7 @@
                         <h3 class="my-3 mx-5"><b>STATUS</b></h3>
                         <ul *ngIf="activeBuild?.status" class="list-group list-group-horizontal m-2 status">
                             <li class="list-group-item bg-alto-white w-25"><b>STATUS</b></li>
-                            <li class="list-group-item w-75">
-                                <h3 class="mb-0">{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</h3>
-                            </li>
+                            <li class="list-group-item w-75">{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</li>
                         </ul>
                         <button type="button" class="btn blue m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)"><i class="fas fa-external-link-alt pr-2"></i>VIEW PROCESS</button>
                         <button type="button" class="btn red m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')"><i class="fas fa-times pr-2"></i>{{activeBuild.buildCanceling ? 'STOPPING...' : 'STOP BUILD' }}</button>
@@ -184,11 +182,11 @@
 <!--                            <div class="btn-package-download badge loading">Downloading</div>-->
                         </ng-container>
                         <ng-container *ngIf="!build.buildDownloadingPackage">
-                            <button type="button" class="btn pink text-nowrap w-100" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="fas fa-download pr-2"></i>.ZIP</button>
+                            <button type="button" class="btn purple text-nowrap w-100" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="fas fa-download pr-2"></i>.ZIP</button>
                         </ng-container>
                     </div>
                     <div class="d-block">
-                        <button type="button" class="btn purple text-nowrap w-100" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file"><i class="fas fa-download pr-2"></i>.MD5</button>
+                        <button type="button" class="btn pink text-nowrap w-100 narrow" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file"><i class="fas fa-download pr-2"></i>.MD5</button>
                     </div>
                 </td>
                 <td class="">
