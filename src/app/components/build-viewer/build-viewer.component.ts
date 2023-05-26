@@ -1081,6 +1081,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
+    isAllowCancelingBuild(build: Build) {
+        return build.status === 'QUEUED' || build.status === 'BEFORE_TRIGGER' || build.status === 'BUILDING';
+    }
+
     isAdminOrManagerOrLead() {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
         return this.roles && codeSystem && (

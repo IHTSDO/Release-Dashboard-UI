@@ -56,7 +56,7 @@
                             <li class="list-group-item w-75">{{(activeBuild.status ? activeBuild.status.replaceAll('_', ' ') : '')  | titlecase}}</li>
                         </ul>
                         <button type="button" class="btn blue m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="viewRunningLog(activeBuild)"><i class="fas fa-external-link-alt pr-2"></i>VIEW PROCESS</button>
-                        <button type="button" class="btn red m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.status !== 'BUILDING' || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')"><i class="fas fa-times pr-2"></i>{{activeBuild.buildCanceling ? 'STOPPING...' : 'STOP BUILD' }}</button>
+                        <button type="button" class="btn red m-2 d-block" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || !isAllowCancelingBuild(activeBuild) || activeBuild.buildDeleting || activeBuild.buildCanceling" (click)="openModal('stop-build-confirmation-modal')"><i class="fas fa-times pr-2"></i>{{activeBuild.buildCanceling ? 'STOPPING...' : 'STOP BUILD' }}</button>
                     </div>
 
                     <div class="col-3 px-5">
