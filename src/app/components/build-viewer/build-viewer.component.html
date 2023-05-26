@@ -829,21 +829,25 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
-                        </div>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
-                    </div>
-                </div>
+                </div>                
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
                         </div>
                         <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.conceptPreferredTerms">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12">
