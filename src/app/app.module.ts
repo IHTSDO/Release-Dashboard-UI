@@ -35,6 +35,7 @@ import { WebsocketService } from './services/websocket/websocket.service';
 import { SortDirective } from './directive/sort.directive';
 import { RVFServerService } from './services/rvfServer/rvf-server.service';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { NotificationService } from './services/notification/notification.service';
 
 export function startupServiceFactory(permissionService: PermissionService): Function {
     return () => permissionService.getRoles();
@@ -73,6 +74,7 @@ export function startupServiceFactory(permissionService: PermissionService): Fun
         ModalService,
         PermissionService,
         WebsocketService,
+        NotificationService,
         EnvServiceProvider,
         {
             provide: HTTP_INTERCEPTORS,

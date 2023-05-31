@@ -3,7 +3,9 @@ import { Subscription } from 'rxjs';
 import { EnvService } from '../../services/environment/env.service';
 import { User } from '../../models/user';
 import { AuthenticationService } from '../../services/authentication/authentication.service';
-import {ModalService} from '../../services/modal/modal.service';
+import { ModalService } from '../../services/modal/modal.service';
+import { WebsocketService } from '../../services/websocket/websocket.service';
+import { NotificationService } from '../../services/notification/notification.service';
 
 @Component({
     selector: 'app-snomed-navbar',
@@ -15,16 +17,84 @@ export class SnomedNavbarComponent implements OnInit {
     environment: string;
     user: User;
     userSubscription: Subscription;
+    notfications: object[];
+    totalUnreadNotification: number;
+    pageSize = 10;
+    pageNumber: number;
+    loadingNotfications = false;
+    loadMoreNotficationsEnable = false;
 
     constructor(private authenticationService: AuthenticationService,
                 private envService: EnvService,
+                private websocketService: WebsocketService,
+                private notificationService: NotificationService,
                 private modalService: ModalService) {
-        this.userSubscription = this.authenticationService.getUser().subscribe(data => this.user = data);
+        this.notfications = [];
+        this.totalUnreadNotification = 0;
+        this.userSubscription = this.authenticationService.getUser().subscribe(data => {
+            this.user = data;
+            this.countUnreadNotification();
+        });
     }
 
     ngOnInit() {
         this.environment = this.envService.env;
         this.authenticationService.setUser();
+
+        this.websocketService.messageEvent.addListener('notfication-event', (message) => {
+            this.countUnreadNotification();
+        });
+    }
+
+    countUnreadNotification() {
+        this.notificationService.countUnreadNotification().subscribe(data => {
+            this.totalUnreadNotification = data['total'];
+        });
+    }
+
+    retriveNotifications(pageNumber) {
+        this.loadingNotfications = true;
+        this.loadMoreNotficationsEnable = false;
+        this.notificationService.retrieveNotifications(pageNumber, this.pageSize).subscribe(data => {
+            this.loadingNotfications = false;
+            this.loadMoreNotficationsEnable = data['totalElements'] > pageNumber * this.pageSize;
+            if (!data['empty']) {
+                const unreadNotifications = [];
+                data['content'].forEach(function (item) {
+                    if (!item.read) {
+                        unreadNotifications.push(item.id);
+                    }
+                    item.details = JSON.parse(item.details);
+                });
+                if (unreadNotifications.length !== 0) {
+                    this.notificationService.markNotificationAsRead(unreadNotifications).subscribe(() => {
+                        // Do nothing
+                    });
+                }
+                this.notfications = this.notfications.concat(data['content']);
+            }
+        });
+    }
+
+    toggleNotificationsPane(event) {
+        const parentEl = event.currentTarget.parentElement;
+        if (!$(parentEl).hasClass('show')) {
+            this.notfications = [];
+            this.pageNumber = 1;
+            this.retriveNotifications(this.pageNumber);
+        }
+    }
+
+    clearNotifications() {
+        this.notificationService.clearNotifications().subscribe(data => {
+            this.notfications = [];
+            this.loadMoreNotficationsEnable = false;
+        });
+    }
+
+    loadMoreNotifications () {
+        this.pageNumber += 1;
+        this.retriveNotifications(this.pageNumber);
     }
 
     openModal(name) {

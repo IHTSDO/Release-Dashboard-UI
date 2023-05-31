@@ -8,7 +8,8 @@ import { EventEmitter } from 'events';
 })
 export class WebsocketService {
   webSocketEndPoint = '/release/snomed-release-service-websocket';
-  topic = '/topic/snomed-release-service-websocket';
+  buildStatusTopic = '/topic/build-status-change';
+  userNotificationTopic = '/topic/user/';
 
   stompClient: any;
 
@@ -16,18 +17,22 @@ export class WebsocketService {
 
   constructor() { }
 
-  connect() {
+  connect(username: string) {
       const ws = new SockJS(this.webSocketEndPoint);
       this.stompClient = Stomp.over(ws);
 
       const _this = this;
       this.stompClient.connect({}, function (frame) {
-        _this.stompClient.subscribe(_this.topic, function (message) {
-          _this.onMessageReceived(message);
-          });
+        _this.stompClient.subscribe(_this.buildStatusTopic, function (message) {
+            _this.onStatusMessageReceived(message);
+        });
+
+        _this.stompClient.subscribe(_this.userNotificationTopic + username + '/notification', function (message) {
+          _this.onNotificationMessageReceived(message);
+      });
       }, () => {
         setTimeout(() => {
-          this.connect();
+          this.connect(username);
         }, 5000);
       });
   }
@@ -38,7 +43,11 @@ export class WebsocketService {
       }
   }
 
-  onMessageReceived(message) {
+  onStatusMessageReceived(message) {
       this.messageEvent.emit('build-status-change-event', message);
+  }
+
+  onNotificationMessageReceived(message) {
+    this.messageEvent.emit('notfication-event', message);
   }
 }

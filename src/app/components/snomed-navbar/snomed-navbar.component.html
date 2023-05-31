@@ -20,5 +20,31 @@
             <span class="px-2">{{user.firstName}} {{user.lastName}}</span>
             <img class="rounded-circle mx-3" src="https://jira.ihtsdotools.org/secure/useravatar?ownerId={{user.login}}">
         </div>
-    </div>
+        <div class="user d-inline-block mr-4 notification-container"> 
+            <button id="btnNotification" (click)="toggleNotificationsPane($event)" class="rounded-circle dropdown-toggle" data-toggle="dropdown">
+                <i class="fas fa-bell"></i>
+                <span ng-cloak *ngIf="totalUnreadNotification > 0" class="message-badge">{{totalUnreadNotification}}</span>
+            </button> 
+            <div class="dropdown-menu" aria-labelledby="btnNotification"> 
+                <div class="message-header clearfix" (click)="$event.stopPropagation()"> 
+                    <div class="float-left message-title ng-scope">Notifications</div> 
+                    <div class="float-right message-action" >
+                        <a role="button" (click)="clearNotifications()" *ngIf="notfications.length != 0" class="ng-scope">Clear</a>
+                    </div> 
+                </div> 
+                <ul class="message-body"> 
+                    <li class="message-item" *ngFor="let notification of notfications">                        
+                        <div class="message-detail-content" [ngClass]="{'unread': !notification.read}">
+                            {{notification.details.message}}
+                        </div>
+                    </li>
+                    <div class="ml-3" *ngIf="notfications.length == 0 && !loadingNotfications">
+                        <span>You have no notifications at the moment</span>
+                    </div>
+                </ul>
+                <div class="row pb-3 spinner" *ngIf="loadingNotfications"><span class="spinner-border" role="status"></span></div>
+                <div class="row load-more" *ngIf="loadMoreNotficationsEnable && !loadingNotfications"><span (click)="loadMoreNotifications(); $event.stopPropagation()">Load more</span></div>
+            </div> 
+        </div>
+    </div>   
 </nav>

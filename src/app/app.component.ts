@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { BranchingService } from './services/branching/branching.service';
 import { EnvService } from './services/environment/env.service';
@@ -15,14 +16,17 @@ export class AppComponent implements OnInit {
     constructor(private authoringService: AuthoringService,
                 private envService: EnvService,
                 private titleService: Title,
+                private authenticationService: AuthenticationService,
                 private websocketService: WebsocketService) {
+                this.authenticationService.getUser().subscribe(data => {
+                    this.websocketService.connect(data.login);
+                });
     }
 
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.getUIConfiguration();
         this.assignFavicon();
-        this.websocketService.connect();
     }
 
     getUIConfiguration() {
