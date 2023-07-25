@@ -120,4 +120,8 @@ export class BuildService {
     const url = '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/failure-jira-associations';
     return this.http.post<FailureJiraAssociation[]>(url, assertionIds, {});
   }
+
+  initialiseBuild() {
+      return this.http.get('/release/centers/center/products/product/builds/initialise');
+  }
 }

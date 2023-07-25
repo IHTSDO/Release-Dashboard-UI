@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
-import { BranchingService } from './services/branching/branching.service';
 import { EnvService } from './services/environment/env.service';
 import { WebsocketService } from './services/websocket/websocket.service';
+import { BuildService } from './services/build/build.service';
 
 @Component({
     selector: 'app-root',
@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
                 private envService: EnvService,
                 private titleService: Title,
                 private authenticationService: AuthenticationService,
+                private buildService: BuildService,
                 private websocketService: WebsocketService) {
                 this.authenticationService.getUser().subscribe(data => {
                     this.websocketService.connect(data.login);
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.titleService.setTitle('SNOMED CT Release Dashboard');
+        this.buildService.initialiseBuild().subscribe();
         this.getUIConfiguration();
         this.assignFavicon();
     }
