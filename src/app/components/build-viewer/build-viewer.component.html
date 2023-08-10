@@ -159,7 +159,7 @@
                 </td>
                 <td class="text-left" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                 <td class="text-left" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
-                <td class="text-left" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
+                <td class="text-left text-white {{build.status}}">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
                 <td class="">{{build?.buildUser}}</td>
                 <td class="text-left" *ngIf="isAdminOrManagerOrLead()">
                     <ng-container *ngFor="let role of build?.userRoles" >

@@ -158,9 +158,42 @@ div.build-viewer {
         td {
             padding: .8rem;
 
-            &.hasWarnings {
+            &.RELEASE_COMPLETE_WITH_WARNINGS {
                 background-color: lighten($candlelight, 10%);
             }
+
+            &.FAILED_INPUT_PREPARE_REPORT_VALIDATION,
+            &.FAILED_INPUT_GATHER_REPORT_VALIDATION,
+            &.FAILED_POST_CONDITIONS,
+            &.FAILED_PRE_CONDITIONS,
+            &.FAILED,
+            &.RVF_FAILED {
+                background-color: lighten($mandy, 5%);
+            }
+
+            &.CANCEL_REQUESTED,
+            &.CANCELLED,
+            &.UNKNOWN {
+                background-color: lighten($mandy, 20%);
+            }
+
+            &.PENDING,
+            &.QUEUED,
+            &.BEFORE_TRIGGER {
+                background-color: lighten($green, 20%);
+            }
+
+            &.RVF_QUEUED,
+            &.RVF_RUNNING,
+            &.BUILDING {
+                background-color: $green;
+            }
+
+            &.RELEASE_COMPLETE,
+            &.BUILT {
+                background-color: $blue;
+            }
+            
             div.btn-log-download {
                 background-color: $sea-buckthorn;
             }
