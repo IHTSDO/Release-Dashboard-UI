@@ -282,18 +282,7 @@
     <div body class="text-center p-5">
         <p>Please enter the details for the Build:</p>
 
-        <div class="col-12">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Use Local Input Files</span>
-                </div>
-                <div class="input-group-append">
-                    <div class="input-group-text bg-white">
-                        <input type="checkbox" [(ngModel)]="useLocalInputFiles">
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <div class="col-12">
             <div class="input-group mb-3">
@@ -346,7 +335,18 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <input type="text" class="form-control" [disabled]="buildTriggering" [(ngModel)]="buildParams.branch">
             </div>
         </div>
-
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Use Local Input Files</span>
+                </div>
+                <div class="input-group-append">
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="useLocalInputFiles">
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-12">
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -567,6 +567,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.effectiveTime">
                     </div>
                 </div>
+                <div *ngIf="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath" class="col-6"></div>
                 <div *ngIf="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath" class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -609,9 +610,13 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
+                            <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
                         </div>
-                        <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeEndDate">
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.justPackage">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-6">
@@ -622,18 +627,6 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <div class="input-group-append">
                             <div class="input-group-text bg-white">
                                 <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.firstTimeRelease">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
-                        </div>
-                        <div class="input-group-append">
-                            <div class="input-group-text bg-white">
-                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.justPackage">
                             </div>
                         </div>
                     </div>
@@ -677,18 +670,6 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
-                        </div>
-                        <div class="input-group-append">
-                            <div class="input-group-text bg-white">
-                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
                             <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
                         </div>
                         <div class="input-group-append">
@@ -706,6 +687,18 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <div class="input-group-append">
                             <div class="input-group-text bg-white">
                                 <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
                             </div>
                         </div>
                     </div>
@@ -798,14 +791,26 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.assertionGroupNames">
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-3">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
                         </div>
                         <div class="input-group-append">
                             <div class="input-group-text bg-white">
-                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableDrools">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableMRCMValidation">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
+                        </div>
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-white">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
                             </div>
                         </div>
                     </div>
@@ -821,33 +826,29 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
+                            <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
                         </div>
                         <div class="input-group-append">
                             <div class="input-group-text bg-white">
-                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableMRCMValidation">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableDrools">
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
+                        </div>
+                        <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeEndDate">
+                    </div>
+                </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
                         </div>
                         <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.conceptPreferredTerms">
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
-                        </div>
-                        <div class="input-group-append">
-                            <div class="input-group-text bg-white">
-                                <input type="checkbox" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-12">
