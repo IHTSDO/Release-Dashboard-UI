@@ -670,15 +670,15 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                            <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
                         </div>
                         <div class="input-group-append">
                             <div class="input-group-text bg-white">
-                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.classifyOutputFiles">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -694,11 +694,11 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
+                            <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
                         </div>
                         <div class="input-group-append">
                             <div class="input-group-text bg-white">
-                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
+                                <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.classifyOutputFiles">
                             </div>
                         </div>
                     </div>
