@@ -210,8 +210,17 @@ div.build-viewer {
                 color: $white;
                 background-color: lighten($fruit-salad, 10%);
 
+                &.PUBLISHED {
+                    background-color: $blue;
+                }
+                &.PRE_PROD {
+                    background-color: $mandy;
+                }
+                &.add {
+                    background-color: lighten($grey, 10%);
+                }
                 &.add:hover {
-                    background-color: $fruit-salad;
+                    background-color: $grey;
                     cursor: pointer;
                 }
             }
