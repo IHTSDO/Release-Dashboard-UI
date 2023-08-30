@@ -918,6 +918,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                     }
                     this.closeWaitingModel();
                     this.openErrorModel();
+                    this.getFailureJiraAssociations();
                 }
             );
         }
