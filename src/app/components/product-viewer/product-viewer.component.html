@@ -2,9 +2,9 @@
 <div *ngIf="activeReleaseCenter" class="product-viewer text-center">
     <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
     <div class="container-fluid">
-        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')" class="btn green float-right m-2"><i class="fas fa-plus pr-2"></i>ADD NEW PRODUCT</button>
-        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="View Hidden Products" (click)="resetHiddenProductTable(); loadHiddenProducts(); openModal('hidden-products-modal')" class="btn blue float-right m-2"><i class="fas fa-eye pr-2"></i>VIEW HIDDEN</button>
-<!--        <button class="btn-circle ml-3 mb-3 btn-blue float-right" *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>-->
+        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')" class="btn green float-end m-2"><i class="fas fa-plus pe-2"></i>ADD NEW PRODUCT</button>
+        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="View Hidden Products" (click)="resetHiddenProductTable(); loadHiddenProducts(); openModal('hidden-products-modal')" class="btn blue float-end m-2"><i class="fas fa-eye pe-2"></i>VIEW HIDDEN</button>
+<!--        <button class="btn-circle ml-3 mb-3 btn-blue float-end" *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>-->
         <table class="table table-bordered" *ngIf="productsLoading">
             <tr>
                 <th><h3 class="mb-0">PRODUCT</h3></th>
@@ -21,27 +21,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let product of products | paginate: {id: 'products_table', itemsPerPage: pageSize, currentPage: pageNumberOnProductTable, totalItems: totalProduct}" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}" class="product">
-                <td class="pb-0 text-left">{{product?.name}}</td>
+            <tr *ngFor="let product of products" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}" class="product">
+                <td class="pb-0 text-start">{{product?.name}}</td>
                 <td class=" btn-groups fit-content">
                     <div *ngIf="canAddProduct()" class="d-inline-block m-1">
-                        <button class="btn edit" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="fas fa-pen pr-2"></i>EDIT</button>
+                        <button class="btn edit" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="fas fa-pen pe-2"></i>EDIT</button>
                     </div>
                     <div class="d-inline-block m-1">
-                        <button *ngIf="!productsWithManifestUploaded.includes(product.id)" class="btn bg-alto-white" (click)="loadManifestFile(product); $event.stopPropagation()" title="The manifest has not yet been uploaded"><i class="fas fa-external-link-alt pr-2"></i>MANIFEST</button>
-                        <button *ngIf="productsWithManifestUploaded.includes(product.id)" class="btn view" (click)="loadManifestFile(product); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pr-2"></i>MANIFEST</button>
+                        <button *ngIf="!productsWithManifestUploaded.includes(product.id)" class="btn bg-alto-white" (click)="loadManifestFile(product); $event.stopPropagation()" title="The manifest has not yet been uploaded"><i class="fas fa-external-link-alt pe-2"></i>MANIFEST</button>
+                        <button *ngIf="productsWithManifestUploaded.includes(product.id)" class="btn view" (click)="loadManifestFile(product); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pe-2"></i>MANIFEST</button>
                     </div>
                     <div *ngIf="!product.manifestFileUploading && canAddProduct()" class="d-inline-block m-1">
-                        <button class="btn upload" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="fas fa-file-upload pr-2"></i>UPLOAD</button>
+                        <button class="btn upload" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="fas fa-file-upload pe-2"></i>UPLOAD</button>
                     </div>
                     <div *ngIf="product.manifestFileUploading" class="d-inline-block m-1">
                         <button class="btn upload" disabled title="Upload Manifest File"><i class="fas fa-circle-notch fa-spin mr-2"></i>UPLOADING</button>
                     </div>
                     <div *ngIf="canAddProduct()" class="d-inline-block m-1">
-                        <button class="btn hide" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product"><i class="fas fa-eye-slash pr-2"></i>HIDE</button>
+                        <button class="btn hide" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product"><i class="fas fa-eye-slash pe-2"></i>HIDE</button>
                     </div>
 
-                    <!--                    <div class="input-group pl-4 justify-content-start">-->
+                    <!--                    <div class="input-group ps-4 justify-content-start">-->
                     <!--                        <button class="btn-circle btn-green" *ngIf="canAddProduct()" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>-->
                     <!--                        <button class="btn-circle  ml-3" [ngClass]="{'btn-light-red': !productsWithManifestUploaded.includes(product.id), 'btn-green': productsWithManifestUploaded.includes(product.id)}" (click)="loadManifestFile(product); $event.stopPropagation()" title="{{!productsWithManifestUploaded.includes(product.id) ? 'The manifest has not yet been uploaded' : 'View Manifest File'}}"><i class="material-icons">insert_drive_file</i></button>-->
                     <!--                        <button class="btn-circle btn-blue ml-3" *ngIf="!product.manifestFileUploading && canAddProduct()" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>-->
@@ -56,15 +56,6 @@
             </tbody>
 
         </table>
-        <pagination-controls id="products_table"
-                      (pageChange)="handlePageChangeOnProductTable($event)"
-                      directionLinks="true"
-                      autoHide="true"
-                      responsive="true"
-                      previousLabel="Previous"
-                      nextLabel="Next"
-                      *ngIf="totalProduct !== 0">
-        </pagination-controls>
         <input class="d-none" #uploadManifestFileInput type="file" (change)="uploadManifestFile($event)">
     </div>
 </div>
@@ -88,11 +79,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let product of hiddenProducts | paginate: {id: 'hidden_products_table', itemsPerPage: pageSize, currentPage: pageNumberOnHiddenProductTable, totalItems: totalHiddenProduct}" class="product">
-                <td class="pb-0 text-left">{{product?.name}}</td>
+            <tr *ngFor="let product of hiddenProducts" class="product">
+                <td class="pb-0 text-start">{{product?.name}}</td>
                 <td class=" btn-groups">
                     <div *ngIf="canAddProduct()" class="d-inline-block m-1">
-                        <button class="btn hide" (click)="openHiddenProductVisibilityModal(product);" title="Un-hide Product"><i class="fas fa-eye pr-2"></i>UN-HIDE</button>
+                        <button class="btn hide" (click)="openHiddenProductVisibilityModal(product);" title="Un-hide Product"><i class="fas fa-eye pe-2"></i>UN-HIDE</button>
                     </div>
                 </td>
             </tr>
@@ -100,17 +91,7 @@
                 <td colspan="2">No products found.</td>
             </tr>
             </tbody>
-
         </table>
-        <pagination-controls id="hidden_products_table"
-                      (pageChange)="handlePageChangeOnHiddenProductTable($event)"
-                      directionLinks="true"
-                      autoHide="true"
-                      responsive="true"
-                      previousLabel="Previous"
-                      nextLabel="Next"
-                      *ngIf="totalHiddenProduct !== 0">
-        </pagination-controls>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('hidden-products-modal')">CLOSE</button>
@@ -152,7 +133,8 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
                     </div>
-                    <input type="text" class="form-control" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">
+                    <div>PDU-FIX-3</div>
+<!--                    <input type="text" class="form-control" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">-->
                 </div>
             </div>
             <div class="col-12">
@@ -296,7 +278,8 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
                     </div>
-                    <input type="text" class="form-control" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">
+                    <div>PDU-FIX-2</div>
+<!--                    <input type="text" class="form-control" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">-->
                 </div>
             </div>
             <div class="col-6">
@@ -430,7 +413,7 @@
 <app-modal id="product-success-modal" class="modal success-modal">
     <h3 header class="mb-0">Success</h3>
     <div body class="text-center p-5">
-        <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-start success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('product-success-modal')">CLOSE</button>
@@ -440,7 +423,7 @@
 <app-modal id="product-creation-success-modal" class="modal product-creation-success-modal success-modal">
     <h3 header class="mb-0">Success</h3>
     <div body class="text-center p-5">
-        <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-start success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('product-creation-success-modal')">CANCEL</button>
@@ -451,7 +434,7 @@
 <app-modal id="product-error-modal" class="modal error-modal">
     <h3 header class="mb-0">Error</h3>
     <div body class="text-center p-5">
-        <div class="text-left error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-start error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('product-error-modal')">CLOSE</button>
@@ -482,8 +465,8 @@
 
 
 <!--Waiting Model-->
-<app-modal id="product-waiting-modal" class="modal" hideHeader="true" hideFooter="true" disableBackgroundClickEvent="true" size="small">
-    <div body class="text-left p-5 text-center">
+<app-modal id="product-waiting-modal" class="modal" [hideHeader]="true" [hideFooter]="true" [disableBackgroundClickEvent]="true" [size]="'small'">
+    <div body class="text-start p-5 text-center">
         <div class="loading">{{action}}</div>
     </div>
 </app-modal>

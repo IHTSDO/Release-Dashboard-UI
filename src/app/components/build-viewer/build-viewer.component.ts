@@ -39,7 +39,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     // params map
     releaseCenterKey: string;
     productKey: string;
-    roles: Object;
+    roles: any;
 
     builds: Build[]; // the builds used by UI
     hiddenBuilds: Build[]; // hold all hidden builds from server
@@ -50,7 +50,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     activeBuild: Build;
     selectedBuild: Build;
     buildLog: string;
-    selectedTags: object;
+    selectedTags: any;
     environment: string;
     view: string;
 
@@ -70,7 +70,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     useLocalInputFiles = false;
     selectAllError = false;
     selectAllWarning = false;
-    allTags: object;
+    allTags: any;
 
     // pagination
     pageSize: Number;
@@ -78,16 +78,16 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     totalBuild = Number;
 
     // RVF report
-    assertionsFailed: object[];
-    assertionsWarning: object[];
+    assertionsFailed: any[];
+    assertionsWarning: any[];
     failureJiraAssociations: FailureJiraAssociation[];
     newFailureJiraAssociations: FailureJiraAssociation[];
     duplicatedFailureJiraAssociations: FailureJiraAssociation[];
 
     // Sorting
-    errorTableSortingObj: object;
-    warningTableSortingObj: object;
-    buildTableSortingObj: object;
+    errorTableSortingObj: any;
+    warningTableSortingObj: any;
+    buildTableSortingObj: any;
 
     constructor(private route: ActivatedRoute,
                 private modalService: ModalService,
@@ -578,8 +578,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
-    selectInputFiles(files: FileList) {
-        this.localInputFiles = files;
+    selectInputFiles(e: any) {
+        this.localInputFiles = e.target.files;
     }
 
     runBuild() {

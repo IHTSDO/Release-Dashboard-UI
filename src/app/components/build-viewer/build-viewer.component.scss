@@ -1,4 +1,4 @@
-@import '~src/variables.scss';
+@import 'src/variables.scss';
 
 div.build-viewer {
     height: calc(100vh - 12rem);
@@ -193,7 +193,7 @@ div.build-viewer {
             &.BUILT {
                 background-color: $blue;
             }
-            
+
             div.btn-log-download {
                 background-color: $sea-buckthorn;
             }

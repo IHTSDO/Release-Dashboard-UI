@@ -1,4 +1,3 @@
-// FRAMEWORK IMPORTS
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -8,14 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderInterceptor } from './interceptors/header.interceptor';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { NgxPaginationModule } from 'ngx-pagination';
-
-// COMPONENT IMPORTS
 import { SnomedNavbarComponent } from './components/snomed-navbar/snomed-navbar.component';
 import { SnomedFooterComponent } from './components/snomed-footer/snomed-footer.component';
-
-// PIPE IMPORTS
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
@@ -59,9 +52,7 @@ export function startupServiceFactory(permissionService: PermissionService): Fun
         BrowserAnimationsModule,
         NgbTypeaheadModule,
         AppRoutingModule,
-        NgxPaginationModule,
-        MatTooltipModule,
-        BsDatepickerModule.forRoot()
+        MatTooltipModule
     ],
     providers: [
         AuthenticationService,

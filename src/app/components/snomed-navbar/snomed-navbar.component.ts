@@ -17,7 +17,7 @@ export class SnomedNavbarComponent implements OnInit {
     environment: string;
     user: User;
     userSubscription: Subscription;
-    notfications: object[];
+    notfications: any[];
     totalUnreadNotification: number;
     pageSize = 10;
     pageNumber: number;
@@ -78,11 +78,12 @@ export class SnomedNavbarComponent implements OnInit {
 
     toggleNotificationsPane(event) {
         const parentEl = event.currentTarget.parentElement;
-        if (!$(parentEl).hasClass('show')) {
-            this.notfications = [];
-            this.pageNumber = 1;
-            this.retriveNotifications(this.pageNumber);
-        }
+        console.log('PDU-FIX-1');
+        // if (!$(parentEl).hasClass('show')) {
+        //     this.notfications = [];
+        //     this.pageNumber = 1;
+        //     this.retriveNotifications(this.pageNumber);
+        // }
     }
 
     clearNotifications() {

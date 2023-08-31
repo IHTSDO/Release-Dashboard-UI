@@ -1,5 +1,5 @@
 <nav id="sidebar" class="footer-margin">
-    <h3 class="p-3 mb-0">Release Centers  <a href="/regression-test" target="blank" title="Release Regression Test"><i class="material-icons float-right">open_in_new</i></a></h3>
+    <h3 class="p-3 mb-0">Release Centers  <a href="/regression-test" target="blank" title="Release Regression Test"><i class="material-icons float-end">open_in_new</i></a></h3>
     <div class="centers">
         <div *ngFor="let center of releaseCenters" class="center py-2 px-3"
         (click)="switchActiveReleaseCenter(center)"
@@ -9,13 +9,13 @@
     <div class="sidebar-buttons w-100">
         <div class="row no-gutters">
             <div class="col ml-2 mr-2 mb-2">
-                <button *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; message = ''; openModal('add-modal')" class="btn w-100 add"><i class="fas fa-plus pr-2"></i>ADD</button>
+                <button *ngIf="canAddReleaseCenter()" (click)="addName.value = ''; addShortName.value = ''; addCodeSystem.value = ''; message = ''; openModal('add-modal')" class="btn w-100 add"><i class="fas fa-plus pe-2"></i>ADD</button>
             </div>
             <div class="col mr-2 mb-2">
-                <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="message = ''; openModal('edit-modal')" class="btn w-100 edit"><i class="fas fa-pen pr-2"></i>EDIT</button>
+                <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Edit Release Center" (click)="message = ''; openModal('edit-modal')" class="btn w-100 edit"><i class="fas fa-pen pe-2"></i>EDIT</button>
             </div>
             <div class="col mr-2 mb-2">
-                <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Remove Release Center" (click)="openModal('remove-release-center-confirmation-modal')" class="btn w-100 delete"><i class="fas fa-times pr-2"></i>DELETE</button>
+                <button *ngIf="canAddReleaseCenter()" [disabled]="!activeReleaseCenter" title="Remove Release Center" (click)="openModal('remove-release-center-confirmation-modal')" class="btn w-100 delete"><i class="fas fa-times pe-2"></i>DELETE</button>
             </div>
         </div>
     </div>
@@ -152,7 +152,7 @@
 <app-modal id="release-center-success-modal" class="modal success-modal">
     <h3 header class="mb-0">Success</h3>
     <div body class="text-center p-5">
-        <div class="text-left success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-start success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('release-center-success-modal')">CLOSE</button>
@@ -162,7 +162,7 @@
 <app-modal id="release-center-error-modal" class="modal error-modal">
     <h3 header class="mb-0">Error</h3>
     <div body class="text-center p-5">
-        <div class="text-left error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+        <div class="text-start error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('release-center-error-modal')">CLOSE</button>

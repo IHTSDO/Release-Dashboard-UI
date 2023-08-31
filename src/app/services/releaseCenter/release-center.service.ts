@@ -22,10 +22,6 @@ export class ReleaseCenterService {
         this.activeReleaseCenter.next(releaseCenter);
     }
 
-    clearActiveReleaseCenter() {
-        this.activeReleaseCenter.next();
-    }
-
     getActiveReleaseCenter(): Observable<ReleaseCenter> {
         return this.activeReleaseCenter.asObservable();
     }
