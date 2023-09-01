@@ -280,8 +280,9 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Effective Time</span>
                 </div>
-                <div>PDU-FIX-4</div>
-<!--                <input type="text" class="form-control" bsDatepicker [disabled]="buildTriggering" [(bsValue)]="buildParams.effectiveDate" value="{{ buildParams.effectiveDate | date:'yyyy-MM-dd' }}">-->
+                <input type="text" class="form-control" #buildEffectiveTimeInput matInput [matDatepicker]="buildEffectiveTimeAsPicker" (focus)="buildEffectiveTimeAsPicker.open()" [(ngModel)]="buildParams.effectiveDate">
+                <mat-datepicker-toggle matIconSuffix [for]="buildEffectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
+                <mat-datepicker #buildEffectiveTimeAsPicker (closed)="buildEffectiveTimeInput.blur()"></mat-datepicker>
             </div>
         </div>
 

@@ -27,13 +27,29 @@ import { PermissionService } from './services/permission/permission.service';
 import { WebsocketService } from './services/websocket/websocket.service';
 import { SortDirective } from './directive/sort.directive';
 import { RVFServerService } from './services/rvfServer/rvf-server.service';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from './services/notification/notification.service';
+import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 export function startupServiceFactory(permissionService: PermissionService): Function {
     return () => permissionService.getRoles();
 }
 
+export const DATE_FORMATS = {
+    parse: {
+        dateInput: 'YYYY-MM-DD',
+    },
+    display: {
+        dateInput: 'YYYY-MM-DD',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
+}
+  
 @NgModule({
     declarations: [
         AppComponent,
@@ -52,8 +68,12 @@ export function startupServiceFactory(permissionService: PermissionService): Fun
         BrowserAnimationsModule,
         NgbTypeaheadModule,
         AppRoutingModule,
-        MatTooltipModule
-    ],
+        MatTooltipModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatMomentDateModule
+        ],
     providers: [
         AuthenticationService,
         AuthoringService,
@@ -82,7 +102,11 @@ export function startupServiceFactory(permissionService: PermissionService): Fun
             useFactory: startupServiceFactory,
             deps: [PermissionService],
             multi: true
-          }
+        },
+        { 
+            provide: MAT_DATE_FORMATS, 
+            useValue: DATE_FORMATS 
+        }
     ],
     bootstrap: [AppComponent]
 })

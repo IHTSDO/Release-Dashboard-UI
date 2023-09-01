@@ -133,8 +133,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
                     </div>
-                    <div>PDU-FIX-3</div>
-<!--                    <input type="text" class="form-control" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.effectiveTime" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">-->
+                    <input type="text" class="form-control" #effectiveTimeInput matInput [matDatepicker]="effectiveTimeAsPicker" (focus)="effectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.effectiveTime">
+                    <mat-datepicker-toggle matIconSuffix [for]="effectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
+                    <mat-datepicker #effectiveTimeAsPicker (closed)="effectiveTimeInput.blur()"></mat-datepicker>
                 </div>
             </div>
             <div class="col-12">
@@ -278,8 +279,9 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
                     </div>
-                    <div>PDU-FIX-2</div>
-<!--                    <input type="text" class="form-control" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" bsDatepicker [(bsValue)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate" [bsConfig]="{dateInputFormat: 'YYYY-MM-DD'}">-->
+                    <input type="text" class="form-control" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" #previousEditionDependencyEffectiveTimeInput matInput [matDatepicker]="previousEditionDependencyEffectiveTimeAsPicker" (focus)="previousEditionDependencyEffectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="previousEditionDependencyEffectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
+                    <mat-datepicker #previousEditionDependencyEffectiveTimeAsPicker (closed)="previousEditionDependencyEffectiveTimeInput.blur()"></mat-datepicker>
                 </div>
             </div>
             <div class="col-6">

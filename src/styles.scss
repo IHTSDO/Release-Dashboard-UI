@@ -464,4 +464,19 @@ div.cdk-overlay-container {
         max-width: 30rem !important;
     }
 }
+.mat-datepicker-toggle {
+    position: absolute; 
+    right: 0px; 
+    top: 0px;
+    height: 26px;
+    display: none;
 
+    .mdc-icon-button {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+        width: 26px;
+        height: 26px;
+    }
+}
