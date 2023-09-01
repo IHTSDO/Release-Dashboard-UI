@@ -72,10 +72,15 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     selectAllWarning = false;
     allTags: any;
 
-    // pagination
-    pageSize: Number;
-    pageNumber: Number;
-    totalBuild = Number;
+    // pagination for build table
+    pageSizeOnBuildTalbe = 10;
+    pageNumberOnBuildTable: Number;
+    totalBuild = 0;
+
+    // pagination for hidden build table
+    pageSizeOnHiddenBuildTable = 10;
+    pageNumberOnHiddenHiddenTable: Number;
+    totalHiddenBuild = 0;
 
     // RVF report
     assertionsFailed: any[];
@@ -113,8 +118,8 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.selectedTags = new Object();
         this.errorTableSortingObj = new Object();
         this.warningTableSortingObj = new Object();
-        this.pageNumber = this.paginationService.DEFAULT_PAGE_NUMBER;
-        this.pageSize = this.paginationService.DEFAULT_PAGE_SIZE;
+        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        this.pageNumberOnHiddenHiddenTable = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.allTags = Object.keys(BuildTagEnum).map(key => ({ label: BuildTagEnum[key], value: key }));
         this.constructBuildTableSortingObj();
 
@@ -182,8 +187,23 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     handlePageChange(event) {
-        this.pageNumber = event;
+        if (event.pageSize !== this.pageSizeOnBuildTalbe) {
+            this.pageSizeOnBuildTalbe = event.pageSize;
+            this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        } else {
+            this.pageNumberOnBuildTable = event.pageIndex + 1;
+        }
         this.loadBuilds();
+    }
+
+    handlePageChangeOnHiddenBuildTable(event) {
+        if (event.pageSize !== this.pageSizeOnHiddenBuildTable) {
+            this.pageSizeOnHiddenBuildTable = event.pageSize;
+            this.pageNumberOnHiddenHiddenTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        } else {
+            this.pageNumberOnHiddenHiddenTable = event.pageIndex + 1;
+        }
+        this.loadHiddenBuilds();
     }
 
     getStatusColumnWidth() {
@@ -264,9 +284,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.clearMessage();
         const sorting = this.getSorting();
         this.buildService.getBuilds(this.releaseCenterKey, this.productKey,
-                                    true, true, true, this.view, this.pageNumber, this.pageSize, sorting).subscribe(response => {
+                                    true, true, true, this.view, this.pageNumberOnBuildTable, this.pageSizeOnBuildTalbe, sorting).subscribe(response => {
                 this.builds = response['content'];
-                this.totalBuild = response['totalElements'];
+                this.totalBuild = parseInt(response['totalElements']);
                 // Update Build Status in case the status has been changed
                 if (this.activeBuild.id) {
                     const build = this.builds.find(b => b.id === this.activeBuild.id);
@@ -296,8 +316,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.clearMessage();
         const sorting = ['creationTime,desc'];
         this.buildService.getBuilds(this.releaseCenterKey, this.productKey,
-                                    true, false, false, 'ALL_RELEASES', 1, 100, sorting).subscribe(response => {
+                                    true, false, false, 'ALL_RELEASES', this.pageNumberOnHiddenHiddenTable, this.pageSizeOnHiddenBuildTable, sorting).subscribe(response => {
                 this.hiddenBuilds = response['content'];
+                this.totalHiddenBuild = parseInt(response['totalElements']);
             },
             errorResponse => {
                 this.buildsLoading = false;

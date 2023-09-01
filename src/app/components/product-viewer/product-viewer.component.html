@@ -54,8 +54,14 @@
                 <td colspan="2">No products found.</td>
             </tr>
             </tbody>
-
         </table>
+        <mat-paginator 
+            [length]="totalProduct"
+            [pageSize]="pageSizeOnProductTable"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            (page)="handlePageChangeOnProductTable($event)"
+            aria-label="Select page">
+        </mat-paginator>
         <input class="d-none" #uploadManifestFileInput type="file" (change)="uploadManifestFile($event)">
     </div>
 </div>
@@ -92,6 +98,13 @@
             </tr>
             </tbody>
         </table>
+        <mat-paginator 
+            [length]="totalHiddenProduct"
+            [pageSize]="pageSizeOnHiddenProductTable"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            (page)="handlePageChangeOnHiddenProductTable($event)"
+            aria-label="Select page">
+        </mat-paginator>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('hidden-products-modal')">CLOSE</button>

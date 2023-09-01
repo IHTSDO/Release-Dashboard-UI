@@ -79,10 +79,10 @@
                         {{view === 'ALL_RELEASES' ? 'ALL RELEASES' : view}}
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" (click)="view = 'DEFAULT'; pageNumber = 1; loadBuilds()">DEFAULT</a>
-                        <a class="dropdown-item" (click)="view = 'ALL_RELEASES'; pageNumber = 1; loadBuilds()">ALL RELEASES</a>
-                        <a class="dropdown-item" (click)="view = 'PUBLISHED'; pageNumber = 1; loadBuilds()">PUBLISHED</a>
-                        <a class="dropdown-item" (click)="view = 'UNPUBLISHED'; pageNumber = 1; loadBuilds()">UNPUBLISHED</a>
+                        <a class="dropdown-item" (click)="view = 'DEFAULT'; pageNumberOnBuildTable = 1; loadBuilds()">DEFAULT</a>
+                        <a class="dropdown-item" (click)="view = 'ALL_RELEASES'; pageNumberOnBuildTable = 1; loadBuilds()">ALL RELEASES</a>
+                        <a class="dropdown-item" (click)="view = 'PUBLISHED'; pageNumberOnBuildTable = 1; loadBuilds()">PUBLISHED</a>
+                        <a class="dropdown-item" (click)="view = 'UNPUBLISHED'; pageNumberOnBuildTable = 1; loadBuilds()">UNPUBLISHED</a>
                     </div>
                 </div>
             </div>
@@ -216,6 +216,13 @@
                 </td>
             </tr>
         </table>
+        <mat-paginator 
+            [length]="totalBuild"
+            [pageSize]="pageSizeOnBuildTalbe"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            (page)="handlePageChange($event)"
+            aria-label="Select page">
+        </mat-paginator>
     </div>
 </div>
 
@@ -252,6 +259,13 @@
 
             </tr>
         </table>
+        <mat-paginator 
+            [length]="totalHiddenBuild"
+            [pageSize]="pageSizeOnHiddenBuildTable"
+            [pageSizeOptions]="[5, 10, 20, 50]"
+            (page)="handlePageChangeOnHiddenBuildTable($event)"
+            aria-label="Select page">
+        </mat-paginator>
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('hidden-builds-modal')">CLOSE</button>

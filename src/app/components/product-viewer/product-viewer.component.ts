@@ -35,18 +35,19 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     // animations
     savingProduct = false;
 
-    pageSize = 20;
+    pageSizeOnProductTable = 20;
+    pageSizeOnHiddenProductTable = 20;
 
     // pagination for product table
     productsLoading = false;
     pageNumberOnProductTable: Number;
-    totalProduct: Number;
+    totalProduct = 0;
     sortDirectionOnProductTable: string;
 
 
      // pagination for hidden product table
      hiddenProductsLoading = false;
-     totalHiddenProduct: Number;
+     totalHiddenProduct = 0;
      sortDirectionOnHiddenProductTable: string;
      pageNumberOnHiddenProductTable: Number;
 
@@ -69,13 +70,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
             // Products
             this.products = [];
-            this.totalProduct = this.paginationService.EMPTY_ITEMS;
             this.pageNumberOnProductTable = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
             this.sortDirectionOnProductTable = 'asc';
 
             // Hidden products
             this.hiddenProducts = [];
-            this.totalHiddenProduct = this.paginationService.EMPTY_ITEMS;
             this.pageNumberOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
             this.sortDirectionOnHiddenProductTable = 'asc';
 
@@ -185,10 +184,10 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.productsLoading = true;
         this.productService.getProducts(this.activeReleaseCenter.id,
                                         this.pageNumberOnProductTable,
-                                        this.pageSize, 'name',
+                                        this.pageSizeOnProductTable, 'name',
                                         this.sortDirectionOnProductTable).subscribe(response => {
             this.products = response['content'];
-            this.totalProduct = response['totalElements'];
+            this.totalProduct = parseInt(response['totalElements']);
             this.productsLoading = false;
             this.productDataService.cacheProducts(this.products);
             this.loadProductManifestFilesInfo(this.products);
@@ -206,10 +205,10 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.hiddenProductsLoading = true;
         this.productService.getHiddenProducts(this.activeReleaseCenter.id,
                                         this.pageNumberOnHiddenProductTable,
-                                        this.pageSize, 'name',
+                                        this.pageSizeOnHiddenProductTable, 'name',
                                         this.sortDirectionOnHiddenProductTable).subscribe(response => {
             this.hiddenProducts = response['content'];
-            this.totalHiddenProduct = response['totalElements'];
+            this.totalHiddenProduct = parseInt(response['totalElements']);
             this.hiddenProductsLoading = false;
         });
     }
@@ -233,7 +232,12 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     handlePageChangeOnProductTable(event) {
-        this.pageNumberOnProductTable = event;
+        if (event.pageSize !== this.pageSizeOnProductTable) {
+            this.pageSizeOnProductTable = event.pageSize;
+            this.pageNumberOnProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        } else {
+            this.pageNumberOnProductTable = event.pageIndex + 1;
+        }
         this.loadProducts();
     }
 
@@ -243,7 +247,12 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     handlePageChangeOnHiddenProductTable(event) {
-        this.pageNumberOnHiddenProductTable = event;
+        if (event.pageSize !== this.pageSizeOnHiddenProductTable) {
+            this.pageSizeOnHiddenProductTable = event.pageSize;
+            this.pageNumberOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        } else {
+            this.pageNumberOnHiddenProductTable = event.pageIndex + 1;
+        }
         this.loadHiddenProducts();
     }
 
