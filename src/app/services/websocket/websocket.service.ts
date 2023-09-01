@@ -1,7 +1,7 @@
 import {Injectable, Output} from '@angular/core';
-// import * as Stomp from 'stompjs';
-// import * as SockJS from 'sockjs-client';
-import {EventEmitter} from 'events';
+import * as SockJS from 'sockjs-client';
+import { EventEmitter } from 'events';
+import { Client } from '@stomp/stompjs';
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +11,7 @@ export class WebsocketService {
     buildStatusTopic = '/topic/build-status-change';
     userNotificationTopic = '/topic/user/';
 
-    stompClient: any;
+    client: any;
 
     @Output() messageEvent: EventEmitter = new EventEmitter();
 
@@ -19,28 +19,29 @@ export class WebsocketService {
     }
 
     connect(username: string) {
-        // const ws = new SockJS(this.webSocketEndPoint);
-        // this.stompClient = Stomp.over(ws);
-
-        // const _this = this;
-        // this.stompClient.connect({}, function (frame) {
-        //     _this.stompClient.subscribe(_this.buildStatusTopic, function (message) {
-        //         _this.onStatusMessageReceived(message);
-        //     });
-        //
-        //     _this.stompClient.subscribe(_this.userNotificationTopic + username + '/notification', function (message) {
-        //         _this.onNotificationMessageReceived(message);
-        //     });
-        // }, () => {
-        //     setTimeout(() => {
-        //         this.connect(username);
-        //     }, 5000);
-        // });
+        const _this = this;
+        const stompClient = new Client({
+            webSocketFactory: () => {
+                return new SockJS(this.webSocketEndPoint);
+            },
+            onConnect: () => {
+                stompClient.subscribe(_this.buildStatusTopic, message =>
+                    _this.onStatusMessageReceived(message)
+                );
+                stompClient.subscribe(_this.userNotificationTopic + username + '/notification', message =>
+                    _this.onNotificationMessageReceived(message)
+                );
+            },
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000
+        });
+        stompClient.activate();
     }
 
     disconnect() {
-        if (this.stompClient !== null) {
-            this.stompClient.disconnect();
+        if (this.client !== null) {
+            this.client.forceDisconnect();
         }
     }
 
