@@ -32,7 +32,7 @@
                         <ul *ngIf="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath" class="list-group list-group-horizontal m-3">
                             <li class="list-group-item bg-alto-white w-25"><b>LOCAL INPUT FILES</b></li>
                             <li class="list-group-item w-75">
-                                <input class="ml-2" type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
+                                <input class="ms-2" type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
                             </li>
                         </ul>
                         <ul *ngIf="activeBuild.configuration?.branchPath && activeBuild.configuration.loadTermServerData" class="list-group list-group-horizontal m-3">
@@ -95,126 +95,167 @@
         </div>
 
         <table class="table table-bordered table-striped table-sortable" *ngIf="buildsLoading">
-            <tr>
-                <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
-                <th [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name
-                    <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
-                </th>
-                <th [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc'}">Build ID
-                    <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
-                </th>
-                <th [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc'}">Status
-                    <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
-                </th>
-                <th [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc'}">User
-                    <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
-                </th>
-                <th *ngIf="isAdminOrManagerOrLead()">User Roles</th>
-                <th *ngIf="isAdminOrManagerOrLead()">Log</th>
-                <th *ngIf="isAdminOrManagerOrLead()">Release</th>
-                <th >RVF Report</th>
-                <th>Config</th>
-                <th>Manifest</th>
-                <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
-                <th class="w-9">Tags</th>
-            </tr>
-            <tr >
-                <td colspan="13"><div class="loading">Loading</div></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
+                    <th [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name
+                        <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
+                    </th>
+                    <th [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc'}">Build ID
+                        <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
+                    </th>
+                    <th [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc'}">Status
+                        <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
+                    </th>
+                    <th [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc'}">User
+                        <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
+                    </th>
+                    <th *ngIf="isAdminOrManagerOrLead()">User Roles</th>
+                    <th *ngIf="isAdminOrManagerOrLead()">Log</th>
+                    <th *ngIf="isAdminOrManagerOrLead()">Release</th>
+                    <th >RVF Report</th>
+                    <th>Config</th>
+                    <th>Manifest</th>
+                    <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
+                    <th class="w-9">Tags</th>
+                </tr>
+                <tr>
+                    <td colspan="13"><div class="loading">Loading</div></td>
+                </tr>
+            </thead>
         </table>
         <table class="table table-bordered table-striped table-sortable" *ngIf="!buildsLoading">
-            <tr>
-                <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
-                <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildName']['direction']}">Build Name
-                    <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('buildName')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildName'); $event.stopPropagation()">cancel</i></span>
-                </th>
-                <th style="min-width: 87px;" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'creationTime')" [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc', 'sortable': !buildTableSortingObj['creationTime']['direction']}">Build ID
-                    <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('creationTime')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('creationTime'); $event.stopPropagation()">cancel</i></span>
-                </th>
-                <th [style.min-width]="getStatusColumnWidth()" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'status')" [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc', 'sortable': !buildTableSortingObj['status']['direction']}">Status
-                    <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('status')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('status'); $event.stopPropagation()">cancel</i></span>
-                </th>
-                <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildUser')" [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildUser']['direction']}">User
-                    <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
-                    <span *ngIf="hasSortingPriority('buildUser')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildUser'); $event.stopPropagation()">cancel</i></span>
-                </th>
-                <th class="w-10" *ngIf="isAdminOrManagerOrLead()">User Roles</th>
-                <th class="w-5" *ngIf="isAdminOrManagerOrLead()">Log</th>
-                <th *ngIf="isAdminOrManagerOrLead()">Release</th>
-                <th>RVF Report</th>
-                <th>Config</th>
-                <th>Manifest</th>
-                <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
-                <th class="w-9">Tags</th>
-            </tr>
-            <tr *ngIf="builds?.length === 0">
-                <td colspan="13">No builds found.</td>
-            </tr>
-            <tr *ngFor="let build of builds" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
-                <td class="pb-0" *ngIf="isAdminOrManagerOrLead()">
-                    <button type="button" class="btn blue text-nowrap" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
-                </td>
-                <td class="text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
-                <td class="text-start" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
-                <td class="text-start text-white {{build.status}}">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
-                <td class="">{{build?.buildUser}}</td>
-                <td class="text-start" *ngIf="isAdminOrManagerOrLead()">
-                    <ng-container *ngFor="let role of build?.userRoles" >
-                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{role.replaceAll('_', ' ') | titlecase}}</div>
-                    </ng-container>
-                </td>
-                <td class="" *ngIf="isAdminOrManagerOrLead()">
-                    <ng-container *ngIf="build.buildDownloadingLog">
-<!--                        <div class="btn-log-download badge loading">Downloading</div>-->
-                        <button type="button" class="btn purple text-nowrap" title="Download Log"><span class="pe-2"><i class="fas fa-circle-notch fa-spin" style="width: 12px; height: 12px"></i></span>DOWNLOADING</button>
-                    </ng-container>
-                    <ng-container *ngIf="!build.buildDownloadingLog">
-                        <button type="button" class="btn purple text-nowrap" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="fas fa-download pe-2"></i>.TXT</button>
-                    </ng-container>
-                </td>
-                <td class="" *ngIf="isAdminOrManagerOrLead()" style="width: auto;">
-                    <div class="d-block mb-2">
-                        <ng-container *ngIf="build.buildDownloadingPackage">
-                            <button type="button" class="btn purple text-nowrap w-100" title="Download Log"><span class="pe-2"><i class="fas fa-circle-notch fa-spin" style="width: 12px; height: 12px"></i></span>DOWNLOADING</button>
-<!--                            <div class="btn-package-download badge loading">Downloading</div>-->
+            <thead>
+                <tr>
+                    <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
+                    <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildName']['direction']}">Build Name
+                        <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
+                        <span *ngIf="hasSortingPriority('buildName')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildName'); $event.stopPropagation()">cancel</i></span>
+                    </th>
+                    <th style="min-width: 87px;" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'creationTime')" [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc', 'sortable': !buildTableSortingObj['creationTime']['direction']}">Build ID
+                        <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
+                        <span *ngIf="hasSortingPriority('creationTime')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('creationTime'); $event.stopPropagation()">cancel</i></span>
+                    </th>
+                    <th [style.min-width]="getStatusColumnWidth()" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'status')" [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc', 'sortable': !buildTableSortingObj['status']['direction']}">Status
+                        <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
+                        <span *ngIf="hasSortingPriority('status')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('status'); $event.stopPropagation()">cancel</i></span>
+                    </th>
+                    <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildUser')" [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildUser']['direction']}">User
+                        <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
+                        <span *ngIf="hasSortingPriority('buildUser')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildUser'); $event.stopPropagation()">cancel</i></span>
+                    </th>
+                    <th class="w-10" *ngIf="isAdminOrManagerOrLead()">User Roles</th>
+                    <th class="w-5" *ngIf="isAdminOrManagerOrLead()">Log</th>
+                    <th *ngIf="isAdminOrManagerOrLead()">Release</th>
+                    <th>RVF Report</th>
+                    <th>Config</th>
+                    <th>Manifest</th>
+                    <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
+                    <th class="w-9">Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="builds?.length === 0">
+                    <td colspan="13">No builds found.</td>
+                </tr>
+                <tr *ngFor="let build of builds" (click)="setActiveBuild(build)" [class.active]="activeBuild.id === build.id">
+                    <td class="pb-0" *ngIf="isAdminOrManagerOrLead()">
+                        <button type="button" class="btn blue text-nowrap" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
+                    </td>
+                    <td class="text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
+                    <td class="text-start" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
+                    <td class="text-start">
+                        <div class="expansion rounded-pill px-2 py-0 m-1 text-nowrap text-white {{build.status}}">{{build?.status.replaceAll('_', ' ') | titlecase}}</div>
+                    </td>
+                    <td class="">{{build?.buildUser}}</td>
+                    <td class="text-start" *ngIf="isAdminOrManagerOrLead()">
+                        <ng-container *ngFor="let role of build?.userRoles" >
+                            <div class="rounded-pill px-2 py-0 m-1 text-nowrap tag">{{role.replaceAll('_', ' ') | titlecase}}</div>
                         </ng-container>
-                        <ng-container *ngIf="!build.buildDownloadingPackage">
-                            <button type="button" class="btn purple text-nowrap w-100" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="fas fa-download pe-2"></i>.ZIP</button>
+                    </td>
+                    <td class="" *ngIf="isAdminOrManagerOrLead()">
+                        <ng-container *ngIf="build.buildDownloadingLog">
+                            <!--                        <div class="btn-log-download badge loading">Downloading</div>-->
+                            <button type="button" class="btn purple text-nowrap" title="Download Log"><span class="pe-2"><i class="fas fa-circle-notch fa-spin" style="width: 12px; height: 12px"></i></span>DOWNLOADING</button>
                         </ng-container>
-                    </div>
-                    <div class="d-block">
-                        <button type="button" class="btn pink text-nowrap w-100 narrow" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file"><i class="fas fa-download pe-2"></i>.MD5</button>
-                    </div>
-                </td>
-                <td class="">
-                    <ng-container *ngIf="build.rvfURL">
-                        <button type="button" class="btn blue text-nowrap" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
-                    </ng-container>
-                </td>
-                <td class="">
-                    <button type="button" class="btn slate text-nowrap" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="fas fa-cog pe-2"></i>SETTINGS</button>
-                </td>
-                <td class="">
-                    <button class="btn blue text-nowrap" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
-                </td>
-                <td class="" *ngIf="isAdminOrManagerOrLead()">
-                    <button type="button" class="btn slate text-nowrap" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="fas fa-eye-slash pe-2"></i>HIDE</button>
-                </td>
-<!--                <td class=""><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && isAdminOrManagerOrLead()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span>-->
-<!--                    <button *ngIf="!build.tags && isAdminOrManagerOrLead()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>-->
+<!--<<<<<<< HEAD-->
+<!--                    </div>-->
+<!--                    <div class="d-block">-->
+<!--                        <button type="button" class="btn pink text-nowrap w-100 narrow" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file"><i class="fas fa-download pe-2"></i>.MD5</button>-->
+<!--                    </div>-->
 <!--                </td>-->
-                <td>
-                    <ng-container *ngFor="let tag of build?.tags" >
-                        <div class="rounded-pill px-2 m-1 text-nowrap tag {{tag}}">{{tag.replaceAll('_', ' ') | titlecase}}</div>
-                    </ng-container>
-                    <div *ngIf="isAdminOrManagerOrLead()" class="rounded-pill px-2 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">
-                        <i class="fas fa-plus pe-2"></i>ADD
-                    </div>
-                </td>
-            </tr>
+<!--                <td class="">-->
+<!--                    <ng-container *ngIf="build.rvfURL">-->
+<!--                        <button type="button" class="btn blue text-nowrap" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>-->
+<!--                    </ng-container>-->
+<!--                </td>-->
+<!--                <td class="">-->
+<!--                    <button type="button" class="btn slate text-nowrap" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="fas fa-cog pe-2"></i>SETTINGS</button>-->
+<!--                </td>-->
+<!--                <td class="">-->
+<!--                    <button class="btn blue text-nowrap" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>-->
+<!--                </td>-->
+<!--                <td class="" *ngIf="isAdminOrManagerOrLead()">-->
+<!--                    <button type="button" class="btn slate text-nowrap" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="fas fa-eye-slash pe-2"></i>HIDE</button>-->
+<!--                </td>-->
+<!--&lt;!&ndash;                <td class=""><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && isAdminOrManagerOrLead()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <button *ngIf="!build.tags && isAdminOrManagerOrLead()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>&ndash;&gt;-->
+<!--&lt;!&ndash;                </td>&ndash;&gt;-->
+<!--                <td>-->
+<!--                    <ng-container *ngFor="let tag of build?.tags" >-->
+<!--                        <div class="rounded-pill px-2 m-1 text-nowrap tag {{tag}}">{{tag.replaceAll('_', ' ') | titlecase}}</div>-->
+<!--                    </ng-container>-->
+<!--                    <div *ngIf="isAdminOrManagerOrLead()" class="rounded-pill px-2 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">-->
+<!--                        <i class="fas fa-plus pe-2"></i>ADD-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--=======-->
+                        <ng-container *ngIf="!build.buildDownloadingLog">
+                            <button type="button" class="btn purple text-nowrap" (click)="downloadBuildLog(build); $event.stopPropagation()" title="Download Log"><i class="fas fa-download pe-2"></i>.TXT</button>
+                        </ng-container>
+                    </td>
+                    <td class="" *ngIf="isAdminOrManagerOrLead()" style="width: auto;">
+                        <div class="d-block mb-2 p-0">
+                            <ng-container *ngIf="build.buildDownloadingPackage">
+                                <button type="button" class="btn purple text-nowrap w-100" title="Download Log"><span class="pe-2"><i class="fas fa-circle-notch fa-spin" style="width: 12px; height: 12px"></i></span>DOWNLOADING</button>
+                                <!--                            <div class="btn-package-download badge loading">Downloading</div>-->
+                            </ng-container>
+                            <ng-container *ngIf="!build.buildDownloadingPackage">
+                                <button type="button" class="btn purple text-nowrap w-100" (click)="downloadBuildPackage(build); $event.stopPropagation()" title="Download Release Package{{build.configuration.buildPackageName ? ': ' + build.configuration.buildPackageName : ''}}"><i class="fas fa-download pe-2"></i>.ZIP</button>
+                            </ng-container>
+                        </div>
+                        <div class="d-block p-0">
+                            <button type="button" class="btn pink text-nowrap w-100 narrow" (click)="downloadMd5(build); $event.stopPropagation()" title="Download MD5 file"><i class="fas fa-download pe-2"></i>.MD5</button>
+                        </div>
+                    </td>
+                    <td class="">
+                        <ng-container *ngIf="build.rvfURL">
+                            <button type="button" class="btn blue text-nowrap" (click)="openRvfReport(build); $event.stopPropagation()" title="Open RVF Report"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
+                        </ng-container>
+                    </td>
+                    <td class="">
+                        <button type="button" class="btn slate text-nowrap" (click)="viewBuildConfigurations(build); $event.stopPropagation()" title="View Build Configurations"><i class="fas fa-cog pe-2"></i>SETTINGS</button>
+                    </td>
+                    <td class="">
+                        <button class="btn blue text-nowrap" (click)="loadManifestFile(build); $event.stopPropagation()" title="View Manifest File"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
+                    </td>
+                    <td class="" *ngIf="isAdminOrManagerOrLead()">
+                        <button type="button" class="btn slate text-nowrap" (click)="openBuildVisibilityModal(build); $event.stopPropagation()" title="Hide Build"><i class="fas fa-eye-slash pe-2"></i>HIDE</button>
+                    </td>
+                    <!--                <td class=""><span *ngIf="build.tags">{{build.tags.join(', ').replaceAll('_', ' ') | titlecase}}</span>&nbsp;<span *ngIf="build.tags && isAdminOrManagerOrLead()" (click)="openTaggingModal(build); $event.stopPropagation()" title="Edit Tags"><i class="material-icons text-fruit-salad">edit</i></span>-->
+                    <!--                    <button *ngIf="!build.tags && isAdminOrManagerOrLead()" class="btn-circle btn-blue text-center" (click)="openTaggingModal(build); $event.stopPropagation()" title="Add Tags"><i class="material-icons">add</i></button>-->
+                    <!--                </td>-->
+                    <td>
+                        <ng-container *ngFor="let tag of build?.tags" >
+                            <div class="rounded-pill px-2 py-0 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
+                        </ng-container>
+                        <div *ngIf="isAdminOrManagerOrLead()" class="rounded-pill px-2 py-0 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">
+                            <i class="fas fa-plus pe-2"></i>ADD
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <mat-paginator 
             [length]="totalBuild"
@@ -383,7 +424,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" [disabled]="buildTriggering" (click)="closeModal('build-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" [disabled]="buildTriggering" (click)="runBuild()">RUN</button>
+        <button type="button" class="btn accept ms-3" [disabled]="buildTriggering" (click)="runBuild()">RUN</button>
     </div>
 </app-modal>
 
@@ -396,7 +437,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('delete-confirmation-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="deleteBuild(activeBuild)">ACCEPT</button>
+        <button type="button" class="btn accept ms-3" (click)="deleteBuild(activeBuild)">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -409,7 +450,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('publish-build-confirmation-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="publishBuild(activeBuild)">ACCEPT</button>
+        <button type="button" class="btn accept ms-3" (click)="publishBuild(activeBuild)">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -427,7 +468,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('build-tagging-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="saveTags()">SAVE</button>
+        <button type="button" class="btn accept ms-3" (click)="saveTags()">SAVE</button>
     </div>
 </app-modal>
 
@@ -478,7 +519,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('generate-jira-tickets-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="validateFailuresSelection()">ACCEPT</button>
+        <button type="button" class="btn accept ms-3" (click)="validateFailuresSelection()">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -491,7 +532,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('jira-generation-confirmation-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="generateJiraTickets()">CONFIRM</button>
+        <button type="button" class="btn accept ms-3" (click)="generateJiraTickets()">CONFIRM</button>
     </div>
 </app-modal>
 
@@ -527,7 +568,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('stop-build-confirmation-modal')">CANCEL</button>
-        <button type="button" class="btn reject ml-3" (click)="stopBuild(activeBuild)">STOP</button>
+        <button type="button" class="btn reject ms-3" (click)="stopBuild(activeBuild)">STOP</button>
     </div>
 </app-modal>
 
@@ -909,7 +950,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('hide-build-confirmation-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="hideBuild()">ACCEPT</button>
+        <button type="button" class="btn accept ms-3" (click)="hideBuild()">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -920,7 +961,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
     <div footer>
         <button type="button" class="btn" (click)="closeModal('unhide-build-confirmation-modal')">CANCEL</button>
-        <button type="button" class="btn accept ml-3" (click)="unHideBuild()">ACCEPT</button>
+        <button type="button" class="btn accept ms-3" (click)="unHideBuild()">ACCEPT</button>
     </div>
 </app-modal>
 
@@ -944,8 +985,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('publish-danger-modal')">CANCEL</button>
-        <button *ngIf="dangerInput === activeBuild?.configuration?.effectiveTime" type="button" [disabled]="false" (click)="publishBuild(activeBuild); closeModal('publish-danger-modal')" class="btn reject ml-3">I understand, publish the release</button>
-        <button *ngIf="dangerInput !== activeBuild?.configuration?.effectiveTime" type="button" [disabled]="true" class="btn ml-3">I understand, publish the release</button>
+        <button *ngIf="dangerInput === activeBuild?.configuration?.effectiveTime" type="button" [disabled]="false" (click)="publishBuild(activeBuild); closeModal('publish-danger-modal')" class="btn reject ms-3">I understand, publish the release</button>
+        <button *ngIf="dangerInput !== activeBuild?.configuration?.effectiveTime" type="button" [disabled]="true" class="btn ms-3">I understand, publish the release</button>
     </div>
 </app-modal>
 

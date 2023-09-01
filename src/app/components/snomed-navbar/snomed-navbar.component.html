@@ -1,7 +1,7 @@
 <nav class="navbar sticky-top p-0" [class]="environment">
     <a class="logo m-2" routerLink="/">
-        <img class="logo mr-2 p-0" src="/assets/small_logo.png">
-        <span class="title">SNOMED CT Release Dashboard <span class="environment rounded px-3 py-2 ml-5" [class]="environment">{{environment === 'prod' ? 'PRODUCTION ENVIRONMENT' : environment + ' ENVIRONMENT' | uppercase}}</span></span>
+        <img class="logo me-2 p-0" src="/assets/small_logo.png">
+        <span class="title">SNOMED CT Release Dashboard <span class="environment rounded px-3 py-2 ms-5" [class]="environment">{{environment === 'prod' ? 'PRODUCTION ENVIRONMENT' : environment + ' ENVIRONMENT' | uppercase}}</span></span>
     </a>
 
     <ng-container [ngSwitch]="environment">
@@ -20,7 +20,7 @@
             <span class="px-2">{{user.firstName}} {{user.lastName}}</span>
             <img class="rounded-circle mx-3" src="https://jira.ihtsdotools.org/secure/useravatar?ownerId={{user.login}}">
         </div>
-        <div class="user d-inline-block mr-4 notification-container">
+        <div class="user d-inline-block me-4 notification-container">
             <button id="btnNotification" (click)="toggleNotificationsPane($event)" class="rounded-circle dropdown-toggle" data-toggle="dropdown">
                 <i class="fas fa-bell"></i>
                 <span ng-cloak *ngIf="totalUnreadNotification > 0" class="message-badge">{{totalUnreadNotification}}</span>
@@ -38,7 +38,7 @@
                             {{notification.details.message}}
                         </div>
                     </li>
-                    <div class="ml-3" *ngIf="notfications.length == 0 && !loadingNotfications">
+                    <div class="ms-3" *ngIf="notfications.length == 0 && !loadingNotfications">
                         <span>You have no notifications at the moment</span>
                     </div>
                 </ul>

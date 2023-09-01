@@ -155,7 +155,7 @@ div.build-viewer {
             width: 42ch;
             overflow: hidden;
         }
-        td {
+        td, div.expansion {
             padding: .8rem;
 
             &.RELEASE_COMPLETE_WITH_WARNINGS {
@@ -224,6 +224,10 @@ div.build-viewer {
                     cursor: pointer;
                 }
             }
+        }
+
+        div.expansion {
+            max-width: fit-content;
         }
     }
 }
