@@ -81,7 +81,7 @@ nav#sidebar {
 app-modal {
     &.add-modal, &.edit-modal {
         div.input-group {
-            input, textarea, label, select {
+            input, textarea, label, select, span {
                 border: 1px $ghost-grey solid;
                 font-size: 1.2rem;
             }

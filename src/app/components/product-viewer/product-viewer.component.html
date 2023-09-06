@@ -59,7 +59,7 @@
             </tr>
             </tbody>
         </table>
-        <mat-paginator 
+        <mat-paginator
             [length]="totalProduct"
             [pageSize]="pageSizeOnProductTable"
             [pageSizeOptions]="[5, 10, 20, 50]"
@@ -102,7 +102,7 @@
             </tr>
             </tbody>
         </table>
-        <mat-paginator 
+        <mat-paginator
             [length]="totalHiddenProduct"
             [pageSize]="pageSizeOnHiddenProductTable"
             [pageSizeOptions]="[5, 10, 20, 50]"
@@ -147,9 +147,7 @@
         <div class="row mx-0">
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
                     <input type="text" class="form-control" #effectiveTimeInput matInput [matDatepicker]="effectiveTimeAsPicker" (focus)="effectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.effectiveTime">
                     <mat-datepicker-toggle matIconSuffix [for]="effectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
                     <mat-datepicker #effectiveTimeAsPicker (closed)="effectiveTimeInput.blur()"></mat-datepicker>
@@ -157,121 +155,83 @@
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The branch path of Term server which will be used for exporting Delta files. It may be empty if the product is a Derivative product which will be getting the Delta files from the local input files">Default Branch</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The branch path of Term server which will be used for exporting Delta files. It may be empty if the product is a Derivative product which will be getting the Delta files from the local input files">Default Branch</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.justPackage">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.justPackage">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.firstTimeRelease">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.firstTimeRelease">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.inputFilesFixesRequired">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.inputFilesFixesRequired">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.createLegacyIds">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.createLegacyIds">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.useClassifierPreConditionChecks">
-                        </div>
+                    <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.useClassifierPreConditionChecks">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.classifyOutputFiles">
-                        </div>
+                    <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.classifyOutputFiles">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Custom Refset Composite Keys</span>
-                    </div>
+                    <span class="input-group-text">Custom Refset Composite Keys</span>
                     <input type="text" class="form-control" [(ngModel)]="customRefsetCompositeKeys">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The new files to be released for the first time for an existing product in subsequent releases">New RF2 Input Files</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The new files to be released for the first time for an existing product in subsequent releases">New RF2 Input Files</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.newRF2InputFiles">
                 </div>
             </div>
@@ -285,17 +245,13 @@
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
                     <input type="text" class="form-control" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" #previousEditionDependencyEffectiveTimeInput matInput [matDatepicker]="previousEditionDependencyEffectiveTimeAsPicker" (focus)="previousEditionDependencyEffectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate">
                     <mat-datepicker-toggle matIconSuffix [for]="previousEditionDependencyEffectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
                     <mat-datepicker #previousEditionDependencyEffectiveTimeAsPicker (closed)="previousEditionDependencyEffectiveTimeInput.blur()"></mat-datepicker>
@@ -303,121 +259,89 @@
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">Included Previous Release Files</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">Included Previous Release Files</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.includePrevReleaseFiles">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">Excluded Refset Descriptor Members</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">Excluded Refset Descriptor Members</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.excludeRefsetDescriptorMembers">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,...">Excluded Language refsets</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,...">Excluded Language refsets</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.excludeLanguageRefsetIds">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The namespace id for a given extension release">Namespace ID</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The namespace id for a given extension release">Namespace ID</span>
                     <input type="number" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.namespaceId">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The module id(s) for a given extension. These should be comma separated">Module ID(s)</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The module id(s) for a given extension. These should be comma separated">Module ID(s)</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.moduleIds">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes the assertion group name(s) to the RVF for QA testing">Assertion Groups</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="Passes the assertion group name(s) to the RVF for QA testing">Assertion Groups</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.assertionGroupNames">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableMRCMValidation">
-                        </div>
+                    <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableMRCMValidation">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">Drools Rules Group Names</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">Drools Rules Group Names</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.droolsRulesGroupNames">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
-                    </div>
-                    <div class="input-group-append">
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableDrools">
-                        </div>
+                    <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableDrools">
                     </div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
                     <input type="number" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.readmeEndDate">
                 </div>
             </div>
             <div class="col-6">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.conceptPreferredTerms">
                 </div>
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
                     <textarea rows="5" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.readmeHeader"></textarea>
                 </div>
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">Release Information Fields</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">Release Information Fields</span>
                     <textarea rows="5" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.additionalReleaseInformationFields"></textarea>
                 </div>
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" matTooltip="The licence statement which will be used in the Release Package Information file">License Statement</span>
-                    </div>
+                    <span class="input-group-text" matTooltip="The licence statement which will be used in the Release Package Information file">License Statement</span>
                     <textarea rows="5" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.licenceStatement"></textarea>
                 </div>
             </div>

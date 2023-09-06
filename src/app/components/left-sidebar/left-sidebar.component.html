@@ -29,27 +29,21 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Name</span>
-                </div>
+                <span class="input-group-text">Name</span>
                 <input #addName type="text" class="form-control">
             </div>
         </div>
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Short Name</span>
-                </div>
+                <span class="input-group-text">Short Name</span>
                 <input #addShortName type="text" class="form-control">
             </div>
         </div>
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Codesystem</span>
-                </div>
+                <span class="input-group-text">Codesystem</span>
                 <select #addCodeSystem class="form-control">
                     <option value=""></option>
                     <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName">
@@ -61,9 +55,7 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">SNOMED CT Product</span>
-                </div>
+                <span class="input-group-text">SNOMED CT Product</span>
                 <input #addSNOMEDCTProduct type="text" class="form-control">
             </div>
         </div>
@@ -93,27 +85,21 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Name</span>
-                </div>
+                <span class="input-group-text">Name</span>
                 <input #editName type="text" class="form-control" [value]="activeReleaseCenter?.name">
             </div>
         </div>
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Short Name</span>
-                </div>
+                <span class="input-group-text">Short Name</span>
                 <input #editShortName type="text" disabled class="form-control" [value]="activeReleaseCenter?.shortName">
             </div>
         </div>
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Codesystem</span>
-                </div>
+                <span class="input-group-text">Codesystem</span>
                 <select #editCodeSystem class="form-control" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">
                     <option value=""></option>
                     <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName" [selected]="codeSystem.shortName == activeReleaseCenter?.codeSystem">
@@ -125,9 +111,7 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">SNOMED CT Product</span>
-                </div>
+                <span class="input-group-text">SNOMED CT Product</span>
                 <input #editSnomedCtProduct type="text" class="form-control" [value]="activeReleaseCenter?.snomedCtProduct">
             </div>
         </div>
