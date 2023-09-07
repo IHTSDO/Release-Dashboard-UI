@@ -675,16 +675,26 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Custom Refset Composite Keys</span>
-                        <input #customRefsetCompositeKeys  type="text" disabled class="form-control">
+                        <textarea #customRefsetCompositeKeys  
+                            matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="5" 
+                            disabled class="form-control"></textarea>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The new files to be released for the first time for an existing product in subsequent releases">New RF2 Input Files</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.newRF2InputFiles">
+                        <textarea matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="5"
+                            class="form-control" disabled 
+                            [(ngModel)]="selectedBuild.configuration.newRF2InputFiles"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
@@ -788,19 +798,39 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
-                        <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeHeader"></textarea>
+                        <textarea matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="3"
+                            cdkAutosizeMaxRows="5"
+                            class="form-control"
+                            class="form-control" 
+                            disabled 
+                            [(ngModel)]="selectedBuild.configuration.readmeHeader"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">Release Information Fields</span>
-                        <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
+                        <textarea matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="3"
+                            cdkAutosizeMaxRows="5"
+                            class="form-control" 
+                            class="form-control" 
+                            disabled 
+                            [(ngModel)]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The licence statement which will be used in the Release Package Information file">License Statement</span>
-                        <textarea rows="5" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.licenceStatement"></textarea>
+                        <textarea matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="3"
+                            cdkAutosizeMaxRows="5"
+                            class="form-control" 
+                            disabled
+                            [(ngModel)]="selectedBuild.configuration.licenceStatement"></textarea>
                     </div>
                 </div>
             </div>
