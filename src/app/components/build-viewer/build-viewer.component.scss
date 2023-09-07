@@ -100,7 +100,7 @@ div.build-viewer {
             height: 2rem;
             padding-top: 0;
         }
-    }
+    }    
 
     div.active-build {
         height: 27rem;
@@ -130,25 +130,6 @@ div.build-viewer {
     }
 
     table {
-        tr {
-            th {
-                font-weight: 400;
-
-                &.asc, &.desc, &.sortable {
-                    padding-right: 25px;
-                }
-                &.asc::after, &.desc::after {
-                    right: 10px;
-                }
-            }
-        }
-        tr.active {
-            background-color: lighten($anakiwa, 5%);
-
-            &:hover {
-                background-color: $anakiwa;
-            }
-        }
         td:nth-child(2) {
             text-overflow: ellipsis;
             max-width: 42ch;
@@ -156,7 +137,7 @@ div.build-viewer {
             overflow: hidden;
         }
         td, div.expansion {
-            padding: .8rem;
+            padding: 1.1rem .8rem .8rem .8rem;          
 
             &.RELEASE_COMPLETE_WITH_WARNINGS {
                 background-color: lighten($candlelight, 10%);
@@ -251,6 +232,7 @@ app-modal {
                 }
 
                 td {
+                    padding: 1.1rem .8rem .8rem .8rem;
                     button.hide {
                         background-color: lighten($slate-grey, 10%);
                         color: $white;

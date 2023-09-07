@@ -10,6 +10,7 @@ export class ProductPaginationService {
     EMPTY_ITEMS = 0;
 
     private seletectedPageMap = new Object();
+    private cachedPageSize: number;
 
     constructor() { }
 
@@ -23,6 +24,18 @@ export class ProductPaginationService {
         }
 
         return this.DEFAULT_PAGE_NUMBER;
+    }
+
+    cachePageSize (pageSize) {
+      this.cachedPageSize = pageSize;
+  }
+
+    getPageSize () {
+      if (this.cachedPageSize) {
+        return this.cachedPageSize;
+      }
+
+      return undefined;
     }
 
     clearSelectedPage (releaseCenterKey) {

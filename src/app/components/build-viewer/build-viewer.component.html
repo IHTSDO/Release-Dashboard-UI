@@ -74,84 +74,84 @@
 
         <div class="row">
             <div class="col text-start">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle m-2 float-start" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{view === 'ALL_RELEASES' ? 'ALL RELEASES' : view}}
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" (click)="view = 'DEFAULT'; pageNumberOnBuildTable = 1; loadBuilds()">DEFAULT</a>
-                        <a class="dropdown-item" (click)="view = 'ALL_RELEASES'; pageNumberOnBuildTable = 1; loadBuilds()">ALL RELEASES</a>
-                        <a class="dropdown-item" (click)="view = 'PUBLISHED'; pageNumberOnBuildTable = 1; loadBuilds()">PUBLISHED</a>
-                        <a class="dropdown-item" (click)="view = 'UNPUBLISHED'; pageNumberOnBuildTable = 1; loadBuilds()">UNPUBLISHED</a>
-                    </div>
+                <div>
+                    <button mat-button class="btn btn-secondary dropdown-toggle m-2 float-start" [matMenuTriggerFor]="menu">{{view === 'ALL_RELEASES' ? 'ALL RELEASES' : view}}</button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="switchView('DEFAULT')">DEFAULT</button>
+                        <button mat-menu-item (click)="switchView('ALL_RELEASES')">ALL RELEASES</button>
+                        <button mat-menu-item (click)="switchView('PUBLISHED')">PUBLISHED</button>
+                        <button mat-menu-item (click)="switchView('UNPUBLISHED')">UNPUBLISHED</button>
+                    </mat-menu>
                 </div>
             </div>
             <div class="col text-end">
                 <button type="button" class="btn orange m-2" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">VIEW LOG</button>
-                <button type="button" class="btn blue m-2" *ngIf="isAdminOrManagerOrLead()" (click)="openModal('hidden-builds-modal'); loadHiddenBuilds()">VIEW HIDDEN</button>
-                <button type="button" class="btn blue m-2" (click)="loadBuilds()">VIEW ALL</button>
+                <button type="button" class="btn blue m-2" *ngIf="isAdminOrManagerOrLead()" (click)="resetHiddenBuildTable(); openModal('hidden-builds-modal'); loadHiddenBuilds()">VIEW HIDDEN</button>
+                <button type="button" class="btn blue m-2" (click)="refreshBuilds()">VIEW ALL</button>
                 <button type="button" class="btn green m-2" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">CLONE</button>
             </div>
         </div>
 
-        <table class="table table-bordered table-striped table-sortable" *ngIf="buildsLoading">
+        <table class="table table-bordered table-sortable" *ngIf="buildsLoading">
             <thead>
                 <tr>
-                    <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
-                    <th [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name
+                    <td class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</td>
+                    <td [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc'}">Build Name
                         <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
-                    </th>
-                    <th [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc'}">Build ID
+                    </td>
+                    <td [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc'}">Build ID
                         <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
-                    </th>
-                    <th [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc'}">Status
+                    </td>
+                    <td [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc'}">Status
                         <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
-                    </th>
-                    <th [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc'}">User
+                    </td>
+                    <td [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc'}">User
                         <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
-                    </th>
-                    <th *ngIf="isAdminOrManagerOrLead()">User Roles</th>
-                    <th *ngIf="isAdminOrManagerOrLead()">Log</th>
-                    <th *ngIf="isAdminOrManagerOrLead()">Release</th>
-                    <th >RVF Report</th>
-                    <th>Config</th>
-                    <th>Manifest</th>
-                    <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
-                    <th class="w-9">Tags</th>
+                    </td>
+                    <td *ngIf="isAdminOrManagerOrLead()">User Roles</td>
+                    <td *ngIf="isAdminOrManagerOrLead()">Log</td>
+                    <td *ngIf="isAdminOrManagerOrLead()">Release</td>
+                    <td >RVF Report</td>
+                    <td>Config</td>
+                    <td>Manifest</td>
+                    <td *ngIf="isAdminOrManagerOrLead()">Visibility</td>
+                    <td class="w-9">Tags</td>
                 </tr>
+            </thead>
+            <tbody>
                 <tr>
                     <td colspan="13"><div class="loading">Loading</div></td>
                 </tr>
-            </thead>
+            </tbody>
         </table>
         <table class="table table-bordered table-striped table-sortable" *ngIf="!buildsLoading">
             <thead>
                 <tr>
-                    <th class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</th>
-                    <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildName']['direction']}">Build Name
+                    <td class="w-5" *ngIf="isAdminOrManagerOrLead()">URL</td>
+                    <td [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildName')" [ngClass]="{'asc': buildTableSortingObj['buildName']['direction'] === 'asc', 'desc': buildTableSortingObj['buildName']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildName']['direction']}">Build Name
                         <span *ngIf="hasSortingPriority('buildName')" class="priority">{{buildTableSortingObj['buildName']['priority'] + 1}}</span>
                         <span *ngIf="hasSortingPriority('buildName')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildName'); $event.stopPropagation()">cancel</i></span>
-                    </th>
-                    <th style="min-width: 87px;" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'creationTime')" [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc', 'sortable': !buildTableSortingObj['creationTime']['direction']}">Build ID
+                    </td>
+                    <td style="min-width: 87px;" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'creationTime')" [ngClass]="{'asc': buildTableSortingObj['creationTime']['direction'] === 'asc', 'desc': buildTableSortingObj['creationTime']['direction'] === 'desc', 'sortable': !buildTableSortingObj['creationTime']['direction']}">Build ID
                         <span *ngIf="hasSortingPriority('creationTime')" class="priority">{{buildTableSortingObj['creationTime']['priority'] + 1}}</span>
                         <span *ngIf="hasSortingPriority('creationTime')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('creationTime'); $event.stopPropagation()">cancel</i></span>
-                    </th>
-                    <th [style.min-width]="getStatusColumnWidth()" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'status')" [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc', 'sortable': !buildTableSortingObj['status']['direction']}">Status
+                    </td>
+                    <td [style.min-width]="getStatusColumnWidth()" [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'status')" [ngClass]="{'asc': buildTableSortingObj['status']['direction'] === 'asc', 'desc': buildTableSortingObj['status']['direction'] === 'desc', 'sortable': !buildTableSortingObj['status']['direction']}">Status
                         <span *ngIf="hasSortingPriority('status')" class="priority">{{buildTableSortingObj['status']['priority'] + 1}}</span>
                         <span *ngIf="hasSortingPriority('status')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('status'); $event.stopPropagation()">cancel</i></span>
-                    </th>
-                    <th [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildUser')" [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildUser']['direction']}">User
+                    </td>
+                    <td [appSort] (sortClick)="handleSortClickOnBuildTable($event, 'buildUser')" [ngClass]="{'asc': buildTableSortingObj['buildUser']['direction'] === 'asc', 'desc': buildTableSortingObj['buildUser']['direction'] === 'desc', 'sortable': !buildTableSortingObj['buildUser']['direction']}">User
                         <span *ngIf="hasSortingPriority('buildUser')" class="priority">{{buildTableSortingObj['buildUser']['priority'] + 1}}</span>
                         <span *ngIf="hasSortingPriority('buildUser')" class="clear-sort"><i class="material-icons" title="Clear sort" (click)="clearSort('buildUser'); $event.stopPropagation()">cancel</i></span>
-                    </th>
-                    <th class="w-10" *ngIf="isAdminOrManagerOrLead()">User Roles</th>
-                    <th class="w-5" *ngIf="isAdminOrManagerOrLead()">Log</th>
-                    <th *ngIf="isAdminOrManagerOrLead()">Release</th>
-                    <th>RVF Report</th>
-                    <th>Config</th>
-                    <th>Manifest</th>
-                    <th *ngIf="isAdminOrManagerOrLead()">Visibility</th>
-                    <th class="w-9">Tags</th>
+                    </td>
+                    <td class="w-10" *ngIf="isAdminOrManagerOrLead()">User Roles</td>
+                    <td class="w-5" *ngIf="isAdminOrManagerOrLead()">Log</td>
+                    <td *ngIf="isAdminOrManagerOrLead()">Release</td>
+                    <td>RVF Report</td>
+                    <td>Config</td>
+                    <td>Manifest</td>
+                    <td *ngIf="isAdminOrManagerOrLead()">Visibility</td>
+                    <td class="w-9">Tags</td>
                 </tr>
             </thead>
             <tbody>
@@ -258,6 +258,7 @@
             </tbody>
         </table>
         <mat-paginator
+            #buildPaginator
             [length]="totalBuild"
             [pageSize]="pageSizeOnBuildTalbe"
             [pageSizeOptions]="[5, 10, 20, 50]"
@@ -270,37 +271,56 @@
 <app-modal id="hidden-builds-modal" class="modal add-modal" size="large">
     <h3 header class="mb-0">Hidden Builds</h3>
     <div body class="text-center p-5">
-        <div *ngIf="hiddenBuildsLoading" class="loading">Loading</div>
-        <table class="table table-bordered" *ngIf="!hiddenBuildsLoading">
-            <tr>
-                <th>Build Name</th>
-                <th>Build Date</th>
-                <th class="w-12">Status</th>
-                <th>User</th>
-                <th class="w-15">Tags</th>
-                <th class="w-15"></th>
-            </tr>
-            <tr *ngIf="hiddenBuilds?.length === 0">
-                <td colspan="11">No hidden builds found.</td>
-            </tr>
-            <tr *ngFor="let build of hiddenBuilds">
-                <td class="pb-0 text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
-                <td class="pb-0">{{build?.id}}</td>
-                <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
-                <td class="pb-0">{{build?.buildUser}}</td>
-                <td class="pb-0">
-                    <ng-container *ngFor="let tag of build?.tags" >
-                        <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
-                    </ng-container>
-                </td>
-<!--                <td class="pb-0 pt-0"><button style="margin-top: 1px; margin-bottom: 1px;" type="button" class="btn-blue" (click)="openUnhideBuildConfirmationModal(build)">Un-hide</button></td>-->
-                <td class="pb-2">
-                    <button class="btn hide" (click)="openUnhideBuildConfirmationModal(build)"><i class="fas fa-eye pe-2"></i>UN-HIDE</button>
-                </td>
-
-            </tr>
+        <table class="table table-bordered" *ngIf="hiddenBuildsLoading">
+            <thead>
+                <tr>
+                    <td>Build Name</td>
+                    <td>Build Date</td>
+                    <td class="w-12">Status</td>
+                    <td>User</td>
+                    <td class="w-15">Tags</td>
+                    <td class="w-15"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6"><div class="loading">Loading</div></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-striped table-bordered" *ngIf="!hiddenBuildsLoading">
+            <thead>
+                <tr>
+                    <td>Build Name</td>
+                    <td>Build Date</td>
+                    <td class="w-12">Status</td>
+                    <td>User</td>
+                    <td class="w-15">Tags</td>
+                    <td class="w-15"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="hiddenBuilds?.length === 0">
+                    <td colspan="11">No hidden builds found.</td>
+                </tr>
+                <tr *ngFor="let build of hiddenBuilds">
+                    <td class="pb-0 text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
+                    <td class="pb-0">{{build?.id}}</td>
+                    <td class="pb-0" [class.hasWarnings]="build.status === 'RELEASE_COMPLETE_WITH_WARNINGS'">{{build?.status.replaceAll('_', ' ') | titlecase}}</td>
+                    <td class="pb-0">{{build?.buildUser}}</td>
+                    <td class="pb-0">
+                        <ng-container *ngFor="let tag of build?.tags" >
+                            <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
+                        </ng-container>
+                    </td>
+                    <td class="pb-2">
+                        <button class="btn hide" (click)="openUnhideBuildConfirmationModal(build)"><i class="fas fa-eye pe-2"></i>UN-HIDE</button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <mat-paginator
+            #hiddenBuildPaginator
             [length]="totalHiddenBuild"
             [pageSize]="pageSizeOnHiddenBuildTable"
             [pageSizeOptions]="[5, 10, 20, 50]"
@@ -455,43 +475,57 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     <div body class="text-start p-5">
         <p class="text-center loading" *ngIf="rvfReportLoading">Loading</p>
         <h4 *ngIf="!rvfReportLoading"><b>ERRORS</b></h4>
-        <table class="table table-bordered table-sortable" *ngIf="!rvfReportLoading">
-            <tr class="text-center">
-                <th><input type="checkbox" [(ngModel)]="selectAllError" (click)="toggleSelectAllFailures('error')"></th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'error')" [ngClass]="{'asc': errorTableSortingObj['testType'] === 'asc', 'desc': errorTableSortingObj['testType'] === 'desc', 'sortable': !errorTableSortingObj['testType']}" data-name="testType">Type</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionUuid'] === 'asc', 'desc': errorTableSortingObj['assertionUuid'] === 'desc', 'sortable': !errorTableSortingObj['assertionUuid']}" data-name="assertionUuid">Assertion ID</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionText'] === 'asc', 'desc': errorTableSortingObj['assertionText'] === 'desc', 'sortable': !errorTableSortingObj['assertionText']}" data-name="assertionText">Assertion Text</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'error')" [ngClass]="{'asc': errorTableSortingObj['failureCount'] === 'asc', 'desc': errorTableSortingObj['failureCount'] === 'desc', 'sortable': !errorTableSortingObj['failureCount']}" data-name="failureCount" style="min-width: 9.5em;">Total Failures</th>
-                <th [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'error')" [ngClass]="{'asc': errorTableSortingObj['jiraUrl'] === 'asc', 'desc': errorTableSortingObj['jiraUrl'] === 'desc', 'sortable': !errorTableSortingObj['jiraUrl']}" data-name="jiraUrl">JIRA Link</th>
-            </tr>
-            <tr *ngFor="let failure of assertionsFailed">
-                <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure('error')"></td>
-                <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
-                <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
-                <td class="pb-0 text-start"> {{failure.assertionText}}</td>
-                <td class="pb-0 text-center">{{failure.failureCount}}</td>
-                <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
-            </tr>
+        <table class="table table-bordered table-striped table-sortable" *ngIf="!rvfReportLoading">
+            <thead>
+                <tr class="text-center">
+                    <td><input type="checkbox" [(ngModel)]="selectAllError" (click)="toggleSelectAllFailures('error')"></td>
+                    <td [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'error')" [ngClass]="{'asc': errorTableSortingObj['testType'] === 'asc', 'desc': errorTableSortingObj['testType'] === 'desc', 'sortable': !errorTableSortingObj['testType']}" data-name="testType">Type</td>
+                    <td [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionUuid'] === 'asc', 'desc': errorTableSortingObj['assertionUuid'] === 'desc', 'sortable': !errorTableSortingObj['assertionUuid']}" data-name="assertionUuid">Assertion ID</td>
+                    <td [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'error')" [ngClass]="{'asc': errorTableSortingObj['assertionText'] === 'asc', 'desc': errorTableSortingObj['assertionText'] === 'desc', 'sortable': !errorTableSortingObj['assertionText']}" data-name="assertionText">Assertion Text</td>
+                    <td [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'error')" [ngClass]="{'asc': errorTableSortingObj['failureCount'] === 'asc', 'desc': errorTableSortingObj['failureCount'] === 'desc', 'sortable': !errorTableSortingObj['failureCount']}" data-name="failureCount" style="min-width: 9.5em;">Total Failures</td>
+                    <td [appSort]="assertionsFailed" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'error')" [ngClass]="{'asc': errorTableSortingObj['jiraUrl'] === 'asc', 'desc': errorTableSortingObj['jiraUrl'] === 'desc', 'sortable': !errorTableSortingObj['jiraUrl']}" data-name="jiraUrl">JIRA Link</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" *ngIf="assertionsFailed?.length === 0">
+                    <td colspan="6">No errors found.</td>
+                </tr>
+                <tr *ngFor="let failure of assertionsFailed">
+                    <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure('error')"></td>
+                    <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
+                    <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
+                    <td class="pb-0 text-start"> {{failure.assertionText}}</td>
+                    <td class="pb-0 text-center">{{failure.failureCount}}</td>
+                    <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
+                </tr>
+            </tbody>
         </table>
         <br/>
         <h4 *ngIf="!rvfReportLoading"><b>WARNINGS</b></h4>
-        <table class="table table-bordered table-sortable" *ngIf="!rvfReportLoading">
-            <tr class="text-center">
-                <th><input type="checkbox" [(ngModel)]="selectAllWarning" (click)="toggleSelectAllFailures('warning')"></th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'warning')" [ngClass]="{'asc': warningTableSortingObj['testType'] === 'asc', 'desc': warningTableSortingObj['testType'] === 'desc', 'sortable': !warningTableSortingObj['testType']}" data-name="testType">Type</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionUuid'] === 'asc', 'desc': warningTableSortingObj['assertionUuid'] === 'desc', 'sortable': !warningTableSortingObj['assertionUuid']}" data-name="assertionUuid">Assertion ID</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionText'] === 'asc', 'desc': warningTableSortingObj['assertionText'] === 'desc', 'sortable': !warningTableSortingObj['assertionText']}" data-name="assertionText">Assertion Text</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'warning')" [ngClass]="{'asc': warningTableSortingObj['failureCount'] === 'asc', 'desc': warningTableSortingObj['failureCount'] === 'desc', 'sortable': !warningTableSortingObj['failureCount']}" data-name="failureCount" style="min-width: 9.5em;">Total Failures</th>
-                <th [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'warning')" [ngClass]="{'asc': warningTableSortingObj['jiraUrl'] === 'asc', 'desc': warningTableSortingObj['jiraUrl'] === 'desc', 'sortable': !warningTableSortingObj['jiraUrl']}" data-name="jiraUrl">JIRA Link</th>
-            </tr>
-            <tr *ngFor="let failure of assertionsWarning">
-                <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure('warning')"></td>
-                <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
-                <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
-                <td class="pb-0 text-start"> {{failure.assertionText}}</td>
-                <td class="pb-0 text-center">{{failure.failureCount}}</td>
-                <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
-            </tr>
+        <table class="table table-bordered table-striped table-sortable" *ngIf="!rvfReportLoading">
+            <thead>
+                <tr class="text-center">
+                    <td><input type="checkbox" [(ngModel)]="selectAllWarning" (click)="toggleSelectAllFailures('warning')"></td>
+                    <td [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'testType', 'warning')" [ngClass]="{'asc': warningTableSortingObj['testType'] === 'asc', 'desc': warningTableSortingObj['testType'] === 'desc', 'sortable': !warningTableSortingObj['testType']}" data-name="testType">Type</td>
+                    <td [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionUuid', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionUuid'] === 'asc', 'desc': warningTableSortingObj['assertionUuid'] === 'desc', 'sortable': !warningTableSortingObj['assertionUuid']}" data-name="assertionUuid">Assertion ID</td>
+                    <td [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'assertionText', 'warning')" [ngClass]="{'asc': warningTableSortingObj['assertionText'] === 'asc', 'desc': warningTableSortingObj['assertionText'] === 'desc', 'sortable': !warningTableSortingObj['assertionText']}" data-name="assertionText">Assertion Text</td>
+                    <td [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'failureCount', 'warning')" [ngClass]="{'asc': warningTableSortingObj['failureCount'] === 'asc', 'desc': warningTableSortingObj['failureCount'] === 'desc', 'sortable': !warningTableSortingObj['failureCount']}" data-name="failureCount" style="min-width: 9.5em;">Total Failures</td>
+                    <td [appSort]="assertionsWarning" (sortClick)="handleSortClickOnJiraGenerationTable($event, 'jiraUrl', 'warning')" [ngClass]="{'asc': warningTableSortingObj['jiraUrl'] === 'asc', 'desc': warningTableSortingObj['jiraUrl'] === 'desc', 'sortable': !warningTableSortingObj['jiraUrl']}" data-name="jiraUrl">JIRA Link</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" *ngIf="assertionsWarning?.length === 0">
+                    <td colspan="6">No warnings found.</td>
+                </tr>
+                <tr *ngFor="let failure of assertionsWarning">
+                    <td class="pb-0"><input *ngIf="!failure.jiraUrl" type="checkbox" [(ngModel)]="failure.checked" (click)="toggleSelectFailure('warning')"></td>
+                    <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
+                    <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
+                    <td class="pb-0 text-start"> {{failure.assertionText}}</td>
+                    <td class="pb-0 text-center">{{failure.failureCount}}</td>
+                    <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div footer>
@@ -678,11 +712,11 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Custom Refset Composite Keys</span>
-                        <textarea #customRefsetCompositeKeys  
+                        <textarea #customRefsetCompositeKeys
                             matInput
                             cdkTextareaAutosize
                             cdkAutosizeMinRows="1"
-                            cdkAutosizeMaxRows="5" 
+                            cdkAutosizeMaxRows="5"
                             disabled class="form-control"></textarea>
                     </div>
                 </div>
@@ -693,7 +727,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkTextareaAutosize
                             cdkAutosizeMinRows="1"
                             cdkAutosizeMaxRows="5"
-                            class="form-control" disabled 
+                            class="form-control" disabled
                             [(ngModel)]="selectedBuild.configuration.newRF2InputFiles"></textarea>
                     </div>
                 </div>
@@ -803,8 +837,8 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkAutosizeMinRows="3"
                             cdkAutosizeMaxRows="5"
                             class="form-control"
-                            class="form-control" 
-                            disabled 
+                            class="form-control"
+                            disabled
                             [(ngModel)]="selectedBuild.configuration.readmeHeader"></textarea>
                     </div>
                 </div>
@@ -815,9 +849,9 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkTextareaAutosize
                             cdkAutosizeMinRows="3"
                             cdkAutosizeMaxRows="5"
-                            class="form-control" 
-                            class="form-control" 
-                            disabled 
+                            class="form-control"
+                            class="form-control"
+                            disabled
                             [(ngModel)]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
                     </div>
                 </div>
@@ -828,7 +862,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkTextareaAutosize
                             cdkAutosizeMinRows="3"
                             cdkAutosizeMaxRows="5"
-                            class="form-control" 
+                            class="form-control"
                             disabled
                             [(ngModel)]="selectedBuild.configuration.licenceStatement"></textarea>
                     </div>

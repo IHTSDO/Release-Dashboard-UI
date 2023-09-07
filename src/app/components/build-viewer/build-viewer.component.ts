@@ -21,6 +21,7 @@ import { ProductPaginationService } from '../../services/pagination/product-pagi
 import { RVFServerService } from 'src/app/services/rvfServer/rvf-server.service';
 import { FailureJiraAssociation } from 'src/app/models/failureJiraAssociation';
 import { Sort } from 'src/app/util/sort';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-build-viewer',
@@ -30,6 +31,9 @@ import { Sort } from 'src/app/util/sort';
 export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
     @ViewChild('uploadInputFilesInput') private uploadInputFilesInput;
+    @ViewChild('buildPaginator') buildPaginator: MatPaginator;
+    @ViewChild('hiddenBuildPaginator') hiddenBuildPaginator: MatPaginator;    
+
 
     RF2_DATE_FORMAT = 'yyyyMMdd';
     DATA_DOG_URL = 'https://app.datadoghq.com/dashboard/dm6-vs3-bz3/release-dashboard';
@@ -331,9 +335,33 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         );
     }
 
+    resetHiddenBuildTable() {
+        this.hiddenBuilds = [];
+        this.totalHiddenBuild = this.paginationService.EMPTY_ITEMS;
+        this.pageNumberOnHiddenHiddenTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+        if (this.hiddenBuildPaginator) {
+            this.hiddenBuildPaginator.firstPage();
+        }
+    }
+
+    refreshBuilds() {
+        this.buildPaginator.firstPage()
+        this.totalBuild = this.paginationService.EMPTY_ITEMS;
+        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER; 
+        this.loadBuilds();
+    }
+
     setActiveBuild(build) {
         this.clearMessage();
         this.activeBuild = build;
+    }
+
+    switchView(view) {
+        this.view = view;
+        this.buildPaginator.firstPage()
+        this.totalBuild = this.paginationService.EMPTY_ITEMS;
+        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER; 
+        this.loadBuilds();
     }
 
     viewRunningLog(build: Build) {

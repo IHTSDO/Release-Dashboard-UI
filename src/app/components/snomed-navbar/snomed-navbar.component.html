@@ -21,11 +21,11 @@
             <img class="rounded-circle mx-3" src="https://jira.ihtsdotools.org/secure/useravatar?ownerId={{user.login}}">
         </div>
         <div class="user d-inline-block me-4 notification-container">
-            <button id="btnNotification" (click)="toggleNotificationsPane($event)" class="rounded-circle dropdown-toggle" data-toggle="dropdown">
+            <button mat-button class="rounded-circle dropdown-toggle" [matMenuTriggerFor]="notificationMatMenu" (click)="toggleNotificationsPane()">
                 <i class="fas fa-bell"></i>
                 <span ng-cloak *ngIf="totalUnreadNotification > 0" class="message-badge">{{totalUnreadNotification}}</span>
             </button>
-            <div class="dropdown-menu" aria-labelledby="btnNotification">
+            <mat-menu #notificationMatMenu="matMenu" backdropClass="notification">                
                 <div class="message-header clearfix" (click)="$event.stopPropagation()">
                     <div class="float-start message-title ng-scope">Notifications</div>
                     <div class="float-end message-action" >
@@ -44,7 +44,7 @@
                 </ul>
                 <div class="row pb-3 spinner" *ngIf="loadingNotfications"><span class="spinner-border" role="status"></span></div>
                 <div class="row load-more" *ngIf="loadMoreNotficationsEnable && !loadingNotfications"><span (click)="loadMoreNotifications(); $event.stopPropagation()">Load more</span></div>
-            </div>
+            </mat-menu>
         </div>
     </div>
 </nav>

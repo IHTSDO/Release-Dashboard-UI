@@ -35,6 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 
 export function startupServiceFactory(permissionService: PermissionService): Function {
     return () => permissionService.getRoles();
@@ -76,7 +77,8 @@ export const DATE_FORMATS = {
         MatIconModule,
         MatMomentDateModule,
         MatPaginatorModule,
-        MatInputModule
+        MatInputModule,
+        MatMenuModule
         ],
     providers: [
         AuthenticationService,

@@ -76,14 +76,13 @@ export class SnomedNavbarComponent implements OnInit {
         });
     }
 
-    toggleNotificationsPane(event) {
-        const parentEl = event.currentTarget.parentElement;
-        console.log('PDU-FIX-1');
-        // if (!$(parentEl).hasClass('show')) {
-        //     this.notfications = [];
-        //     this.pageNumber = 1;
-        //     this.retriveNotifications(this.pageNumber);
-        // }
+    toggleNotificationsPane() {
+        const selector = document.querySelectorAll("div.cdk-overlay-backdrop.notification");
+        if (selector) {
+            this.notfications = [];
+            this.pageNumber = 1;
+            this.retriveNotifications(this.pageNumber);
+        }
     }
 
     clearNotifications() {

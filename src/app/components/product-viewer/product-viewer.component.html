@@ -8,7 +8,7 @@
         <table class="table table-bordered" *ngIf="productsLoading">
             <thead>
                 <tr>
-                    <th><h3 class="mb-0">PRODUCT</h3></th>
+                    <td><h3 class="mb-0">PRODUCT</h3></td>
                 </tr>
             </thead>
             <tbody>
@@ -20,8 +20,8 @@
         <table class="table table-bordered table-striped table-sortable" [hidden]="productsLoading">
             <thead>
             <tr>
-                <th [appSort] (sortClick)="handleSortClickOnProductTable($event)" [ngClass]="{'asc': sortDirectionOnProductTable === 'asc', 'desc': sortDirectionOnProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></th>
-                <th class="max-vw-15"></th>
+                <td [appSort] (sortClick)="handleSortClickOnProductTable($event)" [ngClass]="{'asc': sortDirectionOnProductTable === 'asc', 'desc': sortDirectionOnProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></td>
+                <td class="max-vw-15"></td>
             </tr>
             </thead>
             <tbody>
@@ -60,6 +60,7 @@
             </tbody>
         </table>
         <mat-paginator
+            #productPaginator
             [length]="totalProduct"
             [pageSize]="pageSizeOnProductTable"
             [pageSizeOptions]="[5, 10, 20, 50]"
@@ -74,18 +75,22 @@
     <h3 header class="mb-0">Hidden Products</h3>
     <div body class="text-center p-5">
         <table class="table table-bordered" *ngIf="hiddenProductsLoading">
-            <tr>
-                <th><h3 class="mb-0">PRODUCT</h3></th>
+            <thead>
+                <tr>
+                <td><h3 class="mb-0">PRODUCT</h3></td>
             </tr>
-            <tr>
-                <td><div class="loading">Loading</div></td>
-            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><div class="loading">Loading</div></td>
+                </tr>
+            </tbody>
         </table>
         <table class="table table-bordered table-striped table-sortable" [hidden]="hiddenProductsLoading">
             <thead>
             <tr>
-                <th [appSort] (sortClick)="handleSortClickOnHiddenProductTable($event)" [ngClass]="{'asc': sortDirectionOnHiddenProductTable === 'asc', 'desc': sortDirectionOnHiddenProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></th>
-                <th class="w-13"></th>
+                <td [appSort] (sortClick)="handleSortClickOnHiddenProductTable($event)" [ngClass]="{'asc': sortDirectionOnHiddenProductTable === 'asc', 'desc': sortDirectionOnHiddenProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></td>
+                <td class="w-13"></td>
             </tr>
             </thead>
             <tbody>
@@ -103,6 +108,7 @@
             </tbody>
         </table>
         <mat-paginator
+            #hiddenProductPaginator
             [length]="totalHiddenProduct"
             [pageSize]="pageSizeOnHiddenProductTable"
             [pageSizeOptions]="[5, 10, 20, 50]"

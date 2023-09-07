@@ -34,19 +34,8 @@ div.product-viewer {
     }
 
     table {
-        tbody {
-            tr.product {
-                cursor: pointer;
-
-                &:hover {
-                    background-color: lighten($anakiwa, 5%);
-                }
-            }
-        }
-
         td {
             padding: 1.1rem .8rem .8rem .8rem;
-
             &.btn-groups{
                 padding: .3rem;
 
@@ -172,14 +161,6 @@ app-modal {
         }
     }
     table {
-        tbody {
-            tr.product {
-                &:hover {
-                    background-color: lighten($anakiwa, 5%);
-                }
-            }
-        }
-
         td {
             padding: 1.1rem .8rem .8rem .8rem;
 

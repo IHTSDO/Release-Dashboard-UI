@@ -11,6 +11,7 @@ import { QAConfiguration } from '../../models/qaConfiguration';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 import { PermissionService } from '../../services/permission/permission.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
     selector: 'app-product-viewer',
@@ -22,6 +23,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     private activeReleaseCenterSubscription: Subscription;
 
     @ViewChild('uploadManifestFileInput') uploadManifestFileInput: ElementRef<HTMLElement>;
+    @ViewChild('productPaginator') productPaginator: MatPaginator;
+    @ViewChild('hiddenProductPaginator') hiddenProductPaginator: MatPaginator;
 
     activeReleaseCenter: ReleaseCenter;
     products: Product[];
@@ -71,11 +74,13 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             // Products
             this.products = [];
             this.pageNumberOnProductTable = this.paginationService.getSelectedPage(this.activeReleaseCenter.id);
+            this.pageSizeOnProductTable = this.paginationService.getPageSize() ? this.paginationService.getPageSize() : 20;
             this.sortDirectionOnProductTable = 'asc';
 
             // Hidden products
             this.hiddenProducts = [];
             this.pageNumberOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+            this.pageSizeOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_SIZE;
             this.sortDirectionOnHiddenProductTable = 'asc';
 
             this.productDataService.clearCachedProducts();
@@ -191,6 +196,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.productsLoading = false;
             this.productDataService.cacheProducts(this.products);
             this.loadProductManifestFilesInfo(this.products);
+            this.productPaginator.pageIndex = this.pageNumberOnProductTable.valueOf() - 1;
         });
     }
 
@@ -199,6 +205,9 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.totalHiddenProduct = this.paginationService.EMPTY_ITEMS;
         this.pageNumberOnHiddenProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.sortDirectionOnHiddenProductTable = 'asc';
+        if (this.hiddenProductPaginator) {
+            this.hiddenProductPaginator.firstPage();
+        }
     }
 
     loadHiddenProducts() {
@@ -235,6 +244,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         if (event.pageSize !== this.pageSizeOnProductTable) {
             this.pageSizeOnProductTable = event.pageSize;
             this.pageNumberOnProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
+            this.paginationService.cachePageSize(event.pageSize);
         } else {
             this.pageNumberOnProductTable = event.pageIndex + 1;
         }
