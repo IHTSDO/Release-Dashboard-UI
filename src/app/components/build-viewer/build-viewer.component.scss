@@ -100,7 +100,7 @@ div.build-viewer {
             height: 2rem;
             padding-top: 0;
         }
-    }    
+    }
 
     div.active-build {
         height: 27rem;
@@ -130,49 +130,49 @@ div.build-viewer {
     }
 
     table {
-        td:nth-child(2) {
-            text-overflow: ellipsis;
-            max-width: 42ch;
-            width: 42ch;
-            overflow: hidden;
-        }
-        td, div.expansion {
-            padding: 1.1rem .8rem .8rem .8rem;          
+        td {
+            &.build-status {
+                width: 20rem;
 
-            &.RELEASE_COMPLETE_WITH_WARNINGS {
-                background-color: lighten($candlelight, 10%);
-            }
+                div.expansion {
+                    width: fit-content;
 
-            &.FAILED_INPUT_PREPARE_REPORT_VALIDATION,
-            &.FAILED_INPUT_GATHER_REPORT_VALIDATION,
-            &.FAILED_POST_CONDITIONS,
-            &.FAILED_PRE_CONDITIONS,
-            &.FAILED,
-            &.RVF_FAILED {
-                background-color: lighten($mandy, 5%);
-            }
+                    &.RELEASE_COMPLETE_WITH_WARNINGS {
+                        background-color: lighten($sea-buckthorn, 10%);
+                    }
 
-            &.CANCEL_REQUESTED,
-            &.CANCELLED,
-            &.UNKNOWN {
-                background-color: lighten($mandy, 20%);
-            }
+                    &.FAILED_INPUT_PREPARE_REPORT_VALIDATION,
+                    &.FAILED_INPUT_GATHER_REPORT_VALIDATION,
+                    &.FAILED_POST_CONDITIONS,
+                    &.FAILED_PRE_CONDITIONS,
+                    &.FAILED,
+                    &.RVF_FAILED {
+                        background-color: lighten($mandy, 5%);
+                    }
 
-            &.PENDING,
-            &.QUEUED,
-            &.BEFORE_TRIGGER {
-                background-color: lighten($green, 20%);
-            }
+                    &.CANCEL_REQUESTED,
+                    &.CANCELLED,
+                    &.UNKNOWN {
+                        background-color: lighten($mandy, 20%);
+                    }
 
-            &.RVF_QUEUED,
-            &.RVF_RUNNING,
-            &.BUILDING {
-                background-color: $green;
-            }
+                    &.PENDING,
+                    &.QUEUED,
+                    &.BEFORE_TRIGGER {
+                        background-color: lighten($green, 20%);
+                    }
 
-            &.RELEASE_COMPLETE,
-            &.BUILT {
-                background-color: $blue;
+                    &.RVF_QUEUED,
+                    &.RVF_RUNNING,
+                    &.BUILDING {
+                        background-color: $green;
+                    }
+
+                    &.RELEASE_COMPLETE,
+                    &.BUILT {
+                        background-color: $blue;
+                    }
+                }
             }
 
             div.btn-log-download {
@@ -205,10 +205,6 @@ div.build-viewer {
                     cursor: pointer;
                 }
             }
-        }
-
-        div.expansion {
-            max-width: fit-content;
         }
     }
 }

@@ -164,13 +164,13 @@
                     </td>
                     <td class="text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
                     <td class="text-start" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
-                    <td class="text-start">
-                        <div class="expansion rounded-pill px-2 py-0 m-1 text-nowrap text-white {{build.status}}">{{build?.status.replaceAll('_', ' ') | titlecase}}</div>
+                    <td class="text-start build-status">
+                        <div class="expansion rounded-3 px-2 py-0 m-1 m-2 text-white {{build.status}}">{{build?.status.replaceAll('_', ' ') | titlecase}}</div>
                     </td>
                     <td class="">{{build?.buildUser}}</td>
                     <td class="text-start" *ngIf="isAdminOrManagerOrLead()">
                         <ng-container *ngFor="let role of build?.userRoles" >
-                            <div class="rounded-pill px-2 py-0 m-1 text-nowrap tag">{{role.replaceAll('_', ' ') | titlecase}}</div>
+                            <div class="rounded-3 px-2 py-0 m-1 text-nowrap tag">{{role.replaceAll('_', ' ') | titlecase}}</div>
                         </ng-container>
                     </td>
                     <td class="" *ngIf="isAdminOrManagerOrLead()">
@@ -248,9 +248,9 @@
                     <!--                </td>-->
                     <td>
                         <ng-container *ngFor="let tag of build?.tags" >
-                            <div class="rounded-pill px-2 py-0 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
+                            <div class="rounded-3 px-2 py-0 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
                         </ng-container>
-                        <div *ngIf="isAdminOrManagerOrLead()" class="rounded-pill px-2 py-0 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">
+                        <div *ngIf="isAdminOrManagerOrLead()" class="rounded-3 px-2 py-0 m-1 text-nowrap tag add" (click)="openTaggingModal(build); $event.stopPropagation()">
                             <i class="fas fa-plus pe-2"></i>ADD
                         </div>
                     </td>
@@ -310,7 +310,7 @@
                     <td class="pb-0">{{build?.buildUser}}</td>
                     <td class="pb-0">
                         <ng-container *ngFor="let tag of build?.tags" >
-                            <div class="rounded-pill px-2 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
+                            <div class="rounded-3 px-2 m-1 text-nowrap tag">{{tag.replaceAll('_', ' ') | titlecase}}</div>
                         </ng-container>
                     </td>
                     <td class="pb-2">
