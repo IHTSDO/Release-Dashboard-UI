@@ -266,6 +266,22 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.loadHiddenProducts();
     }
 
+    onChangeStandaloneProduct(value: boolean) {
+        if (value) {
+            if (!this.editedProduct.qaTestConfig.assertionGroupNames) {
+                this.editedProduct.qaTestConfig.assertionGroupNames = 'standalone-release';
+            } else if (!this.editedProduct.qaTestConfig.assertionGroupNames.includes('standalone-release')) {
+                this.editedProduct.qaTestConfig.assertionGroupNames += ',standalone-release';
+            }           
+        } else {
+            if (this.editedProduct.qaTestConfig.assertionGroupNames.includes('standalone-release')) {
+                var arr = this.editedProduct.qaTestConfig.assertionGroupNames.split(',');
+                arr = arr.filter(item => item !== 'standalone-release');
+                this.editedProduct.qaTestConfig.assertionGroupNames = arr.join();                
+            }
+        }
+    }
+
     openUpdateConfigurationsModal(product: Product) {
         this.message = '';
         this.customRefsetCompositeKeys = '';

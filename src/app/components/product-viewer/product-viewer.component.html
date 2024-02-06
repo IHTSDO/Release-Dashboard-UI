@@ -153,13 +153,21 @@
         <div class="row mx-0">
             <div class="col-12">
                 <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.standAloneProduct" (change)="onChangeStandaloneProduct(editedProduct.standAloneProduct)">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
                     <input type="text" class="form-control" #effectiveTimeInput matInput [matDatepicker]="effectiveTimeAsPicker" (focus)="effectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.effectiveTime">
                     <mat-datepicker-toggle matIconSuffix [for]="effectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
                     <mat-datepicker #effectiveTimeAsPicker (closed)="effectiveTimeInput.blur()"></mat-datepicker>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="The branch path of Term server which will be used for exporting Delta files. It may be empty if the product is a Derivative product which will be getting the Delta files from the local input files">Default Branch</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
@@ -236,7 +244,7 @@
                         matInput
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="1"
-                        cdkAutosizeMaxRows="5" 
+                        cdkAutosizeMaxRows="5"
                         [(ngModel)]="customRefsetCompositeKeys"></textarea>
                 </div>
             </div>
@@ -350,7 +358,7 @@
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="3"
                         cdkAutosizeMaxRows="5"
-                        class="form-control" 
+                        class="form-control"
                         [(ngModel)]="editedProduct.buildConfiguration.readmeHeader"></textarea>
                 </div>
             </div>
@@ -372,7 +380,7 @@
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="3"
                         cdkAutosizeMaxRows="5"
-                        class="form-control" 
+                        class="form-control"
                         [(ngModel)]="editedProduct.buildConfiguration.licenceStatement"></textarea>
                 </div>
             </div>
