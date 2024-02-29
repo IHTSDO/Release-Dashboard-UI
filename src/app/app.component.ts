@@ -1,11 +1,12 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { EnvService } from './services/environment/env.service';
 import { WebsocketService } from './services/websocket/websocket.service';
 import { BuildService } from './services/build/build.service';
-import {DOCUMENT} from '@angular/common';
+import { DOCUMENT } from '@angular/common';
+import { ReleaseServerService } from './services/releaseServer/release-server.service';
 
 @Component({
     selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
                 private authenticationService: AuthenticationService,
                 private buildService: BuildService,
                 private websocketService: WebsocketService,
+                private releaseServerService: ReleaseServerService,
                 @Inject(DOCUMENT) private document: Document) {
                 this.authenticationService.getUser().subscribe(data => {
                     this.websocketService.connect(data.login);
@@ -34,6 +36,18 @@ export class AppComponent implements OnInit {
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];
         this.getUIConfiguration();
         this.assignFavicon();
+        this.getAllReleasePackages();
+    }
+    
+    getAllReleasePackages() {
+        this.releaseServerService.getAllReleasePackages().subscribe(
+            data => {
+                this.releaseServerService.setReleases(data);
+            },
+            error => {
+                console.error('ERROR: Release Packages failed to load');
+            }
+        );
     }
 
     getUIConfiguration() {

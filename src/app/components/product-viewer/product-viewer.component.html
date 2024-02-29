@@ -264,13 +264,33 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" matTooltip="Passes the previous published package name to the SRS">Previous Published Release</span>
                     </div>
-                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.previousPublishedPackage">
+                    <input type="text" 
+                        class="form-control" 
+                        [(ngModel)]="editedProduct.buildConfiguration.previousPublishedPackage"
+                        matInput
+                        [formControl]="previousReleaseInputControl"
+                        [matAutocomplete]="previousReleaseAutoComplete">
+                        <mat-autocomplete #previousReleaseAutoComplete="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredPreviousReleaseOptions | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
                 </div>
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
-                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease">
+                    <input type="text" 
+                        class="form-control" 
+                        [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease"
+                        matInput
+                        [formControl]="dependentReleaseInputControl"
+                        [matAutocomplete]="dependantReleaseAutoComplete">
+                        <mat-autocomplete #dependantReleaseAutoComplete="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredDependentReleaseOptions | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
                 </div>
             </div>
             <div class="col-6">
