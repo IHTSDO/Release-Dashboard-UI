@@ -40,6 +40,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     // animations
     savingProduct = false;
+    loadingReleasePackagesDone = false;
 
     pageSizeOnProductTable = 20;
     pageSizeOnHiddenProductTable = 20;
@@ -102,6 +103,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.customRefsetCompositeKeys = null;
             this.initializeEditingProduct();
             this.loadProducts();
+            this.loadReleasePackages();
+
         });
     }
 
@@ -111,15 +114,6 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.totalProduct = this.paginationService.EMPTY_ITEMS;
         this.initializeEditingProduct();
         this.initAutoComplete();
-        this.releaseServerService.getReleases().subscribe(
-            data => {
-                this.codeSystemToReleasePackageMap = data;
-                this.setDependantReleaseOptions();
-            },
-            error => {
-                console.error('ERROR: Release Packages failed to load');
-            }
-        );
     }
 
     ngOnDestroy() {
@@ -148,16 +142,21 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             const codeSystem = this.editedProduct['releaseCenter'].codeSystem;
             const codeSystemShortname = codeSystem === 'SNOMEDCT' ? 'INT' : codeSystem.substr(codeSystem.indexOf('-') + 1);
             if (this.codeSystemToReleasePackageMap.hasOwnProperty(codeSystemShortname)) {
-                this.previousReleaseOptions = this.codeSystemToReleasePackageMap[codeSystemShortname].map(item => item.filename);
+                this.previousReleaseOptions = this.getSortedFilenames(this.codeSystemToReleasePackageMap[codeSystemShortname]);
             }
         }
     }
 
     setDependantReleaseOptions() {
         if (this.codeSystemToReleasePackageMap.hasOwnProperty('INT')) {
-            this.dependentReleaseOptions = this.codeSystemToReleasePackageMap['INT'].map(item => item.filename);;
+            this.dependentReleaseOptions = this.getSortedFilenames(this.codeSystemToReleasePackageMap['INT']);
         }
     }
+
+    getSortedFilenames(releases: any[]): string[] {
+        return releases.sort((a, b) => b.effectiveTime - a.effectiveTime).map(release => release.filename);
+    }
+
 
     initializeEditingProduct() {
         const buildConfiguration = new BuildConfiguration();
@@ -207,6 +206,27 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         () => {
             this.savingProduct = false;
         });
+    }
+
+    loadReleasePackages() {
+        const cachedReleasePackageMap = this.releaseCenterService.getCachedReleasePackages();
+        if (cachedReleasePackageMap) {
+            this.handleReleasePackages(cachedReleasePackageMap);
+        } else {
+            this.releaseServerService.getReleases().subscribe(
+                data => {
+                    this.handleReleasePackages(data);                },
+                error => {
+                    console.error('ERROR: Release Packages failed to load. Error: ' + error);
+                }
+            );
+        }
+    }
+
+    handleReleasePackages(data: any) {
+        this.codeSystemToReleasePackageMap = data;
+        this.setDependantReleaseOptions();
+        this.loadingReleasePackagesDone = true;
     }
 
     updateProduct(product: Product, customRefsetCompositeKeys: string) {

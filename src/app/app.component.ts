@@ -7,6 +7,7 @@ import { WebsocketService } from './services/websocket/websocket.service';
 import { BuildService } from './services/build/build.service';
 import { DOCUMENT } from '@angular/common';
 import { ReleaseServerService } from './services/releaseServer/release-server.service';
+import { ReleaseCenterService } from './services/releaseCenter/release-center.service';
 
 @Component({
     selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit {
                 private buildService: BuildService,
                 private websocketService: WebsocketService,
                 private releaseServerService: ReleaseServerService,
+                private releaseCenterService: ReleaseCenterService,
                 @Inject(DOCUMENT) private document: Document) {
                 this.authenticationService.getUser().subscribe(data => {
                     this.websocketService.connect(data.login);
@@ -42,7 +44,8 @@ export class AppComponent implements OnInit {
     getAllReleasePackages() {
         this.releaseServerService.getAllReleasePackages().subscribe(
             data => {
-                this.releaseServerService.setReleases(data);
+                this.releaseServerService.setReleases(data);                
+                this.releaseCenterService.catchReleasePackages(data);
             },
             error => {
                 console.error('ERROR: Release Packages failed to load');
