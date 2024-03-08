@@ -17,6 +17,8 @@ export class ReleaseCenterService {
 
     private codeSystems: CodeSystem[];
 
+    private releasePackages: object;
+
     // Setters & Getters: Active Release Center
     setActiveReleaseCenter(releaseCenter) {
         this.activeReleaseCenter.next(releaseCenter);
@@ -38,8 +40,16 @@ export class ReleaseCenterService {
         this.releaseCenters = releaseCenters;
     }
 
+    catchReleasePackages(releasePackages) {
+        this.releasePackages = releasePackages;
+    }
+
     clearCachedReleaseCenters() {
         this.releaseCenters = [];
+    }
+
+    getCachedReleasePackages() {
+        return this.releasePackages;
     }
 
     getCachedReleaseCenters() {

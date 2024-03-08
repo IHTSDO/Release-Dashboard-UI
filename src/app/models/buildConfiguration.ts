@@ -29,4 +29,5 @@ export class BuildConfiguration {
     buildName: string;
     buildPackageName: string;
     loadTermServerData: boolean;
+    standAloneProduct: boolean;
 }

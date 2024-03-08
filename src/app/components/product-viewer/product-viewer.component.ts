@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ProductService } from '../../services/product/product.service';
 import { ReleaseCenter } from '../../models/releaseCenter';
@@ -12,6 +12,9 @@ import { ExtensionConfig } from '../../models/extensionConfig';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 import { PermissionService } from '../../services/permission/permission.service';
 import { MatPaginator } from '@angular/material/paginator';
+import { FormControl } from '@angular/forms';
+import { map, startWith } from 'rxjs/operators';
+import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
 
 @Component({
     selector: 'app-product-viewer',
@@ -37,6 +40,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     // animations
     savingProduct = false;
+    loadingReleasePackagesDone = false;
 
     pageSizeOnProductTable = 20;
     pageSizeOnHiddenProductTable = 20;
@@ -58,18 +62,30 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     message: string;
     action: string;
 
+    codeSystemToReleasePackageMap = {};
+
+    previousReleaseInputControl = new FormControl('');
+    previousReleaseOptions: string[] = [];
+    filteredPreviousReleaseOptions: Observable<string[]>;
+
+    dependentReleaseInputControl = new FormControl('');
+    dependentReleaseOptions: string[] = [];
+    filteredDependentReleaseOptions: Observable<string[]>;
+
     constructor(private releaseCenterService: ReleaseCenterService,
                 private modalService: ModalService,
                 private productService: ProductService,
                 private productDataService: ProductDataService,
                 private permissionService: PermissionService,
-                private paginationService: ProductPaginationService) {
+                private paginationService: ProductPaginationService,
+                private releaseServerService: ReleaseServerService) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
 
 
             this.message = '';
             this.productsWithManifestUploaded = [];
+            this.previousReleaseOptions = [];
 
             // Products
             this.products = [];
@@ -87,6 +103,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.customRefsetCompositeKeys = null;
             this.initializeEditingProduct();
             this.loadProducts();
+            this.loadReleasePackages();
+
         });
     }
 
@@ -95,11 +113,50 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.customRefsetCompositeKeys = null;
         this.totalProduct = this.paginationService.EMPTY_ITEMS;
         this.initializeEditingProduct();
+        this.initAutoComplete();
     }
 
     ngOnDestroy() {
         this.activeReleaseCenterSubscription.unsubscribe();
     }
+
+    initAutoComplete() {
+        this.filteredPreviousReleaseOptions = this.previousReleaseInputControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this.filterReleases(this.previousReleaseOptions, value || '')),
+        );
+
+        this.filteredDependentReleaseOptions = this.dependentReleaseInputControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this.filterReleases(this.dependentReleaseOptions, value || '')),
+        );
+    }
+
+    private filterReleases(options: string[], value: string): string[] {
+        const filterValue = value.toLowerCase();
+        return options.filter(option => option.toLowerCase().includes(filterValue));
+    }
+
+    loadPreviousReleaseOptions() {
+        if (this.editedProduct['releaseCenter'] && this.editedProduct['releaseCenter'].codeSystem) {
+            const codeSystem = this.editedProduct['releaseCenter'].codeSystem;
+            const codeSystemShortname = codeSystem === 'SNOMEDCT' ? 'INT' : codeSystem.substr(codeSystem.indexOf('-') + 1);
+            if (this.codeSystemToReleasePackageMap.hasOwnProperty(codeSystemShortname)) {
+                this.previousReleaseOptions = this.getSortedFilenames(this.codeSystemToReleasePackageMap[codeSystemShortname]);
+            }
+        }
+    }
+
+    setDependantReleaseOptions() {
+        if (this.codeSystemToReleasePackageMap.hasOwnProperty('INT')) {
+            this.dependentReleaseOptions = this.getSortedFilenames(this.codeSystemToReleasePackageMap['INT']);
+        }
+    }
+
+    getSortedFilenames(releases: any[]): string[] {
+        return releases.sort((a, b) => b.effectiveTime - a.effectiveTime).map(release => release.filename);
+    }
+
 
     initializeEditingProduct() {
         const buildConfiguration = new BuildConfiguration();
@@ -149,6 +206,27 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         () => {
             this.savingProduct = false;
         });
+    }
+
+    loadReleasePackages() {
+        const cachedReleasePackageMap = this.releaseCenterService.getCachedReleasePackages();
+        if (cachedReleasePackageMap) {
+            this.handleReleasePackages(cachedReleasePackageMap);
+        } else {
+            this.releaseServerService.getReleases().subscribe(
+                data => {
+                    this.handleReleasePackages(data);                },
+                error => {
+                    console.error('ERROR: Release Packages failed to load. Error: ' + error);
+                }
+            );
+        }
+    }
+
+    handleReleasePackages(data: any) {
+        this.codeSystemToReleasePackageMap = data;
+        this.setDependantReleaseOptions();
+        this.loadingReleasePackagesDone = true;
     }
 
     updateProduct(product: Product, customRefsetCompositeKeys: string) {
@@ -266,6 +344,22 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.loadHiddenProducts();
     }
 
+    onChangeStandaloneProduct(value: boolean) {
+        if (value) {
+            if (!this.editedProduct.qaTestConfig.assertionGroupNames) {
+                this.editedProduct.qaTestConfig.assertionGroupNames = 'standalone-release';
+            } else if (!this.editedProduct.qaTestConfig.assertionGroupNames.includes('standalone-release')) {
+                this.editedProduct.qaTestConfig.assertionGroupNames += ',standalone-release';
+            }
+        } else {
+            if (this.editedProduct.qaTestConfig.assertionGroupNames.includes('standalone-release')) {
+                var arr = this.editedProduct.qaTestConfig.assertionGroupNames.split(',');
+                arr = arr.filter(item => item !== 'standalone-release');
+                this.editedProduct.qaTestConfig.assertionGroupNames = arr.join();
+            }
+        }
+    }
+
     openUpdateConfigurationsModal(product: Product) {
         this.message = '';
         this.customRefsetCompositeKeys = '';
@@ -303,7 +397,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 this.customRefsetCompositeKeys += keys[index] + '=' + customRefsetCompositeKeys[keys[index]].join();
             }
         }
-
+        this.loadPreviousReleaseOptions();
         this.openUpdateProductModal();
     }
 

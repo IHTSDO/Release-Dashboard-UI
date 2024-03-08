@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -36,6 +36,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 export function startupServiceFactory(permissionService: PermissionService): Function {
     return () => permissionService.getRoles();
@@ -52,7 +53,7 @@ export const DATE_FORMATS = {
         monthYearA11yLabel: 'MMMM YYYY'
     }
 }
-  
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -78,7 +79,9 @@ export const DATE_FORMATS = {
         MatMomentDateModule,
         MatPaginatorModule,
         MatInputModule,
-        MatMenuModule
+        MatMenuModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule
         ],
     providers: [
         AuthenticationService,
@@ -109,9 +112,9 @@ export const DATE_FORMATS = {
             deps: [PermissionService],
             multi: true
         },
-        { 
-            provide: MAT_DATE_FORMATS, 
-            useValue: DATE_FORMATS 
+        {
+            provide: MAT_DATE_FORMATS,
+            useValue: DATE_FORMATS
         }
     ],
     bootstrap: [AppComponent]

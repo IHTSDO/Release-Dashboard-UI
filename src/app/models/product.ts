@@ -9,4 +9,5 @@ export class Product {
 
     // UI Control flags
     manifestFileUploading: boolean;
+    standAloneProduct: boolean;
 }

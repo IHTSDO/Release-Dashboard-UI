@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ReleaseCenter } from '../../models/releaseCenter';
 import { CodeSystem } from '../../models/codeSystem';
 
@@ -9,8 +9,18 @@ import { CodeSystem } from '../../models/codeSystem';
 })
 export class ReleaseServerService {
 
+    private releases = new Subject<any>();
+
     constructor(private http: HttpClient) {
 
+    }
+
+    setReleases(releases) {
+        this.releases.next(releases);
+    }
+
+    getReleases() {
+        return this.releases.asObservable();
     }
 
     getCodeSystems(): Observable<CodeSystem[]> {
@@ -31,5 +41,9 @@ export class ReleaseServerService {
 
     getCenter(id): Observable<ReleaseCenter> {
         return this.http.get<ReleaseCenter>('/release/centers/' + id);
+    }
+
+    getAllReleasePackages() {
+        return this.http.get<string[]>('/release/releases');
     }
 }

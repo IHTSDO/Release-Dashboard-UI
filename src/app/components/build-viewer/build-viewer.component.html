@@ -609,6 +609,14 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
         <ng-container *ngIf="selectedBuild.configuration">
             <h2 class="m-3">{{selectedBuild.configuration.buildName}}<span class="px-3 m-3 font-italic">See&nbsp;<a href="https://confluence.ihtsdotools.org/pages/viewpage.action?spaceKey=RMT&title=SRS+Script+Client+parameter+documentation">confluence</a>&nbsp;page for more information about these parameters.</span></h2>
             <div class="row mx-0">
+                <div class="col-12">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
+                        <div class="input-group-text bg-white">
+                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.standAloneProduct">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
