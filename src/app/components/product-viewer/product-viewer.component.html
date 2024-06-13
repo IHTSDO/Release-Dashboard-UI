@@ -152,14 +152,6 @@
     <div body>
         <h2 class="m-3">{{editedProduct.name}}<span class="px-3 m-3 font-italic">See&nbsp;<a href="https://confluence.ihtsdotools.org/pages/viewpage.action?spaceKey=RMT&title=SRS+Script+Client+parameter+documentation">confluence</a>&nbsp;page for more information about these parameters.</span></h2>
         <div class="row mx-0">
-            <div class="col-12">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
-                    <div class="input-group-text bg-white">
-                        <input type="checkbox" [(ngModel)]="editedProduct.standAloneProduct" (change)="onChangeStandaloneProduct(editedProduct.standAloneProduct)">
-                    </div>
-                </div>
-            </div>
             <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
@@ -174,7 +166,7 @@
                     <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
                     <div class="input-group-text bg-white">
@@ -182,7 +174,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
                     <div class="input-group-text bg-white">
@@ -190,31 +182,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
-                    <div class="input-group-text bg-white">
-                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
-                    <div class="input-group-text bg-white">
-                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.inputFilesFixesRequired">
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
-                    <div class="input-group-text bg-white">
-                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.createLegacyIds">
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
                     <div class="input-group-text bg-white">
@@ -222,7 +190,39 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
+                    </div>
+                </div>
+            </div>            
+            <div class="col-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.inputFilesFixesRequired">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.classifyOutputFiles">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.createLegacyIds">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
                     <div class="input-group-text bg-white">
@@ -230,11 +230,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                    <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
                     <div class="input-group-text bg-white">
-                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.classifyOutputFiles">
+                        <input type="checkbox" [(ngModel)]="editedProduct.standAloneProduct" (change)="onChangeStandaloneProduct(editedProduct.standAloneProduct)">
                     </div>
                 </div>
             </div>
@@ -265,7 +265,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" matTooltip="Passes the previous published package name to the SRS">Previous Published Release</span>
                     </div>
-                    <input type="text" 
+                    <input type="text"
                         class="form-control"
                         placeholder="Enter a release..."
                         [(ngModel)]="editedProduct.buildConfiguration.previousPublishedPackage"
@@ -282,9 +282,9 @@
             <div class="col-12">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
-                    <input type="text" 
+                    <input type="text"
                         class="form-control"
-                        placeholder="Enter a release..." 
+                        placeholder="Enter a release..."
                         [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease"
                         matInput
                         [formControl]="dependentReleaseInputControl"
