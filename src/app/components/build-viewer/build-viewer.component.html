@@ -625,17 +625,17 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 </div>
                 <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
                     <div class="input-group mb-3">
+                        <span class="input-group-text">Branch</span>
+                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.branchPath">
+                    </div>
+                </div>
+                <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
+                    <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes the type of export to Term Server to export the contents. Possible values are &quot;Published&quot;, &quot;Unpublished&quot;, &quot;Feedback Fix&quot;.
 Use &quot;Published&quot; to retrieve all Production data that has been versioned with the &quot;Effective Time&quot;.
 Use &quot;Unpublished&quot; to retrieve all data from the term server regardless of versioned dates.
 Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">Export Type</span>
                         <input type="text" class="form-control" disabled [value]="selectedBuild.configuration ? (selectedBuild.configuration.exportType ? (selectedBuild.configuration.exportType.replaceAll('_', ' ') | titlecase) : '' ) : ''">
-                    </div>
-                </div>
-                <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">Branch</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.branchPath">
                     </div>
                 </div>
                 <div class="col-6">
@@ -644,7 +644,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.maxFailureExport">
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
                         <div class="input-group-text bg-white">
@@ -652,7 +652,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
                         <div class="input-group-text bg-white">
@@ -660,15 +660,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
                         <div class="input-group-text bg-white">
@@ -676,7 +668,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
                         <div class="input-group-text bg-white">
@@ -684,15 +676,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
-                        <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.classifyOutputFiles">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4">
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
                         <div class="input-group-text bg-white">
@@ -700,7 +684,15 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
+                        <div class="input-group-text bg-white">
+                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
                         <div class="input-group-text bg-white">
@@ -708,7 +700,23 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                        <div class="input-group-text bg-white">
+                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.classifyOutputFiles">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="Indicates whether the product is a daily build product or not">Daily Build</span>
+                        <div class="input-group-text bg-white">
+                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.dailyBuild">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
                         <div class="input-group-text bg-white">

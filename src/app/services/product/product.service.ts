@@ -59,6 +59,7 @@ export class ProductService {
             namespaceId: product.buildConfiguration.extensionConfig.namespaceId,
             moduleIds: product.buildConfiguration.extensionConfig.moduleIds,
             releaseExtensionAsAnEdition: product.buildConfiguration.extensionConfig.releaseAsAnEdition,
+            dailyBuild: product.buildConfiguration.dailyBuild,
             standAloneProduct: product.standAloneProduct,
             enableDrools: product.qaTestConfig.enableDrools,
             enableMRCMValidation: product.qaTestConfig.enableMRCMValidation,
