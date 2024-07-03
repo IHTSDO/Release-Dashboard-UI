@@ -43,7 +43,7 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <span class="input-group-text">Codesystem</span>
+                <span class="input-group-text">Code System</span>
                 <select #addCodeSystem class="form-control">
                     <option value=""></option>
                     <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName">
@@ -55,7 +55,7 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <span class="input-group-text">SNOMED CT Product</span>
+                <span class="input-group-text" matTooltip="The SNOMED CT Product which will being used by ISRS tickets">SNOMED CT Product</span>
                 <input #addSNOMEDCTProduct type="text" class="form-control">
             </div>
         </div>
@@ -99,7 +99,7 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <span class="input-group-text">Codesystem</span>
+                <span class="input-group-text">Code System</span>
                 <select #editCodeSystem class="form-control" [value]="activeReleaseCenter?.codeSystem" [disabled]="!canAddReleaseCenter()">
                     <option value=""></option>
                     <option *ngFor="let codeSystem of codeSystems" [value]="codeSystem.shortName" [selected]="codeSystem.shortName == activeReleaseCenter?.codeSystem">
@@ -111,7 +111,7 @@
 
         <div class="col-12">
             <div class="input-group mb-3">
-                <span class="input-group-text">SNOMED CT Product</span>
+                <span class="input-group-text" matTooltip="The SNOMED CT Product which will being used by ISRS tickets">SNOMED CT Product</span>
                 <input #editSnomedCtProduct type="text" class="form-control" [value]="activeReleaseCenter?.snomedCtProduct">
             </div>
         </div>

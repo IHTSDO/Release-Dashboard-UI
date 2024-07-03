@@ -172,7 +172,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.paginationService.cacheSelectedPage(this.activeReleaseCenter.id, this.pageNumberOnProductTable);
     }
 
-    createProduct(productName) {
+    createProduct(productName, snomedCtProduct) {
         this.message = '';
         const missingFields = this.missingFieldsCheck(productName.trim());
         if (missingFields.length !== 0) {
@@ -182,7 +182,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         }
 
         this.savingProduct = true;
-        this.productService.createProduct(this.activeReleaseCenter.id, productName).subscribe(data => {
+        this.productService.createProduct(this.activeReleaseCenter.id, productName, snomedCtProduct).subscribe(data => {
             this.selectedProduct = data;
             this.pageNumberOnProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
             this.loadProducts();
