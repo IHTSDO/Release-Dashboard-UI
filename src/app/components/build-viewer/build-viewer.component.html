@@ -710,7 +710,12 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
-                        <span class="input-group-text" matTooltip="Indicates whether the product is a daily build product or not">Daily Build</span>
+                        <span class="input-group-text" matTooltipClass="multiline-tooltip" matTooltip="1. This is a Product level flag, and therefore separate Daily Build Products should be setup for each Extension/Derivative, in order to prevent confusion or contamination with the Publishable Products. &#013;
+                        2. Once set it should remain set for that DailyBuild product.&#013;
+                        3. If the flag is set then:&#013;
+                        - A delta package will sent to daily-browser to import.&#013;
+                        - A RVF report will be sent to Authoring Platform to display on the Code System page..&#013;
+                        - This product will be used when staring a new Authoring cycle.">Daily Build</span>
                         <div class="input-group-text bg-white">
                             <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.dailyBuild">
                         </div>
