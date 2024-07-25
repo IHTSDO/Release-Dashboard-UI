@@ -593,4 +593,7 @@ div.cdk-overlay-container .notification + * > .cdk-overlay-pane {
           }
       }
     }
- }
+}
+.multiline-tooltip{
+    white-space: pre-line;
+}

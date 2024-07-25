@@ -38,8 +38,14 @@ export class ProductService {
         return this.http.post<Product>('/release/centers/' + releaseCenterKey + '/products', product);
     }
 
-    createProduct(releaseCenterKey, productName): Observable<Product> {
-        return this.http.post<Product>('/release/centers/' + releaseCenterKey + '/products', {name: productName});
+    createProduct(releaseCenterKey, productName, snomedCtProduct): Observable<Product> {
+        const data = {
+            name: productName
+        };
+        if (snomedCtProduct) {
+            data['overriddenSnomedCtProduct'] = snomedCtProduct;
+        }
+        return this.http.post<Product>('/release/centers/' + releaseCenterKey + '/products', data);
     }
 
     patchProduct(releaseCenterKey: string, product: Product, customRefsetCompositeKeys: string): Observable<Product> {
@@ -59,6 +65,7 @@ export class ProductService {
             namespaceId: product.buildConfiguration.extensionConfig.namespaceId,
             moduleIds: product.buildConfiguration.extensionConfig.moduleIds,
             releaseExtensionAsAnEdition: product.buildConfiguration.extensionConfig.releaseAsAnEdition,
+            dailyBuild: product.buildConfiguration.dailyBuild,
             standAloneProduct: product.standAloneProduct,
             enableDrools: product.qaTestConfig.enableDrools,
             enableMRCMValidation: product.qaTestConfig.enableMRCMValidation,
@@ -73,7 +80,8 @@ export class ProductService {
             conceptPreferredTerms : product.buildConfiguration.conceptPreferredTerms,
             customRefsetCompositeKeys : customRefsetCompositeKeys,
             previousPublishedPackage : product.buildConfiguration.previousPublishedPackage,
-            extensionDependencyRelease : product.buildConfiguration.extensionConfig.dependencyRelease
+            extensionDependencyRelease : product.buildConfiguration.extensionConfig.dependencyRelease,
+            overriddenSnomedCtProduct : product.overriddenSnomedCtProduct
         };
         if (product.buildConfiguration.extensionConfig &&
             product.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
