@@ -162,7 +162,7 @@
                     <td class="pb-0" *ngIf="isAdminOrManagerOrLead()">
                         <button type="button" class="btn blue text-nowrap" (click)="openBuildURL(build); $event.stopPropagation()" title="Build URL"><i class="fas fa-external-link-alt pe-2"></i>OPEN</button>
                     </td>
-                    <td class="text-start" title="{{build?.configuration.buildName}}">{{build?.configuration.buildName}}</td>
+                    <td class="text-start" title="{{build?.configuration.buildName}}"><span *ngIf="isAdminOrManagerOrLead()" (click)="openUpdateConfigurationsModal(build);  $event.stopPropagation()" class="text-cerulean"><i class="fas fa-pen pe-2"></i></span>{{build?.configuration.buildName}}</td>
                     <td class="text-start" style="word-break: break-all;">{{build?.id.substring(0,10)}}{{build?.id.substring(10,19)}}</td>
                     <td class="text-start build-status">
                         <div class="expansion rounded-3 px-2 py-0 m-1 m-2 text-white {{build.status}}">{{build?.status.replaceAll('_', ' ') | titlecase}}</div>
@@ -893,6 +893,25 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('view-build-configuration-modal')">CLOSE</button>
+    </div>
+</app-modal>
+
+<app-modal id="update-configurations-modal" class="modal update-configurations-modal" size="large">
+    <h3 header class="mb-0">Configuration</h3>
+    <div body class="text-center p-5">
+        <div class="col-12">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Build Name</span>
+                </div>
+                <input type="text" class="form-control" [(ngModel)]="newBuildName">
+            </div>
+        </div>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('update-configurations-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" (click)="updateBuildName()">SAVE</button>
     </div>
 </app-modal>
 
