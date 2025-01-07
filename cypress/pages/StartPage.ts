@@ -1,8 +1,8 @@
 export class StartPage {
 
-    urlBrowser = Cypress.env('URL_BROWSER');
-    username = Cypress.env('LOGIN_USR');
-    password = Cypress.env('LOGIN_PSW');
+    urlBrowser = Cypress.env('URL_RAD');
+    username = Cypress.env('TEST_LOGIN_USR');
+    password = Cypress.env('TEST_LOGIN_PSW');
 
     clearCookies() {
         cy.clearCookies()
