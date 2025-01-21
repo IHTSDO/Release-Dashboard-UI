@@ -93,6 +93,13 @@ export class BuildService {
     return this.http.delete('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId);
   }
 
+  changeBuildName(releaseCenterKey, productKey, buildId, buildName) {
+    const data = {
+      buildName: buildName
+    };
+    return this.http.put('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/configuration', data);
+  }
+
   getPublishingBuildStatus(releaseCenterKey, productKey, buildId) {
     return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/publish/status');
   }

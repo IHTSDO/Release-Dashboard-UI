@@ -32,7 +32,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
     @ViewChild('uploadInputFilesInput') private uploadInputFilesInput;
     @ViewChild('buildPaginator') buildPaginator: MatPaginator;
-    @ViewChild('hiddenBuildPaginator') hiddenBuildPaginator: MatPaginator;    
+    @ViewChild('hiddenBuildPaginator') hiddenBuildPaginator: MatPaginator;
 
 
     RF2_DATE_FORMAT = 'yyyyMMdd';
@@ -57,6 +57,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     selectedTags: any;
     environment: string;
     view: string;
+    newBuildName: string;
 
     // Build properties
     buildParams: BuildParameters;
@@ -347,7 +348,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     refreshBuilds() {
         this.buildPaginator.firstPage()
         this.totalBuild = this.paginationService.EMPTY_ITEMS;
-        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER; 
+        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.loadBuilds();
     }
 
@@ -360,7 +361,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.view = view;
         this.buildPaginator.firstPage()
         this.totalBuild = this.paginationService.EMPTY_ITEMS;
-        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER; 
+        this.pageNumberOnBuildTable = this.paginationService.DEFAULT_PAGE_NUMBER;
         this.loadBuilds();
     }
 
@@ -418,21 +419,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     viewBuildConfigurations(build: Build) {
-        this.selectedBuild = build;
-        if (!this.selectedBuild.configuration.extensionConfig) {
-            this.selectedBuild.configuration.extensionConfig = new ExtensionConfig();
-        }
-        if (this.selectedBuild.configuration.customRefsetCompositeKeys
-            && Object.keys(this.selectedBuild.configuration.customRefsetCompositeKeys).length !== 0) {
-            const value = this.convertCustomRefsetCompositeKeys(this.selectedBuild.configuration.customRefsetCompositeKeys);
-            setTimeout(() => {
-                this.customRefsetCompositeKeysInput.nativeElement.value = value;
-            }, 0);
-        } else {
-            setTimeout(() => {
-                this.customRefsetCompositeKeysInput.nativeElement.value = '';
-            }, 0);
-        }
+        this.setSelectedBuild(build);
         this.openBuildConfigurationModal();
     }
 
@@ -1008,6 +995,32 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    openUpdateConfigurationsModal(build:Build) {
+        this.setSelectedBuild(build);
+        this.newBuildName = build.configuration.buildName;
+        this.openModal('update-configurations-modal');
+    }
+
+    updateBuildName() {
+        this.clearMessage();
+        this.closeModal('update-configurations-modal');
+        this.openWaitingModel('Saving build name...');
+        this.buildService.changeBuildName(this.releaseCenterKey, this.productKey, this.selectedBuild.id, this.newBuildName).subscribe(
+            () => {
+                this.selectedBuild.configuration.buildName = this.newBuildName;
+                this.message = 'Build name has been updated successfully.';
+                this.closeWaitingModel();
+                this.openSuccessModel();
+
+            },
+            errorResponse => {
+                this.closeWaitingModel();
+                this.message = errorResponse?.error?.errorMessage;
+                this.openErrorModel();
+            }
+        );
+    }
+
     openJiraUrl(url: string) {
         window.open(url);
     }
@@ -1021,12 +1034,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     openBuildVisibilityModal(build: Build) {
-        this.selectedBuild = build;
+        this.setSelectedBuild(build);
         this.openModal('hide-build-confirmation-modal');
     }
 
     openUnhideBuildConfirmationModal(build: Build) {
-        this.selectedBuild = build;
+        this.setSelectedBuild(build);
         this.openModal('unhide-build-confirmation-modal');
     }
 
@@ -1054,7 +1067,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     openTaggingModal(build: Build) {
-        this.selectedBuild = build;
+        this.setSelectedBuild(build);
         this.selectedTags = {};
         if (build.tags) {
             for (let i = 0; i < build.tags.length; i++) {
@@ -1352,6 +1365,24 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         if (!this.buildParams.maxFailureExport) { missingFields.push('Failure Max'); }
 
         return missingFields;
+    }
+
+    private setSelectedBuild(build: Build) {
+        this.selectedBuild = build;
+        if (!this.selectedBuild.configuration.extensionConfig) {
+            this.selectedBuild.configuration.extensionConfig = new ExtensionConfig();
+        }
+        if (this.selectedBuild.configuration.customRefsetCompositeKeys
+            && Object.keys(this.selectedBuild.configuration.customRefsetCompositeKeys).length !== 0) {
+            const value = this.convertCustomRefsetCompositeKeys(this.selectedBuild.configuration.customRefsetCompositeKeys);
+            setTimeout(() => {
+                this.customRefsetCompositeKeysInput.nativeElement.value = value;
+            }, 0);
+        } else {
+            setTimeout(() => {
+                this.customRefsetCompositeKeysInput.nativeElement.value = '';
+            }, 0);
+        }
     }
 
     private clearMessage() {
