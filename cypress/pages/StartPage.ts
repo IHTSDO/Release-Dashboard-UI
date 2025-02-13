@@ -14,8 +14,8 @@ export class StartPage {
 
     login() {
         // fill in the form
-        cy.get('#username').type(this.username)
-        cy.get('#password').type(this.password)
+        cy.get('#username').type(this.username, {log:false})
+        cy.get('#password').type(this.password, {log:false})
 
         // submit the form
         cy.get('button').contains('LOG IN').click()
