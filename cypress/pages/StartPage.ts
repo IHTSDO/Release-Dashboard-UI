@@ -1,6 +1,6 @@
 export class StartPage {
 
-    urlBrowser = Cypress.env('URL_RAD');
+    urlRad = Cypress.env('URL_RAD');
     username = Cypress.env('TEST_LOGIN_USR');
     password = Cypress.env('TEST_LOGIN_PSW');
 
@@ -9,7 +9,7 @@ export class StartPage {
     }
 
     visit() {
-        cy.visit(this.urlBrowser);
+        cy.visit(this.urlRad);
     }
 
     login() {

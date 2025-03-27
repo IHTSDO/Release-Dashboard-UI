@@ -3,11 +3,11 @@ import {StartPage} from "../pages/StartPage";
 
 const startPage = new StartPage();
 
-it(`Cleaer all cookies`, () => {
+it(`Clear all cookies`, () => {
     startPage.clearCookies()
 })
 
-it(`Launch browser at ${startPage.urlBrowser}`, () => {
+it(`Launch release dashboard at ${startPage.urlRad}`, () => {
     startPage.visit()
 })
 
@@ -47,8 +47,8 @@ it(`Verify INT daily build product and its' builds, then back`, () => {
     cy.get('table').first().should('exist').and('be.visible')
         .within(() => {
             cy.get('tbody').children('tr').should('have.length.at.least', 2)
-        });  
-        
+        });
+
     cy.get('button').contains('BACK').click()
     cy.wait(3000)
     cy.get('table').first().should('exist').and('be.visible')
