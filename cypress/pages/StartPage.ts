@@ -18,7 +18,7 @@ export class StartPage {
         cy.get('#password').type(this.password, {log:false})
 
         // submit the form
-        cy.get('button').contains('LOG IN').click()
+        cy.get('button').contains('Sign me in!').click()
         cy.contains('span', 'Logout').should('be.visible')
     }
 }
