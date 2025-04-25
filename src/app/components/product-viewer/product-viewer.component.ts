@@ -248,12 +248,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             },
             errorResponse => {
                 this.savingProduct = false;
-                this.message = 'Failed to update product. Error: ';
-                if (errorResponse.status >= 500) {
-                    this.message += (errorResponse.error.HTTPStatus.replaceAll('_', ' ')
-                                + '.\nPlease contact technical support to get help resolving this.');
+                if (errorResponse.error && errorResponse.error.errorMessage) {
+                    this.message = errorResponse.error.errorMessage;
                 } else {
-                    this.message += errorResponse.error.errorMessage;
+                    this.message = 'Failed to update product. Error: ' + errorResponse.error.HTTPStatus.replaceAll('_', ' ')
+                    + '.\nPlease contact technical support to get help resolving this.';
                 }
                 this.openErrorModel();
             },
