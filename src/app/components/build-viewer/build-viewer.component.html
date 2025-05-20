@@ -753,6 +753,17 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="The files to be removed from the previous structure">Remove RF2 Files</span>
+                        <textarea matInput
+                            cdkTextareaAutosize
+                            cdkAutosizeMinRows="1"
+                            cdkAutosizeMaxRows="5"
+                            class="form-control" disabled
+                            [(ngModel)]="selectedBuild.configuration.removeRF2Files"></textarea>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes the previous published package name to the SRS">Previous Published Release</span>
                         <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.previousPublishedPackage">
                     </div>

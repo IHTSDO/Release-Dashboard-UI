@@ -61,6 +61,7 @@ export class ProductService {
             inputFilesFixesRequired: product.buildConfiguration.inputFilesFixesRequired,
             createLegacyIds: product.buildConfiguration.createLegacyIds,
             newRF2InputFiles: product.buildConfiguration.newRF2InputFiles,
+            removeRF2Files: product.buildConfiguration.removeRF2Files,
             assertionGroupNames: product.qaTestConfig.assertionGroupNames,
             namespaceId: product.buildConfiguration.extensionConfig.namespaceId,
             moduleIds: product.buildConfiguration.extensionConfig.moduleIds,

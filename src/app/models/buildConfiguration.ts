@@ -18,6 +18,7 @@ export class BuildConfiguration {
     justPackage: boolean;
     licenceStatement: string;
     newRF2InputFiles: string;
+    removeRF2Files: string;
     previousPublishedPackage: string;
     readmeEndDate: string;
     readmeHeader: string;
