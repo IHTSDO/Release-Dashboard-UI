@@ -132,7 +132,24 @@
     </div>
     <div footer>
         <button type="button" class="btn" [disabled]="savingProduct" (click)="closeModal('add-product-modal')">CANCEL</button>
-        <button type="button" class="btn accept ms-3" [disabled]="savingProduct" (click)="createProduct(addProductName.value, addSnomedCtProduct.value)">SAVE</button>
+        <button type="button" class="btn accept ms-3" [disabled]="savingProduct" (click)="createProduct(addProductName.value, addSnomedCtProduct.value, false)">SAVE</button>
+    </div>
+</app-modal>
+
+<app-modal id="add-product-confirmation-modal" class="modal add-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p class="text-start">The product name should follow the naming convertions:</p>
+        <ul class="text-start">
+            <li>SNOMED CT [name] releases</li>
+            <li>SNOMED CT [name] Daily Build</li>
+        </ul>
+
+        <p class="text-start">Do you really want to continue with product name "<b>{{addProductName.value}}</b>"?</p>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('add-product-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" (click)="createProduct(addProductName.value, addSnomedCtProduct.value, true); closeModal('add-product-confirmation-modal')">CONFIRM</button>
     </div>
 </app-modal>
 

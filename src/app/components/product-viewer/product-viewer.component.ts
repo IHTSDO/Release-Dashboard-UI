@@ -172,7 +172,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.paginationService.cacheSelectedPage(this.activeReleaseCenter.id, this.pageNumberOnProductTable);
     }
 
-    createProduct(productName, snomedCtProduct) {
+    createProduct(productName, snomedCtProduct, force = false) {
         this.message = '';
         const missingFields = this.missingFieldsCheck(productName.trim());
         if (missingFields.length !== 0) {
@@ -181,13 +181,23 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             return;
         }
 
+        const releasePattern = /^SNOMED CT\s+\w+(?:.*\w+)*\s+releases$/;
+        const dailyBuildPattern = /^SNOMED CT\s+\w+(?:.*\w+)*\s+Daily+\s+Build$/;
+        if (productName && !force && !releasePattern.test(productName) && !dailyBuildPattern.test(productName)) {
+            this.message = 'Please enter a valid product name. The product name should be in the format of \'SNOMED CT <codeSystem> <releaseType>\'.';
+            this.openModal('add-product-confirmation-modal');
+            return;
+        }
+
         this.savingProduct = true;
+        this.closeAddProductModal();
+        this.openWaitingModel('Creating product');
         this.productService.createProduct(this.activeReleaseCenter.id, productName, snomedCtProduct).subscribe(data => {
             this.selectedProduct = data;
             this.pageNumberOnProductTable = this.paginationService.DEFAULT_PAGE_NUMBER;
             this.loadProducts();
             this.message = 'Product ' + productName + ' has been created successfully. Please update the configurations';
-            this.closeAddProductModal();
+            this.closeWaitingModel();
             this.openProductCreationSuccessModal();
         },
         errorResponse => {
@@ -201,6 +211,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             } else {
                 this.message = errorResponse.error.errorMessage;
             }
+            this.closeWaitingModel();
+            this.openModal('add-product-modal');
             this.openErrorModel();
         },
         () => {
