@@ -1,38 +1,45 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
 import { EnvService } from './services/environment/env.service';
 import { WebsocketService } from './services/websocket/websocket.service';
 import { BuildService } from './services/build/build.service';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ReleaseServerService } from './services/releaseServer/release-server.service';
 import { ReleaseCenterService } from './services/releaseCenter/release-center.service';
+import { SnomedFooterComponent } from './components/snomed-footer/snomed-footer.component';
+import { RouterOutlet } from '@angular/router';
+import { SnomedNavbarComponent } from './components/snomed-navbar/snomed-navbar.component';
 
 @Component({
     selector: 'app-root',
+    imports: [SnomedFooterComponent, SnomedNavbarComponent, RouterOutlet],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
 
-    environment: string;
+    environment: string = '';
 
     constructor(private authoringService: AuthoringService,
-                private envService: EnvService,
                 private titleService: Title,
                 private authenticationService: AuthenticationService,
                 private buildService: BuildService,
                 private websocketService: WebsocketService,
                 private releaseServerService: ReleaseServerService,
                 private releaseCenterService: ReleaseCenterService,
-                @Inject(DOCUMENT) private document: Document) {
+                @Inject(DOCUMENT) private document: Document,
+                @Inject(PLATFORM_ID) private platformId: Object) {
                 this.authenticationService.getUser().subscribe(data => {
                     this.websocketService.connect(data.login);
                 });
     }
 
     ngOnInit() {
+         if (!isPlatformBrowser(this.platformId)) {
+            return;
+         }
         this.titleService.setTitle('SNOMED CT Release Dashboard');
         this.buildService.initialiseBuild().subscribe();
         this.environment = window.location.host.split(/[.]/)[0].split(/[-]/)[0];

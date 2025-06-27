@@ -32,7 +32,7 @@
                         <ul *ngIf="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath" class="list-group list-group-horizontal m-3">
                             <li class="list-group-item bg-alto-white w-25"><b>LOCAL INPUT FILES</b></li>
                             <li class="list-group-item w-75">
-                                <input class="ms-2" type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [(ngModel)]="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
+                                <input class="ms-2" type="checkbox" (click)="$event.preventDefault();$event.stopPropagation()" [ngModel]="activeBuild.configuration && !activeBuild.configuration.loadTermServerData && !activeBuild.configuration.defaultBranchPath">
                             </li>
                         </ul>
                         <ul *ngIf="activeBuild.configuration?.branchPath && activeBuild.configuration.loadTermServerData" class="list-group list-group-horizontal m-3">
@@ -613,20 +613,20 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text">Use Local Input Files</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration && !selectedBuild.configuration.loadTermServerData && !selectedBuild.configuration.defaultBranchPath">
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.effectiveTime">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.effectiveTime">
                     </div>
                 </div>
                 <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Branch</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.branchPath">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.branchPath">
                     </div>
                 </div>
                 <div *ngIf="selectedBuild.configuration?.branchPath && selectedBuild.configuration.loadTermServerData" class="col-6">
@@ -641,14 +641,14 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Failure Max</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.maxFailureExport">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.qaTestConfig.maxFailureExport">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.justPackage">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.justPackage">
                         </div>
                     </div>
                 </div>
@@ -656,7 +656,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.firstTimeRelease">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.firstTimeRelease">
                         </div>
                     </div>
                 </div>
@@ -664,7 +664,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.betaRelease">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.betaRelease">
                         </div>
                     </div>
                 </div>
@@ -672,7 +672,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.inputFilesFixesRequired">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.inputFilesFixesRequired">
                         </div>
                     </div>
                 </div>
@@ -680,7 +680,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 ID’s in the simpleMap refset files">Create Legacy Ids</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.createLegacyIds">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.createLegacyIds">
                         </div>
                     </div>
                 </div>
@@ -688,7 +688,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.useClassifierPreConditionChecks">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.useClassifierPreConditionChecks">
                         </div>
                     </div>
                 </div>
@@ -696,7 +696,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.extensionConfig.releaseAsAnEdition">
                         </div>
                     </div>
                 </div>
@@ -704,7 +704,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.classifyOutputFiles">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.classifyOutputFiles">
                         </div>
                     </div>
                 </div>
@@ -717,7 +717,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         - A RVF report will be sent to Authoring Platform to display on the Code System page..&#013;
                         - This product will be used when staring a new Authoring cycle.">Daily Build</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.dailyBuild">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.dailyBuild">
                         </div>
                     </div>
                 </div>
@@ -725,7 +725,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.configuration.standAloneProduct">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.standAloneProduct">
                         </div>
                     </div>
                 </div>
@@ -748,7 +748,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkAutosizeMinRows="1"
                             cdkAutosizeMaxRows="5"
                             class="form-control" disabled
-                            [(ngModel)]="selectedBuild.configuration.newRF2InputFiles"></textarea>
+                            [ngModel]="selectedBuild.configuration.newRF2InputFiles"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
@@ -759,19 +759,19 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkAutosizeMinRows="1"
                             cdkAutosizeMaxRows="5"
                             class="form-control" disabled
-                            [(ngModel)]="selectedBuild.configuration.removeRF2Files"></textarea>
+                            [ngModel]="selectedBuild.configuration.removeRF2Files"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes the previous published package name to the SRS">Previous Published Release</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.previousPublishedPackage">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.previousPublishedPackage">
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.dependencyRelease">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.extensionConfig.dependencyRelease">
                     </div>
                 </div>
                 <div class="col-6">
@@ -779,50 +779,50 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         <div class="input-group-prepend">
                             <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
                         </div>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.extensionConfig.previousEditionDependencyEffectiveDate">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">Included Previous Release Files</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.includePrevReleaseFiles">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.includePrevReleaseFiles">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">Excluded Refset Descriptor Members</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.excludeRefsetDescriptorMembers">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.excludeRefsetDescriptorMembers">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,...">Excluded Language refsets</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.excludeLanguageRefsetIds">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.excludeLanguageRefsetIds">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The namespace id for a given extension release">Namespace ID</span>
-                        <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.namespaceId">
+                        <input type="number" class="form-control" disabled [ngModel]="selectedBuild.configuration.extensionConfig.namespaceId">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The module id(s) for a given extension. These should be comma separated">Module ID(s)</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.extensionConfig.moduleIds">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.extensionConfig.moduleIds">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes the assertion group name(s) to the RVF for QA testing">Assertion Groups</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.assertionGroupNames">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.qaTestConfig.assertionGroupNames">
                     </div>
                 </div>
                 <div class="col-3">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableMRCMValidation">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.qaTestConfig.enableMRCMValidation">
                         </div>
                     </div>
                 </div>
@@ -830,34 +830,34 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">Drools Rules Group Names</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.qaTestConfig.droolsRulesGroupNames">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.qaTestConfig.droolsRulesGroupNames">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
                         <div class="input-group-text bg-white">
-                            <input type="checkbox" disabled [(ngModel)]="selectedBuild.qaTestConfig.enableDrools">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.qaTestConfig.enableDrools">
                         </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
-                        <input type="number" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.readmeEndDate">
+                        <input type="number" class="form-control" disabled [ngModel]="selectedBuild.configuration.readmeEndDate">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="input-group mb-3">
                         <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
-                        <input type="text" class="form-control" disabled [(ngModel)]="selectedBuild.configuration.conceptPreferredTerms">
+                        <input type="text" class="form-control" disabled [ngModel]="selectedBuild.configuration.conceptPreferredTerms">
                     </div>
                 </div>
                 <div class="col-12">
@@ -870,7 +870,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             class="form-control"
                             class="form-control"
                             disabled
-                            [(ngModel)]="selectedBuild.configuration.readmeHeader"></textarea>
+                            [ngModel]="selectedBuild.configuration.readmeHeader"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
@@ -883,7 +883,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             class="form-control"
                             class="form-control"
                             disabled
-                            [(ngModel)]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
+                            [ngModel]="selectedBuild.configuration.additionalReleaseInformationFields"></textarea>
                     </div>
                 </div>
                 <div class="col-12">
@@ -895,7 +895,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             cdkAutosizeMaxRows="5"
                             class="form-control"
                             disabled
-                            [(ngModel)]="selectedBuild.configuration.licenceStatement"></textarea>
+                            [ngModel]="selectedBuild.configuration.licenceStatement"></textarea>
                     </div>
                 </div>
             </div>

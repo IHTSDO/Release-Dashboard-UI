@@ -1,8 +1,11 @@
 import { Component, ViewEncapsulation, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
 import { ModalService } from '../../services/modal/modal.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-modal',
+    imports: [ReactiveFormsModule, FormsModule, CommonModule],
     templateUrl: 'modal.component.html',
     styleUrls: ['modal.component.scss'],
     encapsulation: ViewEncapsulation.None

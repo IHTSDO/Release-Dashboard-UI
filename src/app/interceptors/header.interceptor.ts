@@ -1,30 +1,19 @@
-import {
-    HttpEvent,
-    HttpHandler,
-    HttpInterceptor,
-    HttpRequest,
-} from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
 
-@Injectable()
-export class HeaderInterceptor implements HttpInterceptor {
-    constructor() {
+export const headerInterceptor: HttpInterceptorFn = (req, next) => {
+
+    const ignore = typeof req.body === 'undefined'
+        || req.body === null
+        || req.body.toString() === '[object FormData]'
+        || req.headers.has('Content-Type');
+
+    if (ignore) {
+        return next(req);
     }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const ignore = typeof request.body === 'undefined'
-                        || request.body === null
-                        || request.body.toString() === '[object FormData]'
-                        || request.headers.has('Content-Type');
+    const cloned = req.clone({
+        headers: req.headers.set('Content-Type', 'application/json')
+    });
+    return next(cloned);
 
-        if (ignore) {
-            return next.handle(request);
-        }
-
-        const cloned = request.clone({
-            headers: request.headers.set('Content-Type', 'application/json')
-        });
-        return next.handle(cloned);
-    }
 }

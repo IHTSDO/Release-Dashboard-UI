@@ -1,4 +1,5 @@
-@import 'src/variables.scss';
+@use 'src/variables.scss' as *;
+@use "sass:color";
 
 div.build-viewer {
     height: calc(100vh - 12rem);
@@ -13,10 +14,10 @@ div.build-viewer {
         color: $white;
 
         &.blue {
-            background-color: lighten($cerulean, 10%);
+            background-color: color.adjust($cerulean, $lightness: 10%);
 
             i {
-                color: lighten($cerulean, 30%);
+                color: color.adjust($cerulean, $lightness: 30%);
             }
 
             &:hover {
@@ -25,10 +26,10 @@ div.build-viewer {
         }
 
         &.green {
-            background-color: lighten($fruit-salad, 10%);
+            background-color: color.adjust($fruit-salad, $lightness: 10%);
 
             i {
-                color: lighten($fruit-salad, 30%);
+                color: color.adjust($fruit-salad, $lightness: 30%);
             }
 
             &:hover {
@@ -37,10 +38,10 @@ div.build-viewer {
         }
 
         &.red {
-            background-color: lighten($mandy, 10%);
+            background-color: color.adjust($mandy, $lightness: 10%);
 
             i {
-                color: lighten($mandy, 30%);
+                color: color.adjust($mandy, $lightness: 30%);
             }
 
             &:hover {
@@ -49,10 +50,10 @@ div.build-viewer {
         }
 
         &.orange {
-            background-color: lighten($sea-buckthorn, 10%);
+            background-color: color.adjust($sea-buckthorn, $lightness: 10%);
 
             i {
-                color: lighten($sea-buckthorn, 30%);
+                color: color.adjust($sea-buckthorn, $lightness: 30%);
             }
 
             &:hover {
@@ -61,10 +62,10 @@ div.build-viewer {
         }
 
         &.purple {
-            background-color: lighten($wisteria, 15%);
+            background-color: color.adjust($wisteria, $lightness: 15%);
 
             i {
-                color: lighten($wisteria, 30%);
+                color: color.adjust($wisteria, $lightness: 30%);
             }
 
             &:hover {
@@ -73,10 +74,10 @@ div.build-viewer {
         }
 
         &.pink {
-            background-color: lighten(#E2389F, 15%);
+            background-color: color.adjust(#E2389F, $lightness: 15%);
 
             i {
-                color: lighten(#E2389F, 30%);
+                color: color.adjust(#E2389F, $lightness: 30%);
             }
 
             &:hover {
@@ -85,10 +86,10 @@ div.build-viewer {
         }
 
         &.slate {
-            background-color: lighten($slate-grey, 10%);
+            background-color: color.adjust($slate-grey, $lightness: 10%);
 
             i {
-                color: lighten($slate-grey, 30%);
+                color: color.adjust($slate-grey, $lightness: 30%);
             }
 
             &:hover {
@@ -104,7 +105,7 @@ div.build-viewer {
 
     div.active-build {
         height: 27rem;
-        background-color: lighten($alto-white, 5%);
+        background-color: color.adjust($alto-white, $lightness: 5%);
     }
 
     div.panel-top {
@@ -138,7 +139,7 @@ div.build-viewer {
                     width: fit-content;
 
                     &.RELEASE_COMPLETE_WITH_WARNINGS {
-                        background-color: lighten($sea-buckthorn, 10%);
+                        background-color: color.adjust($sea-buckthorn, $lightness: 10%);
                     }
 
                     &.FAILED_INPUT_PREPARE_REPORT_VALIDATION,
@@ -147,19 +148,19 @@ div.build-viewer {
                     &.FAILED_PRE_CONDITIONS,
                     &.FAILED,
                     &.RVF_FAILED {
-                        background-color: lighten($mandy, 5%);
+                        background-color: color.adjust($mandy, $lightness: 5%);
                     }
 
                     &.CANCEL_REQUESTED,
                     &.CANCELLED,
                     &.UNKNOWN {
-                        background-color: lighten($mandy, 20%);
+                        background-color: color.adjust($mandy, $lightness: 20%);
                     }
 
                     &.PENDING,
                     &.QUEUED,
                     &.BEFORE_TRIGGER {
-                        background-color: lighten($green, 20%);
+                        background-color: color.adjust($green, $lightness: 20%);
                     }
 
                     &.RVF_QUEUED,
@@ -189,7 +190,7 @@ div.build-viewer {
             div.tag {
                 max-width: fit-content;
                 color: $white;
-                background-color: lighten($fruit-salad, 10%);
+                background-color: color.adjust($fruit-salad, $lightness: 10%);
 
                 &.PUBLISHED {
                     background-color: $blue;
@@ -198,7 +199,7 @@ div.build-viewer {
                     background-color: $mandy;
                 }
                 &.add {
-                    background-color: lighten($grey, 10%);
+                    background-color: color.adjust($grey, $lightness: 10%);
                 }
                 &.add:hover {
                     background-color: $grey;
@@ -230,11 +231,11 @@ app-modal {
                 td {
                     padding: 1.1rem .8rem .8rem .8rem;
                     button.hide {
-                        background-color: lighten($slate-grey, 10%);
+                        background-color: color.adjust($slate-grey, $lightness: 10%);
                         color: $white;
 
                         i {
-                            color: lighten($slate-grey, 30%);
+                            color: color.adjust($slate-grey, $lightness: 30%);
                         }
 
                         &:hover {
@@ -244,7 +245,7 @@ app-modal {
                     div.tag {
                         max-width: fit-content;
                         color: $white;
-                        background-color: lighten($fruit-salad, 10%);
+                        background-color: color.adjust($fruit-salad, $lightness: 10%);
 
                         &.add:hover {
                             background-color: $fruit-salad;

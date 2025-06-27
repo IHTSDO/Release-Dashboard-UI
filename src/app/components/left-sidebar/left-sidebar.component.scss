@@ -1,4 +1,5 @@
-@import 'src/variables.scss';
+@use 'src/variables.scss' as *;
+@use "sass:color";
 
 nav#sidebar {
     position: fixed;
@@ -32,14 +33,14 @@ nav#sidebar {
         border-bottom: 1px $ghost-grey solid;
 
         &:hover {
-            background-color: darken($anakiwa, 5%);
+            background-color: color.adjust($anakiwa, $lightness: -5%);
         }
 
         &.active {
             background-color: $anakiwa;
 
             &:hover {
-                background-color: darken($anakiwa, 5%);
+                background-color: color.adjust($anakiwa, $lightness: -5%);
             }
         }
     }
@@ -52,26 +53,26 @@ nav#sidebar {
             color: $white;
 
             &.add {
-                background-color: lighten($fruit-salad, 5%);
+                background-color: color.adjust($fruit-salad, $lightness: 5%);
 
                 i {
-                    color: lighten($fruit-salad, 30%);
+                    color: color.adjust($fruit-salad, $lightness: 30%);
                 }
             }
 
             &.edit {
-                background-color: lighten($sea-buckthorn, 5%);
+                background-color: color.adjust($sea-buckthorn, $lightness: 5%);
 
                 i {
-                    color: lighten($sea-buckthorn, 30%);
+                    color: color.adjust($sea-buckthorn, $lightness: 30%);
                 }
             }
 
             &.delete {
-                background-color: lighten($mandy, 5%);
+                background-color: color.adjust($mandy, $lightness: 5%);
 
                 i {
-                    color: lighten($mandy, 30%);
+                    color: color.adjust($mandy, $lightness: 30%);
                 }
             }
         }

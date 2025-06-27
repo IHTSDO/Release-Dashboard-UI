@@ -4,13 +4,17 @@ import { ReleaseCenterService } from '../../services/releaseCenter/release-cente
 import { ModalService } from '../../services/modal/modal.service';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
 import { ReleaseCenter } from '../../models/releaseCenter';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 import { CodeSystem } from '../../models/codeSystem';
 import { PermissionService } from '../../services/permission/permission.service';
+import { ModalComponent } from '../modal/modal.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-left-sidebar',
+    imports: [ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent],
     templateUrl: './left-sidebar.component.html',
     styleUrls: ['./left-sidebar.component.scss']
 })

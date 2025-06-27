@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Product } from '../../models/product';
 import { Build } from '../../models/build';
 import { BuildService } from '../../services/build/build.service';
 import { ProductService } from '../../services/product/product.service';
 import { ProductDataService } from '../../services/product/product-data.service';
 import { ModalService } from '../../services/modal/modal.service';
-import { formatDate } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { BuildStateEnum } from '../../models/buildStateEnum';
@@ -21,10 +21,22 @@ import { ProductPaginationService } from '../../services/pagination/product-pagi
 import { RVFServerService } from 'src/app/services/rvfServer/rvf-server.service';
 import { FailureJiraAssociation } from 'src/app/models/failureJiraAssociation';
 import { Sort } from 'src/app/util/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { ModalComponent } from '../modal/modal.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { SortDirective } from 'src/app/directive/sort.directive';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-build-viewer',
+  imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatMenuModule],
   templateUrl: './build-viewer.component.html',
   styleUrls: ['./build-viewer.component.scss']
 })

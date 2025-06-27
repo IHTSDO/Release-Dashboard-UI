@@ -1,5 +1,5 @@
 import {Injectable, Output} from '@angular/core';
-import * as SockJS from 'sockjs-client';
+import SockJS from 'sockjs-client';
 import { EventEmitter } from 'events';
 import { Client } from '@stomp/stompjs';
 

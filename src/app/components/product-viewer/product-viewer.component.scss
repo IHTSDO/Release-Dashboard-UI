@@ -1,4 +1,5 @@
-@import 'src/variables.scss';
+@use 'src/variables.scss' as *;
+@use "sass:color";
 
 div.product-viewer {
     margin-left: 36rem;
@@ -8,19 +9,18 @@ div.product-viewer {
     button {
         color: $white;
         &.green {
-            background-color: lighten($fruit-salad, 10%);
-
+            background-color: color.adjust($fruit-salad, $lightness: 10%);
             i {
-                color: lighten($fruit-salad, 30%);
+                color: color.adjust($fruit-salad, $lightness: 30%);
             }
             &:hover {
                 background-color: $fruit-salad;
             }
         }
         &.blue {
-            background-color: lighten($cerulean, 10%);
+            background-color: color.adjust($cerulean, $lightness: 10%);
             i {
-                color: lighten($cerulean, 30%);
+                color: color.adjust($cerulean, $lightness: 30%);
             }
             &:hover {
                 background-color: $cerulean;
@@ -47,10 +47,10 @@ div.product-viewer {
                     color: $white;
 
                     &.edit {
-                        background-color: lighten($sea-buckthorn, 10%);
+                        background-color: color.adjust($sea-buckthorn, $lightness: 10%);
 
                         i {
-                            color: lighten($sea-buckthorn, 30%);
+                            color: color.adjust($sea-buckthorn, $lightness: 30%);
                         }
 
                         &:hover {
@@ -59,10 +59,10 @@ div.product-viewer {
                     }
 
                     &.view {
-                        background-color: lighten($wisteria, 15%);
+                        background-color: color.adjust($wisteria, $lightness: 15%);
 
                         i {
-                            color: lighten($wisteria, 30%);
+                            color: color.adjust($wisteria, $lightness: 30%);
                         }
 
                         &:hover {
@@ -71,10 +71,10 @@ div.product-viewer {
                     }
 
                     &.upload {
-                        background-color: lighten($cerulean, 15%);
+                        background-color: color.adjust($cerulean, $lightness: 15%);
 
                         i {
-                            color: lighten($cerulean, 30%);
+                            color: color.adjust($cerulean, $lightness: 30%);
                         }
 
                         &:hover {
@@ -83,10 +83,10 @@ div.product-viewer {
                     }
 
                     &.hide {
-                        background-color: lighten($slate-grey, 15%);
+                        background-color: color.adjust($slate-grey, $lightness: 15%);
 
                         i {
-                            color: lighten($slate-grey, 30%);
+                            color: color.adjust($slate-grey, $lightness: 30%);
                         }
 
                         &:hover {
@@ -173,10 +173,10 @@ app-modal {
                     color: $white;
 
                     &.hide {
-                        background-color: lighten($slate-grey, 15%);
+                        background-color: color.adjust($slate-grey, $lightness: 15%);
 
                         i {
-                            color: lighten($slate-grey, 30%);
+                            color: color.adjust($slate-grey, $lightness: 30%)
                         }
 
                         &:hover {

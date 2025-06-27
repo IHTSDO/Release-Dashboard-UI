@@ -6,9 +6,14 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 import { ModalService } from '../../services/modal/modal.service';
 import { WebsocketService } from '../../services/websocket/websocket.service';
 import { NotificationService } from '../../services/notification/notification.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-snomed-navbar',
+    imports: [ReactiveFormsModule, FormsModule, CommonModule, MatMenuModule, RouterLink],
     templateUrl: './snomed-navbar.component.html',
     styleUrls: ['./snomed-navbar.component.scss']
 })

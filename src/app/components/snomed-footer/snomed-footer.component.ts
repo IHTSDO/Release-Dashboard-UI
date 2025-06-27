@@ -1,8 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { EnvService } from 'src/app/services/environment/env.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EnvService } from '../../services/environment/env.service';
 
 @Component({
     selector: 'app-snomed-footer',
+    imports: [ReactiveFormsModule, FormsModule, CommonModule],
     templateUrl: './snomed-footer.component.html',
     styleUrls: ['./snomed-footer.component.scss']
 })

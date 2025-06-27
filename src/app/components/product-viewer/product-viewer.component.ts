@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { ReleaseCenterService } from '../../services/releaseCenter/release-center.service';
 import { ProductService } from '../../services/product/product.service';
@@ -11,13 +11,25 @@ import { QAConfiguration } from '../../models/qaConfiguration';
 import { ExtensionConfig } from '../../models/extensionConfig';
 import { ProductPaginationService } from '../../services/pagination/product-pagination.service';
 import { PermissionService } from '../../services/permission/permission.service';
-import { MatPaginator } from '@angular/material/paginator';
-import { FormControl } from '@angular/forms';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, startWith } from 'rxjs/operators';
 import { ReleaseServerService } from '../../services/releaseServer/release-server.service';
+import { ModalComponent } from '../modal/modal.component';
+import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { RouterLink } from '@angular/router';
+import { SortDirective } from 'src/app/directive/sort.directive';
+import { LeftSidebarComponent } from '../left-sidebar/left-sidebar.component';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatNativeDateModule } from '@angular/material/core';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
     selector: 'app-product-viewer',
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, SortDirective, ModalComponent, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, LeftSidebarComponent],
     templateUrl: './product-viewer.component.html',
     styleUrls: ['./product-viewer.component.scss']
 })
@@ -52,11 +64,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     sortDirectionOnProductTable: string;
 
 
-     // pagination for hidden product table
-     hiddenProductsLoading = false;
-     totalHiddenProduct = 0;
-     sortDirectionOnHiddenProductTable: string;
-     pageNumberOnHiddenProductTable: Number;
+    // pagination for hidden product table
+    hiddenProductsLoading = false;
+    totalHiddenProduct = 0;
+    sortDirectionOnHiddenProductTable: string;
+    pageNumberOnHiddenProductTable: Number;
 
     // global message
     message: string;

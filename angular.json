@@ -15,11 +15,14 @@
             "prefix": "app",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-devkit/build-angular:application",
                     "options": {
                         "outputPath": "dist/release-dashboard-ui",
                         "index": "src/index.html",
-                        "main": "src/main.ts",
+                        "browser": "src/main.ts",
+                        "polyfills": [
+                            "zone.js"
+                        ],
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
                         "assets": [
@@ -41,7 +44,12 @@
                             "./node_modules/jquery/dist/jquery.min.js",
                             "./node_modules/@popperjs/core/dist/umd/popper.min.js",
                             "./node_modules/bootstrap/dist/js/bootstrap.min.js"
-                        ]
+                        ],
+                        "server": "src/main.server.ts",
+                        "prerender": true,
+                        "ssr": {
+                            "entry": "server.ts"
+                        }
                     },
                     "configurations": {
                         "production": {
@@ -56,16 +64,14 @@
                                     "maximumWarning": "16kb",
                                     "maximumError": "32kb"
                                 }
-                            ],
-                            "outputHashing": "all"
+                            ]
                         },
                         "development": {
-                            "buildOptimizer": false,
                             "optimization": false,
-                            "vendorChunk": true,
                             "extractLicenses": false,
                             "sourceMap": true,
-                            "namedChunks": true
+                            "ssr": false,
+                            "prerender": false
                         }
                     },
                     "defaultConfiguration": "production"
@@ -77,10 +83,10 @@
                     },
                     "configurations": {
                         "production": {
-                            "browserTarget": "release-dashboard-ui:build:production"
+                            "buildTarget": "release-dashboard-ui:build:production"
                         },
                         "development": {
-                            "browserTarget": "release-dashboard-ui:build:development"
+                            "buildTarget": "release-dashboard-ui:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -88,7 +94,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "release-dashboard-ui:build"
+                        "buildTarget": "release-dashboard-ui:build"
                     }
                 }
             }
