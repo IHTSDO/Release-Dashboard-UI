@@ -26,10 +26,11 @@ import { LeftSidebarComponent } from '../left-sidebar/left-sidebar.component';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatNativeDateModule } from '@angular/material/core';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-product-viewer',
-    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, SortDirective, ModalComponent, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, LeftSidebarComponent],
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, SortDirective, ModalComponent, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, LeftSidebarComponent],
     templateUrl: './product-viewer.component.html',
     styleUrls: ['./product-viewer.component.scss']
 })

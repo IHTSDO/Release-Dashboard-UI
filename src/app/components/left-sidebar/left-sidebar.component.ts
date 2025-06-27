@@ -11,10 +11,11 @@ import { PermissionService } from '../../services/permission/permission.service'
 import { ModalComponent } from '../modal/modal.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-left-sidebar',
-    imports: [ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent],
+    imports: [ReactiveFormsModule, FormsModule, CommonModule, MatTooltipModule, RouterLink, ModalComponent],
     templateUrl: './left-sidebar.component.html',
     styleUrls: ['./left-sidebar.component.scss']
 })

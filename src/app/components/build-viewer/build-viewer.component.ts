@@ -33,10 +33,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-build-viewer',
-  imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatMenuModule],
+  imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule],
   templateUrl: './build-viewer.component.html',
   styleUrls: ['./build-viewer.component.scss']
 })
