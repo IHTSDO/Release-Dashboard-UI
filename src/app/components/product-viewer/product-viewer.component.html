@@ -137,19 +137,18 @@
 </app-modal>
 
 <app-modal id="add-product-confirmation-modal" class="modal add-modal">
-    <h3 header class="mb-0">Confirmation</h3>
-    <div body class="text-center p-5">
-        <p class="text-start">The product name should follow the naming convertions:</p>
+    <h3 header class="mb-0">Are you absolutely sure?</h3>
+    <div body class="text-center">
+        <p class="px-2 py-4 danger-text"><i class="fas fa-exclamation-triangle pe-3"></i>This action <B>cannot</B> be undone</p>
+        <p class="text-start">The product name "<b>{{addProductName.value}}</b>" does not match any of the following naming convertions:</p>
         <ul class="text-start">
             <li>SNOMED CT [name] releases</li>
             <li>SNOMED CT [name] Daily Build</li>
         </ul>
-
-        <p class="text-start">Do you really want to continue with product name "<b>{{addProductName.value}}</b>"?</p>
     </div>
     <div footer>
-        <button type="button" class="btn" (click)="closeModal('add-product-confirmation-modal')">CANCEL</button>
         <button type="button" class="btn accept ms-3" (click)="createProduct(addProductName.value, addSnomedCtProduct.value, true); closeModal('add-product-confirmation-modal')">CONFIRM</button>
+        <button type="button" class="btn" (click)="closeModal('add-product-confirmation-modal')">CANCEL</button>        
     </div>
 </app-modal>
 

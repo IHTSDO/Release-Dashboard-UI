@@ -120,6 +120,22 @@ app-modal {
             }
         }
     }
+    &#add-product-confirmation-modal {
+        p.danger-text {
+            background-color: $sea-buckthorn;
+            color: $black;
+            font-size: 1.6rem;
+            margin: -10px -10px 10px -10px;
+
+            i {
+                font-size: 2rem;
+            }
+        }
+
+        p.information-text {
+            font-size: 1.4rem;
+        }
+    }
     &.product-creation-success-modal {
         button.btn-blue {
             width: 12rem;
