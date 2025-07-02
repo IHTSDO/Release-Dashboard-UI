@@ -24,15 +24,30 @@ import { RouterLink } from '@angular/router';
 import { SortDirective } from 'src/app/directive/sort.directive';
 import { LeftSidebarComponent } from '../left-sidebar/left-sidebar.component';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+export const DATE_FORMATS = {
+    parse: {
+        dateInput: 'YYYY-MM-DD',
+    },
+    display: {
+        dateInput: 'YYYY-MM-DD',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
+}
 
 @Component({
     selector: 'app-product-viewer',
     imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, SortDirective, ModalComponent, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, LeftSidebarComponent],
     templateUrl: './product-viewer.component.html',
-    styleUrls: ['./product-viewer.component.scss']
+    styleUrls: ['./product-viewer.component.scss'],
+    providers: [
+        { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
+    ]
 })
 export class ProductViewerComponent implements OnInit, OnDestroy {
 

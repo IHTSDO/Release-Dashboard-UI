@@ -7,20 +7,7 @@ import { provideToastr, ToastrModule } from "ngx-toastr";
 import { headerInterceptor } from './interceptors/header.interceptor';
 import { authenticationInterceptor } from './interceptors/authentication.interceptor';
 import { routes } from './app.routes';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { PermissionService } from './services/permission/permission.service';
-
-export const DATE_FORMATS = {
-    parse: {
-        dateInput: 'YYYY-MM-DD',
-    },
-    display: {
-        dateInput: 'YYYY-MM-DD',
-        monthYearLabel: 'MMM YYYY',
-        dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM YYYY'
-    }
-}
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -36,8 +23,6 @@ export const appConfig: ApplicationConfig = {
         }),
         importProvidersFrom(
             ToastrModule.forRoot()
-        ),
-        { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
-
+        )
     ]
 };

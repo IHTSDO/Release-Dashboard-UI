@@ -30,16 +30,33 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
+
+export const DATE_FORMATS = {
+    parse: {
+        dateInput: 'YYYY-MM-DD',
+    },
+    display: {
+        dateInput: 'YYYY-MM-DD',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
+}
 
 @Component({
   selector: 'app-build-viewer',
   imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule],
   templateUrl: './build-viewer.component.html',
-  styleUrls: ['./build-viewer.component.scss']
+  styleUrls: ['./build-viewer.component.scss'],
+  providers: [
+        { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
+    ]
+ 
 })
 export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
