@@ -1,8 +1,8 @@
-# SNOMED Release Dashboard UI (RDU)
+# SNOMED Release Dashboard UI
 
-The **SNOMED Release Dashboard UI (RDU)** is an Angular-based web application that provides a real-time window into the **SNOMED CT Release Service (SRS)** ecosystem.  It allows Product Support, Release Managers and Automations to **create, monitor and manage SNOMED CT release packages** while surfacing build telemetry and notifications in a single place.  
+The **SNOMED Release Dashboard UI** is an Angular-based web application that provides a real-time window into the **SNOMED CT Release Service (SRS)** ecosystem.  It allows Product Support, Release Managers and Automations to **create, monitor and manage SNOMED CT release packages** while surfacing build telemetry and notifications in a single place.  
 
-RDU consumes the SRS **REST & WebSocket API** and complements it with an intuitive, Material-styled front-end that can be deployed either as a **Server-Side Rendered (SSR) Node application** or as a static single-page application (SPA).
+RAD consumes the SRS **REST & WebSocket API** and complements it with an intuitive, Material-styled front-end that can be deployed either as a **Server-Side Rendered (SSR) Node application** or as a static single-page application (SPA).
 
 This document explains **how to run the Release Dashboard locally** and the **engineering best-practices** expected when contributing to the code-base.
 
@@ -12,9 +12,9 @@ This document explains **how to run the Release Dashboard locally** and the **en
 
 ```mermaid
 flowchart TD
-    Browser["End-User Browser"] -->|HTTPS| RDU["Release Dashboard UI (Angular)"]
-    RDU -->|REST| SRS[(SNOMED Release Service)]
-    RDU -- WebSocket/STOMP --> SRS
+    Browser["End-User Browser"] -->|HTTPS| RAD["Release Dashboard UI (Angular)"]
+    RAD -->|REST| SRS[(SNOMED Release Service)]
+    RAD -- WebSocket/STOMP --> SRS
     subgraph SRS Sub-Systems
         SRS --> Snowstorm[(Snowstorm)]
         SRS --> ActiveMQ[(ActiveMQ)]
@@ -30,16 +30,16 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     participant User
-    participant RDU
+    participant RAD
     participant SRS
     participant ActiveMQ
-    User->>RDU: Create/monitor release (HTTP)
-    RDU->>SRS: REST request (build)
-    SRS-->>RDU: 202 Accepted (Build ID)
-    Note over RDU,SRS: RDU subscribes to WebSocket channel /topic/build.{id}
+    User->>RAD: Create/monitor release (HTTP)
+    RAD->>SRS: REST request (build)
+    SRS-->>RAD: 202 Accepted (Build ID)
+    Note over RAD,SRS: RAD subscribes to WebSocket channel /topic/build.{id}
     ActiveMQ-->>SRS: status events
-    SRS-->>RDU: WebSocket STOMP messages
-    RDU-->>User: Live progress updates
+    SRS-->>RAD: WebSocket STOMP messages
+    RAD-->>User: Live progress updates
 ```
 
 Key points:
@@ -53,12 +53,11 @@ Key points:
 ## 2  Feature Highlights
 
 * **Angular 19 + Stand-alone Components** – modern, tree-shakable architecture with signal-based change-detection.
-* **Material Design & Bootstrap** – rich, responsive component library with dark/light theming.
+* **Material Design & Bootstrap** – rich, responsive component library.
 * **SSO-secured HTTP interceptor** – transparently adds bearer tokens provided by the SRS auth service.
 * **Real-time Build Dashboard** – [`WebsocketService`](./src/app/services/websocket/websocket.service.ts) receives STOMP messages and pushes toast / table updates.
 * **Release-Package CRUD** – [`ReleaseServerService`](./src/app/services/releaseServer/release-server.service.ts) exposes high-level methods for creating, cloning and deleting builds.
 * **Environment-aware favicons & banners** – visual cues for `local`, `dev`, `uat`, `training` & `prod` environments.
-* **Server-Side Rendering (SSR)** – [`server.ts`](./server.ts) wraps the Angular Universal `CommonEngine` in an Express server.
 * **End-to-End tests with Cypress** – headless or interactive mode supported, HTML reports via Mochawesome.
 * **Debian Packaging** – [`pom.xml`](./pom.xml) leverages `frontend-maven-plugin` & `jdeb` to ship `/opt/release-dashboard-ui` packages.
 
@@ -94,8 +93,8 @@ Package conventions inside `src/app`:
 
 ### 4.1  Prerequisites
 
-1. **Node.js 22.x** (managed by `nvm`, `asdf`, or brew)
-2. **npm 10.x** (bundled with Node)
+1. **Node.js ^22.7.0** (managed by `nvm`, `asdf`, or brew)
+2. **npm ^10.8.2** (bundled with Node)
 3. **Angular CLI 19** – `npm i -g @angular/cli@19`
 4. (Optional) **Java 17 + Maven 3.8** if you plan to run the Debian packaging pipeline.
 5. A running **SRS backend** on `http://localhost:8081/api` (or update environment).
