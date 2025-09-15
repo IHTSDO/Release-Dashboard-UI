@@ -16,9 +16,8 @@
         <div class="logout d-inline-block m-2" (click)="logout()">
             <span class="px-2">Logout</span>
         </div>
-        <div class="user d-inline-block m-2">
+        <div class="user d-inline-block m-2 me-3">
             <span class="px-2">{{user.firstName}} {{user.lastName}}</span>
-            <img class="rounded-circle mx-3" src="https://jira.ihtsdotools.org/secure/useravatar?ownerId={{user.login}}">
         </div>
         <div class="user d-inline-block me-4 notification-container">
             <button mat-button class="rounded-circle dropdown-toggle" [matMenuTriggerFor]="notificationMatMenu" (click)="toggleNotificationsPane()">
