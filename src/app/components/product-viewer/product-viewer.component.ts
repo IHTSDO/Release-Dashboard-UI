@@ -27,6 +27,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { NoScrollInputDirective } from 'src/app/directive/no-scroll-input.directive';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export const DATE_FORMATS = {
     parse: {
@@ -42,7 +43,7 @@ export const DATE_FORMATS = {
 
 @Component({
     selector: 'app-product-viewer',
-    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, SortDirective, ModalComponent, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, NoScrollInputDirective, LeftSidebarComponent],
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, SortDirective, ModalComponent, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, NoScrollInputDirective, LeftSidebarComponent],
     templateUrl: './product-viewer.component.html',
     styleUrls: ['./product-viewer.component.scss'],
     providers: [
