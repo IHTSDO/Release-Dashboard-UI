@@ -2,11 +2,11 @@ import Utils from '../commands/Utils';
 
 const utils = new Utils();
 
-describe('Release Dashboard', () => {
+const url = Cypress.env('URL_RAD');
+const username = Cypress.env('TEST_LOGIN_USR');
+const password = Cypress.env('TEST_LOGIN_PSW');
 
-    const url = Cypress.env('URL_RAD');
-    const username = Cypress.env('TEST_LOGIN_USR');
-    const password = Cypress.env('TEST_LOGIN_PSW');
+describe('Release Dashboard', () => {
 
     it(`Launch release dashboard at ${url}`, () => {
         utils.login(url, username, password);
