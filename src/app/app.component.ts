@@ -1,11 +1,10 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, DOCUMENT } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthenticationService } from './services/authentication/authentication.service';
 import { AuthoringService } from './services/authoring/authoring.service';
-import { EnvService } from './services/environment/env.service';
 import { WebsocketService } from './services/websocket/websocket.service';
 import { BuildService } from './services/build/build.service';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { ReleaseServerService } from './services/releaseServer/release-server.service';
 import { ReleaseCenterService } from './services/releaseCenter/release-center.service';
 import { SnomedFooterComponent } from './components/snomed-footer/snomed-footer.component';
