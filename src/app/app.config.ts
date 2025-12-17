@@ -2,7 +2,6 @@ import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, 
 import { provideRouter } from '@angular/router';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from "@angular/common/http";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideToastr, ToastrModule } from "ngx-toastr";
 import { headerInterceptor } from './interceptors/header.interceptor';
 import { authenticationInterceptor } from './interceptors/authentication.interceptor';
@@ -15,7 +14,6 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes),
         provideClientHydration(),
         provideHttpClient(withFetch(), withInterceptors([headerInterceptor, authenticationInterceptor])),
-        provideAnimations(),
         provideToastr(),
         provideAppInitializer(() => {
             const permissionService = inject(PermissionService);
