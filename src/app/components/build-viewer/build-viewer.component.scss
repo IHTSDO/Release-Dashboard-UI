@@ -221,6 +221,7 @@ app-modal {
     //}
 
     &#generate-jira-tickets-modal,
+    &#publish-status-tracker-modal,
     &#hidden-builds-modal {
         table {
             tr {
@@ -251,6 +252,25 @@ app-modal {
                             background-color: $fruit-salad;
                             cursor: pointer;
                         }
+                    }
+
+                    i.status-icon,
+                    i.status-icon-success,
+                    i.status-icon-failed,
+                    i.status-icon-skipped {
+                        font-size: 1.4rem;
+                    }
+
+                    i.status-icon-success {
+                        color: $green;
+                    }
+
+                    i.status-icon-failed {
+                        color: $mandy;
+                    }
+
+                    i.status-icon-skipped {
+                        color: $sea-buckthorn;
                     }
                 }
             }
