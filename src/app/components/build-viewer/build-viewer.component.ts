@@ -586,15 +586,11 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                     this.publishStatusTrackerModalSize = this.publishSteps && this.publishSteps.length > 0 ? 'xlarge' : 'medium';
                                 }
                                 this.puslishStatus = response['overallStatus'];
-                                if (response['overallStatus'] === 'COMPLETED') {
+                                if (response['overallStatus'] === 'COMPLETED' || response['overallStatus'] === 'FAILED') {
                                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                                         build.buildPublishing = false;
                                         build.tags = response.tags;
-                                        
                                     });
-                                    clearInterval(interval);
-                                } else if (response['overallStatus'] === 'FAILED') {
-                                    build.buildPublishing = false;
                                     clearInterval(interval);
                                 } else {
                                     // do nothing
