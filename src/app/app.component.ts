@@ -46,11 +46,11 @@ export class AppComponent implements OnInit {
         this.assignFavicon();
         this.getAllReleasePackages();
     }
-    
+
     getAllReleasePackages() {
-        this.releaseServerService.getAllReleasePackages().subscribe(
+        this.releaseServerService.getAllReleasePackages(1, 500).subscribe(
             data => {
-                this.releaseServerService.setReleases(data);                
+                this.releaseServerService.setReleases(data);
                 this.releaseCenterService.catchReleasePackages(data);
             },
             error => {

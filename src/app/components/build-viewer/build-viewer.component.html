@@ -1015,7 +1015,26 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                             </ng-template>
                         </td>
                         <td class="align-middle">
-                            <span *ngIf="step.errorMessage; else noError">{{step.errorMessage}}</span>
+                            <ng-container *ngIf="step.errorMessage; else noError">
+                                <div>
+                                    {{step.errorMessage}}
+                                </div>
+                                <ng-container *ngIf="step.errorDetails && step.errorDetails.length > 0">
+                                    <button
+                                        type="button"
+                                        class="btn btn-link p-0 error-details-toggle"
+                                        (click)="step.showErrorDetails = !step.showErrorDetails">
+                                        {{ step.showErrorDetails ? 'Hide details' : 'Show details' }}
+                                    </button>
+                                    <div *ngIf="step.showErrorDetails" class="error-details-section">
+                                        <ul class="mb-0 ps-3 error-details-list">
+                                            <li *ngFor="let detail of step.errorDetails">
+                                                {{ detail | capitalizeFirst }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
                             <ng-template #noError>
                                 <span class="text-muted">None</span>
                             </ng-template>

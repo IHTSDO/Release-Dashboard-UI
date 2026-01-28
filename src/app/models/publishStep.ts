@@ -3,5 +3,8 @@ export class PublishStep {
     stepNumber: number;
     status: string;
     errorMessage: string;
+    errorDetails: string[];
     warnings: string[];
+
+    showErrorDetails: boolean = false;
 }

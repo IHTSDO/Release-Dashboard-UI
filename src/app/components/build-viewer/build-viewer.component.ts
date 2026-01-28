@@ -35,6 +35,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PublishStep } from '../../models/publishStep';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize-first.pipe';
 
 
 export const DATE_FORMATS = {
@@ -50,14 +51,13 @@ export const DATE_FORMATS = {
 }
 
 @Component({
-  selector: 'app-build-viewer',
-  imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule],
-  templateUrl: './build-viewer.component.html',
-  styleUrls: ['./build-viewer.component.scss'],
-  providers: [
+    selector: 'app-build-viewer',
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule, CapitalizeFirstPipe],
+    templateUrl: './build-viewer.component.html',
+    styleUrls: ['./build-viewer.component.scss'],
+    providers: [
         { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
     ]
- 
 })
 export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
