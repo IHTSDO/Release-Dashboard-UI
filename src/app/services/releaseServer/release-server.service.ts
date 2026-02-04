@@ -43,7 +43,7 @@ export class ReleaseServerService {
         return this.http.get<ReleaseCenter>('/release/centers/' + id);
     }
 
-    getAllReleasePackages() {
-        return this.http.get<string[]>('/release/releases');
+    getAllReleasePackages(page: number = 1, size: number = 100): Observable<any> {
+        return this.http.get<string[]>('/release/releases?page=' + page + '&size=' + size);
     }
 }

@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewEncapsulation, ElementRef, Input, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { ModalService } from '../../services/modal/modal.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,13 +10,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     styleUrls: ['modal.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class ModalComponent implements OnInit, OnDestroy {
+export class ModalComponent implements OnInit, OnDestroy, OnChanges {
     @Input() id: string;
     @Input() size = 'medium';
     @Input() hideHeader: boolean;
     @Input() hideFooter: boolean;
     @Input() disableBackgroundClickEvent: boolean;
     private element: any;
+    private currentSizeClass: string;
 
     constructor(private modalService: ModalService, private el: ElementRef) {
         this.element = el.nativeElement;
@@ -33,7 +34,8 @@ export class ModalComponent implements OnInit, OnDestroy {
         document.body.appendChild(this.element);
 
         // add size to dialog
-        this.element.firstChild.classList.add('modal-' + this.size);
+        this.currentSizeClass = 'modal-' + this.size;
+        this.element.firstChild.classList.add(this.currentSizeClass);
 
         // close modal on background click
         this.element.addEventListener('click', el => {
@@ -44,6 +46,21 @@ export class ModalComponent implements OnInit, OnDestroy {
 
         // add self (this modal instance) to the modal service so it's accessible from controllers
         this.modalService.add(this);
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['size'] && !changes['size'].isFirstChange() && this.element && this.element.firstChild) {
+            const previousSize = changes['size'].previousValue;
+            const currentSize = changes['size'].currentValue;
+            const previousClass = previousSize ? 'modal-' + previousSize : this.currentSizeClass;
+            const currentClass = 'modal-' + currentSize;
+
+            if (previousClass) {
+                this.element.firstChild.classList.remove(previousClass);
+            }
+            this.element.firstChild.classList.add(currentClass);
+            this.currentSizeClass = currentClass;
+        }
     }
 
     // remove self from modal service when component is destroyed

@@ -34,6 +34,8 @@ import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { PublishStep } from '../../models/publishStep';
+import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize-first.pipe';
 
 
 export const DATE_FORMATS = {
@@ -49,14 +51,13 @@ export const DATE_FORMATS = {
 }
 
 @Component({
-  selector: 'app-build-viewer',
-  imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule],
-  templateUrl: './build-viewer.component.html',
-  styleUrls: ['./build-viewer.component.scss'],
-  providers: [
+    selector: 'app-build-viewer',
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule, CapitalizeFirstPipe],
+    templateUrl: './build-viewer.component.html',
+    styleUrls: ['./build-viewer.component.scss'],
+    providers: [
         { provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS }
     ]
- 
 })
 export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('customRefsetCompositeKeys') private customRefsetCompositeKeysInput;
@@ -106,6 +107,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     selectAllError = false;
     selectAllWarning = false;
     allTags: any;
+    publishSteps: PublishStep[];
+    puslishStatus: string;
+    publishStatusTrackerModalSize = 'medium';
 
     // pagination for build table
     pageSizeOnBuildTalbe = 10;
@@ -564,33 +568,29 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.clearMessage();
         this.closePublishingBuildConfirmationModal();
         build.buildPublishing = true;
-        this.openWaitingModel();
+        this.puslishStatus = '';
+        this.publishSteps = [];
+        this.publishStatusTrackerModalSize = 'medium';
+        this.openPublishStatusTrackerModal();
         this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-            () => {
-                const interval = setInterval(() => {
+            () => {                
+                let interval: any;
+                const checkPublishingStatus = () => {
                     this.buildService.getPublishingBuildStatus(this.releaseCenterKey, this.productKey, build.id).subscribe(
-                        status => {
-                            if (status) {
-                                if (status['status'] === 'COMPLETED') {
+                        response => {
+                            if (response) {
+                                if (response['steps']) {
+                                    this.publishSteps = response['steps'].slice().sort((a: PublishStep, b: PublishStep) => {
+                                        return (a.stepNumber || 0) - (b.stepNumber || 0);
+                                    });
+                                    this.publishStatusTrackerModalSize = this.publishSteps && this.publishSteps.length > 0 ? 'xlarge' : 'medium';
+                                }
+                                this.puslishStatus = response['overallStatus'];
+                                if (response['overallStatus'] === 'COMPLETED' || response['overallStatus'] === 'FAILED') {
                                     this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                                         build.buildPublishing = false;
                                         build.tags = response.tags;
-                                        this.closeWaitingModel();
-                                        if (status['message']) {
-                                            this.message = status['message'];
-                                            this.message += '.\nPlease contact technical support to get help resolving this.';
-                                            this.openErrorModel();
-                                        } else {
-                                            this.message = 'The build has been published successfully.';
-                                            this.openSuccessModel();
-                                        }
                                     });
-                                    clearInterval(interval);
-                                } else if (status['status'] === 'FAILED') {
-                                    build.buildPublishing = false;
-                                    this.message = status['message'];
-                                    this.closeWaitingModel();
-                                    this.openErrorModel();
                                     clearInterval(interval);
                                 } else {
                                     // do nothing
@@ -602,16 +602,24 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                 this.buildService.getBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(response => {
                                     build.buildPublishing = false;
                                     build.tags = response.tags;
-                                    this.closeWaitingModel();
+                                    this.closePublishStatusTrackerModal();
                                 });
                             } else {
                                 this.message = errorResponse.error.errorMessage;
-                                this.closeWaitingModel();
+                                this.closePublishStatusTrackerModal();
                                 this.openErrorModel();
                             }
                             clearInterval(interval);
                         }
                     );
+                };               
+
+                // Get initial status immediately after publishing starts
+                checkPublishingStatus();
+
+                // Then continue polling every 10 seconds
+                interval = setInterval(() => {
+                    checkPublishingStatus();
                 }, 10000);
             }
         );
@@ -1413,6 +1421,14 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 this.customRefsetCompositeKeysInput.nativeElement.value = '';
             }, 0);
         }
+    }
+
+    private openPublishStatusTrackerModal() {
+        this.openModal('publish-status-tracker-modal');
+    }
+
+    private closePublishStatusTrackerModal() {
+        this.closeModal('publish-status-tracker-modal');
     }
 
     private clearMessage() {

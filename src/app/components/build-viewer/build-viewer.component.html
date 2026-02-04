@@ -968,6 +968,87 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 </app-modal>
 
+<app-modal id="publish-status-tracker-modal" class="modal add-modal" [size]="publishStatusTrackerModalSize" [hideFooter]="!puslishStatus || puslishStatus == 'RUNNING'">
+    <h3 header class="mb-0">Publish Status Tracker</h3>
+    <div body class="text-start p-5">
+        <ng-container *ngIf="!publishSteps || publishSteps.length === 0; else stepsTable">
+            <p class="text-center loading">Waiting for publishing status...</p>
+        </ng-container>
+
+        <ng-template #stepsTable>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th class="w-5 text-center">#</th>
+                        <th class="w-25">Step</th>
+                        <th class="w-15 text-center">Status</th>
+                        <th>Warnings</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let step of publishSteps">
+                        <td class="text-center align-middle">{{step.stepNumber}}</td>
+                        <td class="align-middle">{{step.stepName}}</td>
+                        <td class="text-center align-middle">
+                            <span *ngIf="step.status === 'RUNNING'" class="me-2">
+                                <i class="fas fa-spinner fa-spin status-icon status-icon-success"></i>
+                            </span>
+                            <span *ngIf="step.status === 'SUCCESS'" class="me-2">
+                                <i class="fas fa-check-circle status-icon status-icon-success"></i>
+                            </span>
+                            <span *ngIf="step.status === 'FAILED'" class="me-2">
+                                <i class="fas fa-times-circle status-icon status-icon-failed"></i>
+                            </span>
+                            <span *ngIf="step.status === 'SKIPPED'" class="me-2">
+                                <i class="fas fa-forward status-icon status-icon-skipped"></i>
+                            </span>
+                        </td>
+                        <td class="align-middle">
+                            <ng-container *ngIf="step.warnings && step.warnings.length; else noWarnings">
+                                <ul class="mb-0 ps-3">
+                                    <li *ngFor="let warning of step.warnings">{{warning}}</li>
+                                </ul>
+                            </ng-container>
+                            <ng-template #noWarnings>
+                                <span class="text-muted">None</span>
+                            </ng-template>
+                        </td>
+                        <td class="align-middle">
+                            <ng-container *ngIf="step.errorMessage; else noError">
+                                <div>
+                                    {{step.errorMessage}}
+                                </div>
+                                <ng-container *ngIf="step.errorDetails && step.errorDetails.length > 0">
+                                    <button
+                                        type="button"
+                                        class="btn btn-link p-0 error-details-toggle"
+                                        (click)="step.showErrorDetails = !step.showErrorDetails">
+                                        {{ step.showErrorDetails ? 'Hide details' : 'Show details' }}
+                                    </button>
+                                    <div *ngIf="step.showErrorDetails" class="error-details-section">
+                                        <ul class="mb-0 ps-3 error-details-list">
+                                            <li *ngFor="let detail of step.errorDetails">
+                                                {{ detail | capitalizeFirst }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #noError>
+                                <span class="text-muted">None</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-template>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('publish-status-tracker-modal')">CLOSE</button>
+    </div>
+</app-modal>
+
 <!--Build deletion confirmation-->
 <app-modal id="publish-danger-modal" class="modal">
     <h3 header class="mb-0">Are you absolutely sure?</h3>

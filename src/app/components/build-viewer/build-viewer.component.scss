@@ -221,6 +221,7 @@ app-modal {
     //}
 
     &#generate-jira-tickets-modal,
+    &#publish-status-tracker-modal,
     &#hidden-builds-modal {
         table {
             tr {
@@ -252,6 +253,52 @@ app-modal {
                             cursor: pointer;
                         }
                     }
+
+                    i.status-icon,
+                    i.status-icon-success,
+                    i.status-icon-failed,
+                    i.status-icon-skipped {
+                        font-size: 1.4rem;
+                    }
+
+                    i.status-icon-success {
+                        color: $green;
+                    }
+
+                    i.status-icon-failed {
+                        color: $mandy;
+                    }
+
+                    i.status-icon-skipped {
+                        color: $sea-buckthorn;
+                    }
+
+                    // Error details styling
+                    .error-message,
+                    .error-details-label {
+                        strong {
+                            color: $mandy;
+                        }
+                    }
+
+                    .error-details-list {
+                        li {
+                            color: $mandy;
+                            word-break: break-word;
+                        }
+                    }
+
+                    .error-details-toggle {
+                        font-size: 1.1rem;
+                        color: $cerulean;
+                        text-decoration: underline;
+
+                        &:hover {
+                            color: color.adjust($cerulean, $lightness: -5%);
+                            text-decoration: none;
+                        }
+                    }
+
                 }
             }
         }
