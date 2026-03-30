@@ -93,6 +93,22 @@ export class ProductService {
         return this.http.patch<Product>('/release/centers/' + releaseCenterKey + '/products/' + product.id, data);
     }
 
+    updateManifestConfiguration(releaseCenterKey: string, product: Product): Observable<Product> {
+        const manifestConfig = product['manifestConfig'] || {};
+        const data = {
+            autoGenerateManifest: manifestConfig.autoGenerateManifest,
+            derivativeProduct: manifestConfig.derivativeProduct,
+            includeProductNamespaceInPackage: manifestConfig.includeProductNamespaceInPackage
+        };
+       
+        data['excludedRefsets'] = manifestConfig.excludedRefsets ? manifestConfig.excludedRefsets : '';
+        data['productName'] = manifestConfig.productName ? manifestConfig.productName : '';
+        data['productNamespace'] = manifestConfig.productNamespace ? manifestConfig.productNamespace : '';   
+        data['packageEffectiveTime'] = manifestConfig.packageEffectiveTime ? formatDate(manifestConfig.packageEffectiveTime, 'yyyy-MM-dd', 'en-US') : '';
+        
+        return this.http.patch<Product>('/release/centers/' + releaseCenterKey + '/products/' + product.id, data);
+    }
+
     uploadManifest(releaseCenterKey, productKey, file: FormData) {
         return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest', file);
     }
@@ -103,6 +119,31 @@ export class ProductService {
 
     loadManifestFile(releaseCenterKey, productKey) {
         return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest/file', {responseType: 'arraybuffer'});
+    }
+
+    generateManifest(releaseCenterKey, productKey, branchPath, product: Product): Observable<string> {
+        const params = new HttpParams()
+                    // Ensure `branchPath` is always a string to avoid HttpParams type issues.
+                    .set('branchPath', branchPath ?? '');
+
+        const manifestConfig = product['manifestConfig'] || {};
+        const data = {
+            autoGenerateManifest: manifestConfig.autoGenerateManifest,
+            derivativeProduct: manifestConfig.derivativeProduct,
+            includeProductNamespaceInPackage: manifestConfig.includeProductNamespaceInPackage
+        };
+       
+        data['excludedRefsets'] = manifestConfig.excludedRefsets ? manifestConfig.excludedRefsets : '';
+        data['productName'] = manifestConfig.productName ? manifestConfig.productName : '';
+        data['productNamespace'] = manifestConfig.productNamespace ? manifestConfig.productNamespace : '';   
+        data['packageEffectiveTime'] = manifestConfig.packageEffectiveTime ? formatDate(manifestConfig.packageEffectiveTime, 'yyyy-MM-dd', 'en-US') : '';
+        
+        // Backend returns XML as plain text; tell HttpClient to not JSON-parse the response.
+        return this.http.post(
+            '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest/generate',
+            data,
+            { params: params, responseType: 'text' }
+        );
     }
 
     updateProductVisibility(releaseCenterKey, productKey, visibility) {

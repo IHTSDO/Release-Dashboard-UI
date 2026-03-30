@@ -28,6 +28,7 @@ import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { NoScrollInputDirective } from 'src/app/directive/no-scroll-input.directive';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CodeSystem } from 'src/app/models/codeSystem';
 
 export const DATE_FORMATS = {
     parse: {
@@ -68,6 +69,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     productsWithManifestUploaded: string[];
 
     // animations
+    gereratingManifest = false;
     savingProduct = false;
     loadingReleasePackagesDone = false;
 
@@ -92,6 +94,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     action: string;
 
     codeSystemToReleasePackageMap = {};
+    codeSystems: CodeSystem[];
 
     previousReleaseInputControl = new FormControl('');
     previousReleaseOptions: string[] = [];
@@ -107,7 +110,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 private productDataService: ProductDataService,
                 private permissionService: PermissionService,
                 private paginationService: ProductPaginationService,
-                private releaseServerService: ReleaseServerService) {
+                private releaseServerService: ReleaseServerService,
+                private releaseServer: ReleaseServerService,) {
         this.activeReleaseCenterSubscription = this.releaseCenterService.getActiveReleaseCenter().subscribe(response => {
             this.activeReleaseCenter = response;
 
@@ -143,6 +147,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.totalProduct = this.paginationService.EMPTY_ITEMS;
         this.initializeEditingProduct();
         this.initAutoComplete();
+
+        this.loadCodeSystems(this.releaseCenterService, this.releaseServer).then(data => {
+            this.codeSystems = <CodeSystem[]> data;
+            this.releaseCenterService.cacheCodeSystems(this.codeSystems);
+        });
     }
 
     ngOnDestroy() {
@@ -195,6 +204,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.editedProduct = new Product();
         this.editedProduct.buildConfiguration = buildConfiguration;
         this.editedProduct.qaTestConfig = qaTestConfiguration;
+        this.ensureManifestConfiguration();
     }
 
     onSelectProduct() {
@@ -404,26 +414,10 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.message = '';
         this.customRefsetCompositeKeys = '';
         this.editedProduct = (JSON.parse(JSON.stringify(product)));
-        if (!product.buildConfiguration) {
-            this.editedProduct.buildConfiguration = new BuildConfiguration();
-        }
-        if (this.editedProduct.buildConfiguration.effectiveTime) {
-            // Convert to Date
-            const effectiveTime = new Date(this.editedProduct.buildConfiguration.effectiveTime);
-            this.editedProduct.buildConfiguration.effectiveTime = effectiveTime;
-        }
-        if (this.editedProduct.buildConfiguration.extensionConfig &&
-            this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
-            // Convert to Date
-            const effectiveTime = new Date(this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate);
-            this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate = effectiveTime;
-        }
-        if (!product.qaTestConfig) {
-            this.editedProduct.qaTestConfig = new QAConfiguration();
-        }
-        if (!this.editedProduct.buildConfiguration.extensionConfig) {
-            this.editedProduct.buildConfiguration.extensionConfig = new ExtensionConfig();
-        }
+        this.ensureBuildConfiguration();
+        this.ensureQAConfiguration();
+        this.ensureExtensionConfiguration();
+        this.ensureManifestConfiguration();
 
         // parse custom refset composite keys
         if (this.editedProduct.buildConfiguration.customRefsetCompositeKeys
@@ -439,6 +433,133 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         }
         this.loadPreviousReleaseOptions();
         this.openUpdateProductModal();
+    }
+
+    openManifestConfigurationModal(product: Product) {
+        this.editedProduct = JSON.parse(JSON.stringify(product));
+        this.ensureExtensionConfiguration();
+        this.ensureManifestConfiguration();
+        this.openModal('manifest-configuration-modal');
+    }
+
+    clearPackageEffectiveTime(packageEffectiveTimeInput?: HTMLInputElement) {
+        // `packageEffectiveTime` is optional, so clearing it should send an "empty" value to the backend.
+        // The service converts `null` to '' when building the PATCH payload.
+        this.ensureManifestConfiguration();
+        this.editedProduct['manifestConfig'].packageEffectiveTime = null;
+        if (packageEffectiveTimeInput) {
+            packageEffectiveTimeInput.value = '';
+        }
+    }
+
+    viewManifestSample() {
+        this.ensureManifestConfiguration();
+        const productId = this.editedProduct.id;
+        this.gereratingManifest = true;
+        const codeSystemShortname = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
+        if (!codeSystemShortname) {
+            this.message = 'The manifest file could not be generated because the code system of the release center is missing. Please contact technical support to get help resolving this.';
+            this.openErrorModel();
+            return;
+        }
+        const codeSystem = this.codeSystems.find(cs => cs.shortName === codeSystemShortname);
+        if (!codeSystem) {
+            this.message = 'The manifest file could not be generated because the code system of the release center is missing. Please contact technical support to get help resolving this.';
+            this.openErrorModel();
+            return;
+        }
+
+        this.productService.generateManifest(this.activeReleaseCenter.id, productId, codeSystem['branchPath'], this.editedProduct).subscribe(
+            data => {
+                const blob = new Blob([data], { type: 'application/xml' });
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                this.gereratingManifest = false;
+            },
+            errorResponse => {
+                this.gereratingManifest = false;
+                if (errorResponse.error) {
+                    errorResponse.error = typeof errorResponse.error === 'string' ? JSON.parse(errorResponse.error) : errorResponse.error;
+                }
+                if (errorResponse.error && errorResponse.error.errorMessage) {
+                    this.message = errorResponse.error.errorMessage;
+                } else {
+                    this.message = 'The manifest file could not be generated. Please contact technical support to get help resolving this.';
+                }
+                this.openErrorModel();
+            }
+        );
+    }
+
+    saveManifestConfiguration() {
+        this.message = '';
+        this.savingProduct = true;
+        this.productService.updateManifestConfiguration(this.activeReleaseCenter.id, this.editedProduct).subscribe(
+            response => {
+                this.savingProduct = false;
+                this.products[this.products.findIndex(p => p.id === response.id)] = response;
+                this.productDataService.cacheProducts(this.products);
+                this.editedProduct = JSON.parse(JSON.stringify(response));
+                if (this.editedProduct.buildConfiguration && this.editedProduct.buildConfiguration.effectiveTime) {
+                    this.editedProduct.buildConfiguration.effectiveTime = new Date(this.editedProduct.buildConfiguration.effectiveTime);
+                }
+                if (this.editedProduct.buildConfiguration
+                    && this.editedProduct.buildConfiguration.extensionConfig
+                    && this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
+                    this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate =
+                        new Date(this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate);
+                }
+                this.ensureExtensionConfiguration();
+                this.ensureManifestConfiguration();
+                this.closeModal('manifest-configuration-modal');
+                this.message = 'Manifest configuration has been updated successfully.';
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                if (errorResponse.error && errorResponse.error.errorMessage) {
+                    this.message = errorResponse.error.errorMessage;
+                } else {
+                    this.message = 'Failed to update manifest configuration. Please contact technical support to get help resolving this.';
+                }
+                this.openErrorModel();
+                this.savingProduct = false;
+            }
+        );
+    }
+
+    private ensureBuildConfiguration() {
+        if (!this.editedProduct.buildConfiguration) {
+            this.editedProduct.buildConfiguration = new BuildConfiguration();
+        }
+        if (this.editedProduct.buildConfiguration.effectiveTime) {
+            // Convert to Date
+            const effectiveTime = new Date(this.editedProduct.buildConfiguration.effectiveTime);
+            this.editedProduct.buildConfiguration.effectiveTime = effectiveTime;
+        }
+        if (this.editedProduct.buildConfiguration.extensionConfig &&
+            this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate) {
+            // Convert to Date
+            const effectiveTime = new Date(this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate);
+            this.editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate = effectiveTime;
+        }
+    }
+
+    private ensureQAConfiguration() {
+        if (!this.editedProduct.qaTestConfig) {
+            this.editedProduct.qaTestConfig = new QAConfiguration();
+        }
+    }
+
+    private ensureExtensionConfiguration() {
+        if (!this.editedProduct.buildConfiguration.extensionConfig) {
+            this.editedProduct.buildConfiguration.extensionConfig = new ExtensionConfig();
+        }
+    }
+
+    private ensureManifestConfiguration() {
+        if (!this.editedProduct['manifestConfig']) {
+            this.editedProduct['manifestConfig'] = {};
+        }
     }
 
     openProductVisibilityModal(product: Product) {
@@ -582,6 +703,20 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
                 || (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1)
                 )
             );
+    }
+
+    // load code systems from cache, other from server
+    loadCodeSystems(releaseCenterService, releaseServer) {
+        const promise = new Promise(function(resolve, reject) {
+            const codeSystems = releaseCenterService.getCachedCodeSystems();
+            if (codeSystems && codeSystems.length !== 0) {
+                resolve(codeSystems);
+                return;
+            }
+            releaseServer.getCodeSystems().subscribe(data => resolve(data));
+        });
+
+        return promise;
     }
 
     openModal(name) {
