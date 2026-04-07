@@ -1431,6 +1431,16 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.closeModal('publish-status-tracker-modal');
     }
 
+    /** Human-readable duration from API `timeTakenMillis` (e.g. running / pending steps have no value). */
+    formatPublishStepTimeTaken(ms: number | undefined | null): string {
+        if (ms == null || Number.isNaN(ms) || ms < 0) {
+            return '—';
+        }
+        const sec = ms / 1000;
+        const rounded = parseFloat(sec.toFixed(3));
+        return `${rounded} s`;
+    }
+
     private clearMessage() {
         this.message = '';
     }

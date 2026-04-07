@@ -980,8 +980,9 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 <thead>
                     <tr>
                         <th class="w-5 text-center">#</th>
-                        <th class="w-25">Step</th>
-                        <th class="w-15 text-center">Status</th>
+                        <th style="width: 35%;">Step</th>
+                        <th class="w-10 text-center">Status</th>
+                        <th class="w-10 text-center">Time Taken</th>
                         <th>Warnings</th>
                         <th>Error</th>
                     </tr>
@@ -995,23 +996,29 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                                 <i class="fas fa-spinner fa-spin status-icon status-icon-success"></i>
                             </span>
                             <span *ngIf="step.status === 'SUCCESS'" class="me-2">
-                                <i class="fas fa-check-circle status-icon status-icon-success"></i>
+                                <i class="fas fa-check-circle status-icon status-icon-success" title="Success"></i>
                             </span>
                             <span *ngIf="step.status === 'FAILED'" class="me-2">
-                                <i class="fas fa-times-circle status-icon status-icon-failed"></i>
+                                <i class="fas fa-times-circle status-icon status-icon-failed" title="Failure"></i>
                             </span>
                             <span *ngIf="step.status === 'SKIPPED'" class="me-2">
-                                <i class="fas fa-forward status-icon status-icon-skipped"></i>
+                                <i class="fas fa-forward status-icon status-icon-skipped" title="Skip"></i>
                             </span>
                         </td>
+                        <td class="text-center align-middle">
+                            {{ formatPublishStepTimeTaken(step.timeTakenMillis) }}
+                        </td>
                         <td class="align-middle">
-                            <ng-container *ngIf="step.warnings && step.warnings.length; else noWarnings">
+                            <div *ngIf="step.skipComment" class="mb-2">                                
+                                <span>{{ step.skipComment }}</span>
+                            </div>
+                            <ng-container *ngIf="step.warnings && step.warnings.length; else noWarningsList">
                                 <ul class="mb-0 ps-3">
                                     <li *ngFor="let warning of step.warnings">{{warning}}</li>
                                 </ul>
                             </ng-container>
-                            <ng-template #noWarnings>
-                                <span class="text-muted">None</span>
+                            <ng-template #noWarningsList>
+                                <span *ngIf="!step.skipComment" class="text-muted">None</span>
                             </ng-template>
                         </td>
                         <td class="align-middle">
