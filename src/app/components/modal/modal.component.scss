@@ -119,6 +119,35 @@ app-modal {
         }
     }
 
+    &.manifest-configuration-modal {
+        .modal-dialog-centered .modal-content .modal-body {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .modal-dialog-centered .modal-footer {
+            justify-content: flex-start;
+
+            /* Projected [footer] is a single wrapper div; stretch it so inner flex + ms-auto work */
+            > [footer] {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: flex-start;
+                width: 100%;
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .manifest-configuration-footer-actions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                margin-left: auto;
+            }
+        }
+    }
+
     div.app-modal-background {
         position: fixed;
         top: 0;

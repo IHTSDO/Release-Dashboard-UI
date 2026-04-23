@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from '../../models/product';
+import { OptionalManifestRefset } from '../../models/optionalManifestRefset';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { formatDate } from '@angular/common';
 
@@ -14,6 +15,16 @@ export class ProductService {
 
     getProduct(releaseCenterKey, productKey): Observable<Product> {
         return this.http.get<Product>('/release/centers/' + releaseCenterKey + '/products/' + productKey);
+    }
+
+    /**
+     * Excluded refsets offered for manifest configuration for this release center (optional-refsets API).
+     * Documented route: /release/centers/{releaseCenterKey}/products/manifest/optional-refsets
+     */
+    getOptionalManifestRefsets(releaseCenterKey: string): Observable<OptionalManifestRefset[]> {
+        return this.http.get<OptionalManifestRefset[]>(
+            '/release/centers/' + releaseCenterKey + '/products/manifest/optional-refsets'
+        );
     }
 
     getProducts(releaseCenterKey, pageNumber, pageSize, sortField, sortDirection): Observable<object> {
@@ -98,7 +109,8 @@ export class ProductService {
         const data = {
             autoGenerateManifest: manifestConfig.autoGenerateManifest,
             derivativeProduct: manifestConfig.derivativeProduct,
-            includeProductNamespaceInPackage: manifestConfig.includeProductNamespaceInPackage
+            includeProductNamespaceInPackage: manifestConfig.includeProductNamespaceInPackage,
+            packageSimpleRefsetsIndividually: !!manifestConfig.packageSimpleRefsetsIndividually
         };
        
         data['excludedRefsets'] = manifestConfig.excludedRefsets ? manifestConfig.excludedRefsets : '';
@@ -121,16 +133,15 @@ export class ProductService {
         return this.http.get('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest/file', {responseType: 'arraybuffer'});
     }
 
-    generateManifest(releaseCenterKey, productKey, branchPath, product: Product): Observable<string> {
-        const params = new HttpParams()
-                    // Ensure `branchPath` is always a string to avoid HttpParams type issues.
-                    .set('branchPath', branchPath ?? '');
+    generateManifest(releaseCenterKey, product: Product): Observable<string> {
+        const params = new HttpParams();
 
         const manifestConfig = product['manifestConfig'] || {};
         const data = {
             autoGenerateManifest: manifestConfig.autoGenerateManifest,
             derivativeProduct: manifestConfig.derivativeProduct,
-            includeProductNamespaceInPackage: manifestConfig.includeProductNamespaceInPackage
+            includeProductNamespaceInPackage: manifestConfig.includeProductNamespaceInPackage,
+            packageSimpleRefsetsIndividually: !!manifestConfig.packageSimpleRefsetsIndividually
         };
        
         data['excludedRefsets'] = manifestConfig.excludedRefsets ? manifestConfig.excludedRefsets : '';
@@ -140,7 +151,7 @@ export class ProductService {
         
         // Backend returns XML as plain text; tell HttpClient to not JSON-parse the response.
         return this.http.post(
-            '/release/centers/' + releaseCenterKey + '/products/' + productKey + '/manifest/generate',
+            '/release/centers/' + releaseCenterKey + '/products/' + product.id + '/manifest/generate',
             data,
             { params: params, responseType: 'text' }
         );

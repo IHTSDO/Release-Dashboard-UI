@@ -29,6 +29,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { NoScrollInputDirective } from 'src/app/directive/no-scroll-input.directive';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CodeSystem } from 'src/app/models/codeSystem';
+import { OptionalManifestRefset } from 'src/app/models/optionalManifestRefset';
 
 export const DATE_FORMATS = {
     parse: {
@@ -58,6 +59,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     @ViewChild('uploadManifestFileInput') uploadManifestFileInput: ElementRef<HTMLElement>;
     @ViewChild('productPaginator') productPaginator: MatPaginator;
     @ViewChild('hiddenProductPaginator') hiddenProductPaginator: MatPaginator;
+    @ViewChild('excludedRefsetsSelectAll') excludedRefsetsSelectAllRef?: ElementRef<HTMLInputElement>;
 
     activeReleaseCenter: ReleaseCenter;
     products: Product[];
@@ -67,6 +69,14 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     customRefsetCompositeKeys: string;
     roles: Object;
     productsWithManifestUploaded: string[];
+
+    optionalManifestRefsets: OptionalManifestRefset[] = [];
+    optionalManifestRefsetsLoadError: string | null = null;
+    selectedOptionalManifestRefsetIds: string[] = [];
+    /** Manual / additional exclusions only; composed with optional checkboxes into manifestConfig.excludedRefsets on save. */
+    otherExcludedRefsets = '';
+    /** Server value when the modal opened; used to split optional vs other when the optional-refset list loads. */
+    private manifestExcludedRefsetsSnapshot = '';
 
     // animations
     gereratingManifest = false;
@@ -137,7 +147,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
             this.initializeEditingProduct();
             this.loadProducts();
             this.loadReleasePackages();
-
+            this.loadOptionalManifestRefsets(this.activeReleaseCenter.id);
         });
     }
 
@@ -439,7 +449,13 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         this.editedProduct = JSON.parse(JSON.stringify(product));
         this.ensureExtensionConfiguration();
         this.ensureManifestConfiguration();
+        this.manifestExcludedRefsetsSnapshot =
+            this.editedProduct['manifestConfig'].excludedRefsets != null
+                ? String(this.editedProduct['manifestConfig'].excludedRefsets)
+                : '';
+        this.partitionExcludedRefsetsFromSnapshot();
         this.openModal('manifest-configuration-modal');
+        setTimeout(() => this.syncExcludedRefsetsSelectAllCheckbox(), 0);
     }
 
     clearPackageEffectiveTime(packageEffectiveTimeInput?: HTMLInputElement) {
@@ -454,22 +470,11 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     viewManifestSample() {
         this.ensureManifestConfiguration();
-        const productId = this.editedProduct.id;
-        this.gereratingManifest = true;
-        const codeSystemShortname = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
-        if (!codeSystemShortname) {
-            this.message = 'The manifest file could not be generated because the code system of the release center is missing. Please contact technical support to get help resolving this.';
-            this.openErrorModel();
-            return;
-        }
-        const codeSystem = this.codeSystems.find(cs => cs.shortName === codeSystemShortname);
-        if (!codeSystem) {
-            this.message = 'The manifest file could not be generated because the code system of the release center is missing. Please contact technical support to get help resolving this.';
-            this.openErrorModel();
-            return;
-        }
+        this.normalizeOtherExcludedRefsetsInput();
+        this.syncComposedExcludedRefsetsToManifest();     
 
-        this.productService.generateManifest(this.activeReleaseCenter.id, productId, codeSystem['branchPath'], this.editedProduct).subscribe(
+        this.gereratingManifest = true;
+        this.productService.generateManifest(this.activeReleaseCenter.id, this.editedProduct).subscribe(
             data => {
                 const blob = new Blob([data], { type: 'application/xml' });
                 const url = window.URL.createObjectURL(blob);
@@ -493,6 +498,8 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
 
     saveManifestConfiguration() {
         this.message = '';
+        this.normalizeOtherExcludedRefsetsInput();
+        this.syncComposedExcludedRefsetsToManifest();
         this.savingProduct = true;
         this.productService.updateManifestConfiguration(this.activeReleaseCenter.id, this.editedProduct).subscribe(
             response => {
@@ -560,6 +567,165 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         if (!this.editedProduct['manifestConfig']) {
             this.editedProduct['manifestConfig'] = {};
         }
+        if (typeof this.editedProduct['manifestConfig'].packageSimpleRefsetsIndividually !== 'boolean') {
+            this.editedProduct['manifestConfig'].packageSimpleRefsetsIndividually = false;
+        }
+        const mc = this.editedProduct['manifestConfig'];
+        if (mc.excludedRefsets != null && typeof mc.excludedRefsets !== 'string') {
+            mc.excludedRefsets = String(mc.excludedRefsets);
+        }
+    }
+
+    isOptionalManifestRefsetSelected(refsetId: string | number): boolean {
+        const sid = String(refsetId);
+        return this.selectedOptionalManifestRefsetIds.indexOf(sid) !== -1;
+    }
+
+    toggleOptionalManifestRefsetSelection(refsetId: string | number, checked: boolean) {
+        const sid = String(refsetId);
+        if (checked) {
+            if (this.selectedOptionalManifestRefsetIds.indexOf(sid) === -1) {
+                this.selectedOptionalManifestRefsetIds = this.selectedOptionalManifestRefsetIds.concat([sid]);
+            }
+        } else {
+            this.selectedOptionalManifestRefsetIds = this.selectedOptionalManifestRefsetIds.filter(id => id !== sid);
+        }
+    }
+
+    onOptionalManifestRefsetRowChange(refsetId: string | number, checked: boolean) {
+        this.toggleOptionalManifestRefsetSelection(refsetId, checked);
+        setTimeout(() => this.syncExcludedRefsetsSelectAllCheckbox(), 0);
+    }
+
+    /** Select every refset shown in the release-center list; keeps IDs already selected that are not in that list. */
+    selectAllExcludedManifestRefsets() {
+        const unknown = this.unknownOptionalManifestRefsetIds;
+        const listIds = this.optionalManifestRefsets.map(r => String(r.id));
+        this.selectedOptionalManifestRefsetIds = [...unknown, ...listIds];
+    }
+
+    private deselectListedExcludedManifestRefsets() {
+        const listIdSet = new Set(this.optionalManifestRefsets.map(r => String(r.id)));
+        this.selectedOptionalManifestRefsetIds = this.selectedOptionalManifestRefsetIds.filter(id => !listIdSet.has(id));
+    }
+
+    onExcludedRefsetsSelectAllChange(checked: boolean) {
+        if (checked) {
+            this.selectAllExcludedManifestRefsets();
+        } else {
+            this.deselectListedExcludedManifestRefsets();
+        }
+        setTimeout(() => this.syncExcludedRefsetsSelectAllCheckbox(), 0);
+    }
+
+    private syncExcludedRefsetsSelectAllCheckbox() {
+        const el = this.excludedRefsetsSelectAllRef?.nativeElement;
+        if (!el) {
+            return;
+        }
+        const n = this.optionalManifestRefsets.length;
+        if (n === 0) {
+            el.checked = false;
+            el.indeterminate = false;
+            return;
+        }
+        let selectedCount = 0;
+        for (const ref of this.optionalManifestRefsets) {
+            if (this.selectedOptionalManifestRefsetIds.indexOf(String(ref.id)) !== -1) {
+                selectedCount++;
+            }
+        }
+        el.indeterminate = selectedCount > 0 && selectedCount < n;
+        el.checked = selectedCount === n;
+    }
+
+    get unknownOptionalManifestRefsetIds(): string[] {
+        const known = new Set(this.optionalManifestRefsets.map(r => String(r.id)));
+        return this.selectedOptionalManifestRefsetIds.filter(id => !known.has(id));
+    }
+
+    /** Split index for two columns: first column gets the first half (rounded up), second column gets the rest. */
+    private get optionalManifestRefsetsColumnSplitIndex(): number {
+        const n = this.optionalManifestRefsets.length;
+        return n === 0 ? 0 : Math.ceil(n / 2);
+    }
+
+    get optionalManifestRefsetsFirstColumn(): OptionalManifestRefset[] {
+        return this.optionalManifestRefsets.slice(0, this.optionalManifestRefsetsColumnSplitIndex);
+    }
+
+    get optionalManifestRefsetsSecondColumn(): OptionalManifestRefset[] {
+        return this.optionalManifestRefsets.slice(this.optionalManifestRefsetsColumnSplitIndex);
+    }
+
+    private partitionExcludedRefsetsFromSnapshot() {
+        const raw = this.manifestExcludedRefsetsSnapshot;
+        if (!raw || !String(raw).trim()) {
+            this.selectedOptionalManifestRefsetIds = [];
+            this.otherExcludedRefsets = '';
+            return;
+        }
+        const allIds = String(raw)
+            .split(',')
+            .map(s => s.trim())
+            .filter(s => s.length !== 0);
+        const optionalIdSet = new Set(this.optionalManifestRefsets.map(r => r.id));
+        if (optionalIdSet.size === 0) {
+            this.selectedOptionalManifestRefsetIds = [];
+            this.otherExcludedRefsets = allIds.join(', ');
+            return;
+        }
+        this.selectedOptionalManifestRefsetIds = allIds.filter(id => optionalIdSet.has(id));
+        this.otherExcludedRefsets = allIds.filter(id => !optionalIdSet.has(id)).join(', ');
+    }
+
+    private syncComposedExcludedRefsetsToManifest() {
+        this.ensureManifestConfiguration();
+        const merged: string[] = [];
+        const seen = new Set<string>();
+        for (const id of this.selectedOptionalManifestRefsetIds) {
+            if (!seen.has(id)) {
+                seen.add(id);
+                merged.push(id);
+            }
+        }
+        for (const id of this.parseCommaSeparatedRefsetIds(this.otherExcludedRefsets)) {
+            if (!seen.has(id)) {
+                seen.add(id);
+                merged.push(id);
+            }
+        }
+        this.editedProduct['manifestConfig'].excludedRefsets = merged.length > 0 ? merged.join(',') : '';
+    }
+
+    private parseCommaSeparatedRefsetIds(value: string): string[] {
+        if (!value || typeof value !== 'string') {
+            return [];
+        }
+        return value.split(',').map(s => s.trim()).filter(s => s.length !== 0);
+    }
+
+    /** Normalize "Other Excluded Refsets" to comma + space between IDs (still parsed as comma-separated for save). */
+    normalizeOtherExcludedRefsetsInput() {
+        const ids = this.parseCommaSeparatedRefsetIds(this.otherExcludedRefsets);
+        this.otherExcludedRefsets = ids.length > 0 ? ids.join(', ') : '';
+    }
+
+    private loadOptionalManifestRefsets(releaseCenterKey: string) {
+        this.optionalManifestRefsetsLoadError = null;
+        this.productService.getOptionalManifestRefsets(releaseCenterKey).subscribe(
+            data => {
+                this.optionalManifestRefsets = (data || []).map(item => ({
+                    id: String(item.id),
+                    term: item.term
+                }));
+                setTimeout(() => this.syncExcludedRefsetsSelectAllCheckbox(), 0);
+            },
+            () => {
+                this.optionalManifestRefsets = [];
+                this.optionalManifestRefsetsLoadError = 'Excluded refsets could not be loaded. Other manifest settings are still available.';
+            }
+        );
     }
 
     openProductVisibilityModal(product: Product) {
@@ -616,7 +782,15 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         );
     }
 
+    /** True when manifest file upload is not allowed (auto-generated manifest is enabled). */
+    isManifestUploadDisabled(product: Product): boolean {
+        return !!product?.['manifestConfig']?.autoGenerateManifest;
+    }
+
     checkManifestFile(product: Product) {
+        if (this.isManifestUploadDisabled(product)) {
+            return;
+        }
         this.selectedProduct = product;
         if (this.productsWithManifestUploaded.indexOf(product.id) === -1) {
             this.openUploadManifestFileDialog();
@@ -646,11 +820,18 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
     }
 
     openUploadManifestFileDialog() {
+        if (this.isManifestUploadDisabled(this.selectedProduct)) {
+            return;
+        }
         const el: HTMLElement = this.uploadManifestFileInput.nativeElement;
         el.click();
     }
 
     uploadManifestFile(event) {
+        if (this.isManifestUploadDisabled(this.selectedProduct)) {
+            event.target.value = '';
+            return;
+        }
         this.message = '';
         const product = this.products.find(p => p.id === this.selectedProduct.id);
         product.manifestFileUploading = true;

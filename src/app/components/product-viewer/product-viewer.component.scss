@@ -204,11 +204,31 @@ app-modal {
         }
     }
     &.manifest-configuration-modal {
+        div.input-group {
+            input, textarea {
+                font-size: 1.2rem;
+            }
+        }
+
+        span {
+            color: $black;
+            cursor: default;
+            font-size: 1.2rem;
+        }
+
+        input[type=checkbox] {
+            cursor: default;
+        }
+        
+        .optional-refsets-columns {
+            max-height: 251px;
+            overflow-y: auto;
+        }
+
         button {
             &.view {
                 background-color: color.adjust($wisteria, $lightness: 15%);
                 color: $white !important;
-                margin-right: 190px;
 
                 i {
                     color: color.adjust($wisteria, $lightness: 30%);
