@@ -344,7 +344,7 @@ export class ProductViewerComponent implements OnInit, OnDestroy {
         return missingFields;
     }
 
-    canAddProduct(): boolean {
+    canManageProduct(): boolean {
         const codeSystem = this.activeReleaseCenter?.codeSystem ?? '';
         const roles = this.roles as Record<string, string[]>;
         return !!roles && !!codeSystem && (

@@ -2,9 +2,9 @@
 <div *ngIf="activeReleaseCenter" class="product-viewer text-center">
     <h1 class="p-3">{{activeReleaseCenter?.name}}</h1>
     <div class="container-fluid">
-        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = '';addSnomedCtProduct.value = ''; message = ''; openModal('add-product-modal')" class="btn green float-end m-2"><i class="fas fa-plus pe-2"></i>ADD NEW PRODUCT</button>
-        <button *ngIf="canAddProduct()" data-toggle="tooltip" title="View Hidden Products" (click)="resetHiddenProductTable(); loadHiddenProducts(); openModal('hidden-products-modal')" class="btn blue float-end m-2"><i class="fas fa-eye pe-2"></i>VIEW HIDDEN</button>
-<!--        <button class="btn-circle ms-3 mb-3 btn-blue float-end" *ngIf="canAddProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>-->
+        <button *ngIf="canManageProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = '';addSnomedCtProduct.value = ''; message = ''; openModal('add-product-modal')" class="btn green float-end m-2"><i class="fas fa-plus pe-2"></i>ADD NEW PRODUCT</button>
+        <button *ngIf="canManageProduct()" data-toggle="tooltip" title="View Hidden Products" (click)="resetHiddenProductTable(); loadHiddenProducts(); openModal('hidden-products-modal')" class="btn blue float-end m-2"><i class="fas fa-eye pe-2"></i>VIEW HIDDEN</button>
+<!--        <button class="btn-circle ms-3 mb-3 btn-blue float-end" *ngIf="canManageProduct()" data-toggle="tooltip" title="Add New Product" (click)="addProductName.value = ''; message = ''; openModal('add-product-modal')"><i class="material-icons">add</i></button>-->
         <table class="table table-bordered" *ngIf="productsLoading">
             <thead>
                 <tr>
@@ -21,13 +21,13 @@
             <thead>
             <tr>
                 <td [appSort] (sortClick)="handleSortClickOnProductTable($event)" [ngClass]="{'asc': sortDirectionOnProductTable === 'asc', 'desc': sortDirectionOnProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></td>
-                <td class="btn-groups fit-content"></td>
+                <td *ngIf="canManageProduct()" class="btn-groups fit-content"></td>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let product of products" (click)="onSelectProduct()" routerLink="/{{activeReleaseCenter.id}}/{{product.id}}" class="product">
                 <td class="pb-0 text-start">{{product?.name}}</td>
-                <td class="btn-groups fit-content">
+                <td *ngIf="canManageProduct()" class="btn-groups fit-content">
                     <div class="product-row-actions">
                         <app-product-action-buttons
                             *ngIf="activeReleaseCenter"
@@ -41,20 +41,20 @@
                             (feedbackSuccess)="onProductActionFeedbackSuccess($event)"
                             (feedbackError)="onProductActionFeedbackError($event)">
                         </app-product-action-buttons>
-                        <button type="button" *ngIf="canAddProduct()" class="btn grey flex-shrink-0" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product">HIDE</button>
+                        <button type="button" *ngIf="canManageProduct()" class="btn grey flex-shrink-0" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product">HIDE</button>
                     </div>
 
                     <!--                    <div class="input-group ps-4 justify-content-start">-->
-                    <!--                        <button class="btn-circle btn-green" *ngIf="canAddProduct()" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>-->
+                    <!--                        <button class="btn-circle btn-green" *ngIf="canManageProduct()" (click)="openUpdateConfigurationsModal(product); $event.stopPropagation()" title="Update Configurations"><i class="material-icons">edit</i></button>-->
                     <!--                        <button class="btn-circle  ms-3" [ngClass]="{'btn-light-red': !productsWithManifestUploaded.includes(product.id), 'btn-green': productsWithManifestUploaded.includes(product.id)}" (click)="loadManifestFile(product); $event.stopPropagation()" title="{{!productsWithManifestUploaded.includes(product.id) ? 'The manifest has not yet been uploaded' : 'View Manifest File'}}"><i class="material-icons">insert_drive_file</i></button>-->
-                    <!--                        <button class="btn-circle btn-blue ms-3" *ngIf="!product.manifestFileUploading && canAddProduct()" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>-->
+                    <!--                        <button class="btn-circle btn-blue ms-3" *ngIf="!product.manifestFileUploading && canManageProduct()" (click)="checkManifestFile(product); $event.stopPropagation()" title="Upload Manifest File"><i class="material-icons">publish</i></button>-->
                     <!--                        <div *ngIf="product.manifestFileUploading" class="badge loading">Uploading</div>-->
-                    <!--                        <button class="btn-circle btn-mandy ms-3" *ngIf="canAddProduct()" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product"><i class="material-icons">visibility_off</i></button>-->
+                    <!--                        <button class="btn-circle btn-mandy ms-3" *ngIf="canManageProduct()" (click)="openProductVisibilityModal(product); $event.stopPropagation()" title="Hide Product"><i class="material-icons">visibility_off</i></button>-->
                     <!--                    </div>-->
                 </td>
             </tr>
             <tr *ngIf="products?.length === 0">
-                <td colspan="2">No products found.</td>
+                <td [attr.colspan]="canManageProduct() ? 2 : 1">No products found.</td>
             </tr>
             </tbody>
         </table>
@@ -88,20 +88,18 @@
             <thead>
             <tr>
                 <td [appSort] (sortClick)="handleSortClickOnHiddenProductTable($event)" [ngClass]="{'asc': sortDirectionOnHiddenProductTable === 'asc', 'desc': sortDirectionOnHiddenProductTable === 'desc'}"><h3 class="mb-0">PRODUCT</h3></td>
-                <td class="w-13"></td>
+                <td *ngIf="canManageProduct()" class="w-13"></td>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let product of hiddenProducts" class="product">
                 <td class="pb-0 text-start">{{product?.name}}</td>
-                <td class=" btn-groups">
-                    <div *ngIf="canAddProduct()" class="d-inline-block m-1">
-                        <button class="btn hide" (click)="openHiddenProductVisibilityModal(product);" title="Un-hide Product"><i class="fas fa-eye pe-2"></i>UN-HIDE</button>
-                    </div>
+                <td *ngIf="canManageProduct()" class="btn-groups">
+                    <button type="button" class="btn grey" (click)="openHiddenProductVisibilityModal(product);" title="Un-hide Product">UN-HIDE</button>
                 </td>
             </tr>
             <tr *ngIf="hiddenProducts?.length === 0">
-                <td colspan="2">No products found.</td>
+                <td [attr.colspan]="canManageProduct() ? 2 : 1">No products found.</td>
             </tr>
             </tbody>
         </table>

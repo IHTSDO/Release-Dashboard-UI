@@ -355,6 +355,31 @@ app-modal {
         }
     }
 
+    &.build-modal {
+        .unpublished-versioned-branch-warning {
+            background-color: color.adjust($sea-buckthorn, $lightness: 35%);
+            border: 1px solid $sea-buckthorn;
+            color: $black;
+
+            .warning-text {
+                font-size: 1.2rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        p.warning-text {
+            background-color: $sea-buckthorn;
+            color: $black;
+            font-size: 1.4rem;
+            margin: -10px -10px 10px -10px;
+
+            i {
+                font-size: 1.6rem;
+            }
+        }
+    }
+
     &#publish-danger-modal {
         p.danger-text {
             background-color: $sea-buckthorn;

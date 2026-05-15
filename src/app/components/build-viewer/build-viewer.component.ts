@@ -37,6 +37,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PublishStep } from '../../models/publishStep';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize-first.pipe';
 import { ProductActionButtonsComponent } from '../product-action-buttons/product-action-buttons.component';
+import { isVersionedBranch } from '../../utils/branch-path.util';
 
 
 export const DATE_FORMATS = {
@@ -669,6 +670,22 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.localInputFiles = e.target.files;
     }
 
+    shouldWarnPublishedOnUnversionedBranch(): boolean {
+        if (this.useLocalInputFiles) {
+            return false;
+        }
+        return this.buildParams?.exportType === 'PUBLISHED'
+            && !isVersionedBranch(this.buildParams?.branch);
+    }
+
+    shouldWarnUnpublishedOnVersionedBranch(): boolean {
+        if (this.useLocalInputFiles) {
+            return false;
+        }
+        return this.buildParams?.exportType === 'UNPUBLISHED'
+            && isVersionedBranch(this.buildParams?.branch);
+    }
+
     runBuild() {
         this.clearMessage();
         const missingFields = this.missingFieldsCheck();
@@ -677,6 +694,28 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             this.openErrorModel();
             return;
         }
+        if (this.shouldWarnPublishedOnUnversionedBranch()) {
+            this.openModal('published-export-unversioned-branch-warning-modal');
+            return;
+        }
+        if (this.shouldWarnUnpublishedOnVersionedBranch()) {
+            this.openModal('unpublished-export-versioned-branch-warning-modal');
+            return;
+        }
+        this.executeRunBuild();
+    }
+
+    confirmPublishedExportOnUnversionedBranch() {
+        this.closeModal('published-export-unversioned-branch-warning-modal');
+        this.executeRunBuild();
+    }
+
+    confirmUnpublishedExportOnVersionedBranch() {
+        this.closeModal('unpublished-export-versioned-branch-warning-modal');
+        this.executeRunBuild();
+    }
+
+    private executeRunBuild() {
         this.clearMessage();
         this.buildTriggering = true;
         const formattedEffectiveDate = formatDate(this.buildParams.effectiveDate, this.RF2_DATE_FORMAT, 'en-US');

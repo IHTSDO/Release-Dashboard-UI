@@ -430,6 +430,33 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     </div>
 </app-modal>
 
+
+<app-modal id="published-export-unversioned-branch-warning-modal" class="modal build-modal">
+    <h3 header class="mb-0">Warning</h3>
+    <div body class="text-center">
+        <p class="px-2 py-3 warning-text"><i class="fas fa-exclamation-triangle pe-3"></i>Published export on an unversioned branch</p>
+        <p class="text-start px-2">Published export retrieves production data versioned at the effective time. Running it against the unversioned branch <strong>{{ buildParams.branch }}</strong> is not recommended and may produce unexpected results.</p>
+        <p class="text-start px-2 mb-0">Do you want to continue?</p>
+    </div>
+    <div footer>
+        <button type="button" class="btn" [disabled]="buildTriggering" (click)="closeModal('published-export-unversioned-branch-warning-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" [disabled]="buildTriggering" (click)="confirmPublishedExportOnUnversionedBranch()">RUN ANYWAY</button>
+    </div>
+</app-modal>
+
+<app-modal id="unpublished-export-versioned-branch-warning-modal" class="modal build-modal">
+    <h3 header class="mb-0">Warning</h3>
+    <div body class="text-center">
+        <p class="px-2 py-3 warning-text"><i class="fas fa-exclamation-triangle pe-3"></i>Unpublished export on a versioned branch</p>
+        <p class="text-start px-2">Unpublished export retrieves all  data from the term server regardless of versioned dates. Running it against the versioned branch <strong>{{ buildParams.branch }}</strong> is not recommended and may produce unexpected results.</p>
+        <p class="text-start px-2 mb-0">Do you want to continue?</p>
+    </div>
+    <div footer>
+        <button type="button" class="btn" [disabled]="buildTriggering" (click)="closeModal('unpublished-export-versioned-branch-warning-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" [disabled]="buildTriggering" (click)="confirmUnpublishedExportOnVersionedBranch()">RUN ANYWAY</button>
+    </div>
+</app-modal>
+
 <!--Build deletion confirmation-->
 <app-modal id="delete-confirmation-modal" class="modal build-modal">
     <h3 header class="mb-0">Confirmation</h3>
