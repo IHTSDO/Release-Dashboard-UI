@@ -1,0 +1,113 @@
+@use 'src/variables.scss' as *;
+@use 'sass:color';
+@use '../../styles/toolbar-buttons' as toolbar;
+
+:host {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    vertical-align: middle;
+    max-width: 100%;
+}
+
+.product-action-buttons.btn-groups {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+
+    button.btn {
+        @include toolbar.toolbar-button-colors;
+    }
+}
+
+app-modal {
+    &.manifest-configuration-modal {
+        div.input-group {
+            input, textarea {
+                font-size: 1.2rem;
+            }
+        }
+
+        span {
+            color: $black;
+            cursor: default;
+            font-size: 1.2rem;
+        }
+
+        input[type=checkbox] {
+            cursor: default;
+        }
+
+        .optional-refsets-columns {
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .modal-dialog-centered .modal-content .modal-body {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .modal-dialog-centered .modal-footer {
+            justify-content: flex-start;
+
+            > [footer] {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: flex-start;
+                width: 100%;
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .manifest-configuration-footer-actions {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                margin-left: auto;
+            }
+        }
+
+        button.view {
+            background-color: color.adjust($wisteria, $lightness: 15%);
+            color: $white !important;
+
+            i {
+                color: color.adjust($wisteria, $lightness: 30%);
+            }
+
+            &:hover {
+                background-color: $wisteria;
+            }
+        }
+    }
+
+    &.update-modal {
+        div.input-group {
+            input, textarea {
+                font-size: 1.2rem;
+            }
+        }
+
+        span.input-group-text {
+            cursor: default;
+            font-size: 1.2rem;
+        }
+
+        input[type=checkbox] {
+            cursor: default;
+        }
+    }
+
+    &.success-modal div.success i {
+        color: $fruit-salad;
+    }
+
+    &.error-modal div.error {
+        white-space: pre-wrap;
+
+        i {
+            color: $mandy;
+        }
+    }
+}

@@ -36,6 +36,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PublishStep } from '../../models/publishStep';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize-first.pipe';
+import { ProductActionButtonsComponent } from '../product-action-buttons/product-action-buttons.component';
 
 
 export const DATE_FORMATS = {
@@ -52,7 +53,7 @@ export const DATE_FORMATS = {
 
 @Component({
     selector: 'app-build-viewer',
-    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule, CapitalizeFirstPipe],
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule, CapitalizeFirstPipe, ProductActionButtonsComponent],
     templateUrl: './build-viewer.component.html',
     styleUrls: ['./build-viewer.component.scss'],
     providers: [
@@ -198,6 +199,18 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     // find product from cache, other from server
+    onActiveProductUpdated(product: Product): void {
+        this.activeProduct = product;
+        const cached = this.productDataService.getCachedProducts();
+        if (cached) {
+            const index = cached.findIndex(p => p.id === product.id);
+            if (index !== -1) {
+                cached[index] = product;
+                this.productDataService.cacheProducts(cached);
+            }
+        }
+    }
+
     loadProduct(productService, productDataService, releaseCenterKey, productKey) {
         const promise = new Promise(function(resolve, reject) {
             const product = productDataService.findByKey(productKey);

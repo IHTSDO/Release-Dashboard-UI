@@ -119,6 +119,16 @@ app-modal {
         }
     }
 
+    &.add-modal div.modal-body a {
+        color: $cerulean;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
     &.manifest-configuration-modal {
         .modal-dialog-centered .modal-content .modal-body {
             max-height: none;

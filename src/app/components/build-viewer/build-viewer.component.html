@@ -5,8 +5,13 @@
             <div class="col-6">
                 <button class="float-start btn blue m-2" routerLink="/{{releaseCenterKey}}"><i class="fas fa-chevron-left pe-3"></i>BACK</button>
             </div>
-            <div class="col-6">
-                <button type="button" *ngIf="isAdminOrManagerOrLead()" class="btn green m-2 float-end" (click)="doOpeningBuildModal(true)">RUN NEW BUILD</button>
+            <div class="col-6 d-flex justify-content-end align-items-center flex-wrap gap-2">
+                <app-product-action-buttons *ngIf="activeProduct && activeReleaseCenter"
+                    [product]="activeProduct"
+                    [activeReleaseCenter]="activeReleaseCenter"
+                    (productChange)="onActiveProductUpdated($event)">
+                </app-product-action-buttons>
+                <button type="button" *ngIf="isAdminOrManagerOrLead()" class="btn green" (click)="doOpeningBuildModal(true)">RUN NEW BUILD</button>
             </div>
         </div>
 
@@ -84,11 +89,11 @@
                     </mat-menu>
                 </div>
             </div>
-            <div class="col text-end">
-                <button type="button" class="btn orange m-2" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">VIEW LOG</button>
-                <button type="button" class="btn blue m-2" *ngIf="isAdminOrManagerOrLead()" (click)="resetHiddenBuildTable(); openModal('hidden-builds-modal'); loadHiddenBuilds()">VIEW HIDDEN</button>
-                <button type="button" class="btn blue m-2" (click)="refreshBuilds()">VIEW ALL</button>
-                <button type="button" class="btn green m-2" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">CLONE</button>
+            <div class="col text-end d-flex justify-content-end align-items-center flex-wrap gap-2">
+                <button type="button" class="btn orange" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="viewLog(activeBuild)">VIEW LOG</button>
+                <button type="button" class="btn blue" *ngIf="isAdminOrManagerOrLead()" (click)="resetHiddenBuildTable(); openModal('hidden-builds-modal'); loadHiddenBuilds()">VIEW HIDDEN</button>
+                <button type="button" class="btn blue" (click)="refreshBuilds()">VIEW ALL</button>
+                <button type="button" class="btn green" *ngIf="isAdminOrManagerOrLead()" [disabled]="!activeBuild.id" (click)="doOpeningBuildModal()">CLONE</button>
             </div>
         </div>
 

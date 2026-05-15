@@ -1,0 +1,483 @@
+﻿<div class="product-action-buttons btn-groups d-inline-flex flex-nowrap align-items-center gap-2" *ngIf="canManageProduct()" (click)="$event.stopPropagation()">
+    <button type="button" class="btn orange"
+            [disabled]="!loadingReleasePackagesDone"
+            (click)="loadingReleasePackagesDone && openUpdateConfigurationsModal(); $event.stopPropagation()"
+            title="Update Configurations">EDIT</button>
+    <button type="button" *ngIf="product.manifestFileUploading" class="btn blue" disabled title="Upload Manifest File">UPLOADING</button>
+    <button type="button" *ngIf="!product.manifestFileUploading && !hasManifestUploaded()" class="btn purple" disabled
+            title="The manifest has not yet been uploaded">MANIFEST</button>
+    <button type="button" *ngIf="!product.manifestFileUploading && hasManifestUploaded()" class="btn purple"
+            (click)="loadManifestFile(); $event.stopPropagation()" title="View Manifest File">MANIFEST</button>
+    <div class="dropdown">
+        <button type="button" class="btn blue dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" (click)="$event.stopPropagation()">CONFIG/UPLOAD</button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" (click)="openManifestConfigurationModal(); $event.stopPropagation()" href="javascript:void(0)"><i class="fas fa-cog pe-2"></i> CONFIG</a></li>
+            <li [matTooltip]="isManifestUploadDisabled() ? 'Upload is disabled while Auto Generate Manifest is on. Turn it off in CONFIG, save, then upload.' : ''"
+                [matTooltipDisabled]="!isManifestUploadDisabled()">
+                <a class="dropdown-item" [class.disabled]="isManifestUploadDisabled()"
+                   [attr.aria-disabled]="isManifestUploadDisabled()"
+                   (click)="!isManifestUploadDisabled() && checkManifestFile(); $event.stopPropagation()"
+                   href="javascript:void(0)"><i class="fas fa-upload pe-2"></i> UPLOAD</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<input class="d-none" #uploadManifestFileInput type="file" (click)="$event.stopPropagation()" (change)="uploadManifestFile($event)">
+<app-modal [id]="modalId('manifest-confirmation-modal')" class="modal add-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>The manifest file already exists (<a href="javascript:void(0)" class="text-cerulean" (click)="loadManifestFile(); $event.preventDefault(); $event.stopPropagation()">see manifest.xml</a>). Replace it?</p>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('manifest-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" [disabled]="isManifestUploadDisabled()"
+                [matTooltip]="isManifestUploadDisabled() ? 'Turn off Auto Generate Manifest in CONFIG to replace the manifest file.' : ''"
+                (click)="onManifestConfirmationAccept($event)">ACCEPT</button>
+    </div>
+</app-modal>
+
+<!-- UPDATE MODAL -->
+<app-modal [id]="modalId('update-product-modal')" class="modal update-modal" [size]="'ultra-wide'">
+    <h3 header class="mb-0">Product Configurations</h3>
+    <div body>
+        <h2 class="m-3">{{editedProduct?.name}}<span class="px-3 m-3 font-italic">See&nbsp;<a href="https://conf.spaces.snomed.org/wiki/spaces/RMT/pages/131957671/SRS+Script+Client+parameter+documentation" target="_blank">confluence</a>&nbsp;page for more information about these parameters.</span></h2>
+        <div class="row mx-0">
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The effective date of the release. Please ensure that this value matches the effective date in RF2 filenames in the manifest file. Example: 2015-07-31">Effective Time</span>
+                    <input type="text" class="form-control" #effectiveTimeInput matInput [matDatepicker]="effectiveTimeAsPicker" (focus)="effectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.effectiveTime">
+                    <mat-datepicker-toggle matIconSuffix [for]="effectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
+                    <mat-datepicker #effectiveTimeAsPicker (closed)="effectiveTimeInput.blur()"></mat-datepicker>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The branch path of Term server which will be used for exporting Delta files. It may be empty if the product is a Derivative product which will be getting the Delta files from the local input files">Default Branch</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.defaultBranchPath">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates if the input files should just be packaged up (with no processing applied to them)">Just Package</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.justPackage">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether or not this is a first time release for a given product">First Time Release</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.firstTimeRelease">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicate whether or not the release is a beta release">Beta Release</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.betaRelease">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether  or not input file fixes are required">Input Files Fixes Required</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.inputFilesFixesRequired">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether or not to create the CTV3 IDΓÇÖs in the simpleMap refset files">Create Legacy Ids</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.createLegacyIds">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Allows classification in the preCondition checks">Use Classifier Precondition Checks</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.useClassifierPreConditionChecks">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether the release build is an edition release or not">Release As An Edition</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates whether or not to run a classification against the output files">Classify Output Files</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.classifyOutputFiles">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltipClass="multiline-tooltip" matTooltip="1. This is a Product level flag, and therefore separate Daily Build Products should be setup for each Extension/Derivative, in order to prevent confusion or contamination with the Publishable Products. &#013;
+                    2. Once set it should remain set for that DailyBuild product.&#013;
+                    3. If the flag is set then:&#013;
+                    - A delta package will sent to daily-browser to import.&#013;
+                    - A RVF report will be sent to Authoring Platform to display on the Code System page..&#013;
+                    - This product will be used when staring a new Authoring cycle.">Daily Build</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.dailyBuild">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Passes to RVF to validate the release as a stand-alone product">Stand-alone Product</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.standAloneProduct" (change)="onChangeStandaloneProduct(editedProduct.standAloneProduct)">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Custom Refset Composite Keys</span>
+                    <textarea class="form-control"
+                        matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="5"
+                        [(ngModel)]="customRefsetCompositeKeys"></textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The new files to be released for the first time for an existing product in subsequent releases">New RF2 Input Files</span>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="5"
+                        class="form-control"
+                        [(ngModel)]="editedProduct.buildConfiguration.newRF2InputFiles"></textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The files to be removed from the previous structure">Remove RF2 Files</span>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="1"
+                        cdkAutosizeMaxRows="5"
+                        class="form-control"
+                        [(ngModel)]="editedProduct.buildConfiguration.removeRF2Files"></textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" matTooltip="Passes the previous published package name to the SRS">Previous Published Release</span>
+                    </div>
+                    <input type="text"
+                        class="form-control"
+                        placeholder="Enter a release..."
+                        [(ngModel)]="editedProduct.buildConfiguration.previousPublishedPackage"
+                        matInput
+                        [formControl]="previousReleaseInputControl"
+                        [matAutocomplete]="previousReleaseAutoComplete">
+                        <mat-autocomplete #previousReleaseAutoComplete="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredPreviousReleaseOptions | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The published international release package which an extension release is dependent on">Extension Dependency Release</span>
+                    <input type="text"
+                        class="form-control"
+                        placeholder="Enter a release..."
+                        [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.dependencyRelease"
+                        matInput
+                        [formControl]="dependentReleaseInputControl"
+                        [matAutocomplete]="dependantReleaseAutoComplete">
+                        <mat-autocomplete #dependantReleaseAutoComplete="matAutocomplete">
+                            <mat-option *ngFor="let option of filteredDependentReleaseOptions | async" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The Previous Edition Dependency Effective Date is the Date of the International Edition that the previous Edition was based on. This field should ONLY be used for true &quot;Edition&quot; release packages">Previous Edition Dependency Effective Date</span>
+                    <input type="text" class="form-control" [disabled]="!editedProduct.buildConfiguration.extensionConfig.releaseAsAnEdition" #previousEditionDependencyEffectiveTimeInput matInput [matDatepicker]="previousEditionDependencyEffectiveTimeAsPicker" (focus)="previousEditionDependencyEffectiveTimeAsPicker.open()" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.previousEditionDependencyEffectiveDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="previousEditionDependencyEffectiveTimeAsPicker" [disabled]="false"></mat-datepicker-toggle>
+                    <mat-datepicker #previousEditionDependencyEffectiveTimeAsPicker (closed)="previousEditionDependencyEffectiveTimeInput.blur()"></mat-datepicker>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Only used when combining different Delta files from previous releases into a new Delta release files using syntax format &quot;newFileName|(oldFile1, oldFile2, ...)&quot;. Most of the time, it should be left empty">Included Previous Release Files</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.includePrevReleaseFiles">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The Refset Descriptor exclusion list which is a comma separated string of member IDs. Example: uuid1,uuid2,...">Excluded Refset Descriptor Members</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.excludeRefsetDescriptorMembers">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Set of language refset IDs separated by comma. Example: refsetId1,refsetId2,...">Excluded Language refsets</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.excludeLanguageRefsetIds">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The namespace id for a given extension release">Namespace ID</span>
+                    <input type="number" class="form-control" appNoScrollInput  [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.namespaceId">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The module id(s) for a given extension. These should be comma separated">Module ID(s)</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.extensionConfig.moduleIds">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Passes the assertion group name(s) to the RVF for QA testing">Assertion Groups</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.assertionGroupNames">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with MRCM Validator">Enable MRCM</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableMRCMValidation">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Passes to RVF to run validation using Drools rules if the Enable Drools flag is checked. Values are a list of Drools rules groups separated by a comma">Drools Rules Group Names</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.qaTestConfig.droolsRulesGroupNames">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Passes to RVF to enable the validations with Drools rules">Enable Drools</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.qaTestConfig.enableDrools">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The year of release. Example: 2015">Readme End Date</span>
+                    <input type="number" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.readmeEndDate">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Provide a list of conceptID and FSN's which will be used for the included modules + language refsets in the Release Package Information file">Concept Preferred Terms</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.buildConfiguration.conceptPreferredTerms">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The readme header which will be used in Readme.txt">Readme Header</span>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        cdkAutosizeMaxRows="5"
+                        class="form-control"
+                        [(ngModel)]="editedProduct.buildConfiguration.readmeHeader"></textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Define the list of fields in JSON format which will be inlcuded in the Release Package Information file">Release Information Fields</span>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        cdkAutosizeMaxRows="5"
+                        class="form-control"
+                        [(ngModel)]="editedProduct.buildConfiguration.additionalReleaseInformationFields"></textarea>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The licence statement which will be used in the Release Package Information file">License Statement</span>
+                    <textarea matInput
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        cdkAutosizeMaxRows="5"
+                        class="form-control"
+                        [(ngModel)]="editedProduct.buildConfiguration.licenceStatement"></textarea>
+                </div>
+            </div>
+            <div class="col-12" *ngIf="canManageProduct()">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="The SNOMED CT Product which will being used by ISRS tickets. If it's blank, the default value from Release Center will be used instead">SNOMED CT Product</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct.overriddenSnomedCtProduct">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div footer>
+        <button type="button" class="btn" [disabled]="savingProduct" (click)="closeModal('update-product-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" [disabled]="savingProduct" (click)="updateProduct(editedProduct, customRefsetCompositeKeys)">SAVE</button>
+    </div>
+</app-modal>
+
+<app-modal [id]="modalId('manifest-configuration-modal')" class="modal manifest-configuration-modal" [size]="'xlarge'">
+    <h3 header class="mb-0">Manifest Configuration</h3>
+    <div body class="p-4">
+        <div class="row mx-0">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="When enabled, the release pipeline may generate the manifest from these settings instead of relying only on a manually uploaded manifest file">Auto Generate Manifest</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct['manifestConfig'].autoGenerateManifest">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Product name written into the generated manifest and package metadata">Product Name</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct['manifestConfig'].productName">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Namespace value used in manifest">Namespace</span>
+                    <input type="text" class="form-control" [(ngModel)]="editedProduct['manifestConfig'].productNamespace">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Optional package effective date for the manifest; if set, the release package name will use this date instead of other defaults">Package Effective Time (Optional - For Derivative Products Only)</span>
+                    <input type="text" class="form-control" #packageEffectiveTimeInput matInput [matDatepicker]="packageEffectiveTimeAsPicker" (focus)="packageEffectiveTimeAsPicker.open()" [(ngModel)]="editedProduct['manifestConfig'].packageEffectiveTime" matTooltip="Select the optional package effective date">
+                    <mat-datepicker-toggle matIconSuffix [for]="packageEffectiveTimeAsPicker" [disabled]="false" matTooltip="Open calendar"></mat-datepicker-toggle>
+                    <button type="button" class="btn btn-outline-secondary ms-2" (click)="clearPackageEffectiveTime(packageEffectiveTimeInput)" matTooltip="Clear the package effective date">Clear</button>
+                    <mat-datepicker #packageEffectiveTimeAsPicker (closed)="packageEffectiveTimeInput.blur()"></mat-datepicker>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Mark the product as a Derivative; manifest generation may follow derivative rules">Derivative Product</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct['manifestConfig'].derivativeProduct">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="When enabled, the product namespace is included in the release package naming or manifest where applicable">Include Namespace In Package</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct['manifestConfig'].includeProductNamespaceInPackage">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="When enabled, simple refsets are packaged individually in the generated manifest output">Package Simple Refsets Individually</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct['manifestConfig'].packageSimpleRefsetsIndividually">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="mb-3">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
+                        <span class="small" matTooltip="Standard excluded refsets for this release center; saved with Other Excluded Refsets as one comma-separated list on the product when you save">Excluded Refsets</span>
+                        <div class="form-check mb-0 flex-shrink-0" *ngIf="optionalManifestRefsets.length"
+                             matTooltip="Select or clear every refset in this list. Does not change Other Excluded Refsets.">
+                            <input class="form-check-input" type="checkbox" [id]="excludedRefsetsSelectAllDomId()"
+                                   #excludedRefsetsSelectAll
+                                   (change)="onExcludedRefsetsSelectAllChange($any($event.target).checked)">
+                            <label class="form-check-label small" [attr.for]="excludedRefsetsSelectAllDomId()">Select all</label>
+                        </div>
+                    </div>
+                   <div *ngIf="optionalManifestRefsetsLoadError" class="text-danger small mb-2">{{ optionalManifestRefsetsLoadError }}</div>
+                    <div class="border rounded p-2 bg-white">
+                        <ng-container *ngIf="optionalManifestRefsets.length; else optionalRefsetsListEmpty">
+                            <div class="row g-2 mx-0 optional-refsets-columns">
+                                <div [ngClass]="optionalManifestRefsetsSecondColumn.length ? 'col-6' : 'col-12'">
+                                    <div *ngFor="let ref of optionalManifestRefsetsFirstColumn" class="form-check mb-1">
+                                        <input class="form-check-input" type="checkbox"
+                                               [id]="optionalRefsetDomId(ref.id)"
+                                               [checked]="isOptionalManifestRefsetSelected(ref.id)"
+                                               (change)="onOptionalManifestRefsetRowChange(ref.id, $any($event.target).checked)">
+                                        <label class="form-check-label small" [attr.for]="optionalRefsetDomId(ref.id)">
+                                            {{ ref.term }} <span class="text-muted">({{ ref.id }})</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div *ngIf="optionalManifestRefsetsSecondColumn.length" class="col-6 border-start ps-2">
+                                    <div *ngFor="let ref of optionalManifestRefsetsSecondColumn" class="form-check mb-1">
+                                        <input class="form-check-input" type="checkbox"
+                                               [id]="optionalRefsetDomId(ref.id)"
+                                               [checked]="isOptionalManifestRefsetSelected(ref.id)"
+                                               (change)="onOptionalManifestRefsetRowChange(ref.id, $any($event.target).checked)">
+                                        <label class="form-check-label small" [attr.for]="optionalRefsetDomId(ref.id)">
+                                            {{ ref.term }} <span class="text-muted">({{ ref.id }})</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #optionalRefsetsListEmpty>
+                            <div class="text-muted small">No excluded refsets are defined.</div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Refset identifiers separated by a comma and space, excluded in addition to the excluded refsets above; edited independently and combined only when you save or view sample">Other Excluded Refsets</span>
+                    <input type="text" class="form-control" [(ngModel)]="otherExcludedRefsets" (blur)="normalizeOtherExcludedRefsetsInput()">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div footer>
+        <button type="button" class="btn view" [disabled]="gereratingManifest" (click)="viewManifestSample()" matTooltip="Generate a sample manifest XML from the current settings (does not save)">{{gereratingManifest ? 'GENERATING' : 'VIEW SAMPLE'}} <i *ngIf="gereratingManifest" class="fas fa-circle-notch fa-spin"></i></button>
+        <div class="manifest-configuration-footer-actions">
+            <button type="button" class="btn" [disabled]="savingProduct" (click)="closeModal('manifest-configuration-modal')">CANCEL</button>
+            <button type="button" class="btn accept ms-3" [disabled]="savingProduct" (click)="saveManifestConfiguration()">SAVE</button>
+        </div>
+    </div>
+</app-modal>
+
+<app-modal [id]="modalId('product-success-modal')" class="modal success-modal">
+    <h3 header class="mb-0">Success</h3>
+    <div body class="text-center p-5">
+        <div class="text-start success pl-0"><i class="material-icons">check_circle</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('product-success-modal')">CLOSE</button>
+    </div>
+</app-modal>
+
+<app-modal [id]="modalId('product-error-modal')" class="modal error-modal">
+    <h3 header class="mb-0">Error</h3>
+    <div body class="text-center p-5">
+        <div class="text-start error pl-0"><i class="material-icons">cancel</i>&nbsp;<div class="d-inline position-absolute pt-2">{{message}}</div></div>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeModal('product-error-modal')">CLOSE</button>
+    </div>
+</app-modal>
+
+<!--Waiting Model-->
+<app-modal [id]="modalId('product-waiting-modal')" class="modal" [hideHeader]="true" [hideFooter]="true" [disableBackgroundClickEvent]="true" [size]="'small'">
+    <div body class="text-start p-5 text-center">
+        <div class="loading">{{action}}</div>
+    </div>
+</app-modal>

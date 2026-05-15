@@ -1,0 +1,52 @@
+@use 'src/variables.scss' as *;
+@use 'sass:color';
+
+/// Shared toolbar button colours (build viewer, product actions).
+@mixin toolbar-button-colors {
+    color: $white;
+
+    &.orange {
+        background-color: color.adjust($sea-buckthorn, $lightness: 10%);
+
+        &:hover:not(:disabled) {
+            background-color: $sea-buckthorn;
+        }
+    }
+
+    &.purple {
+        background-color: color.adjust($wisteria, $lightness: 15%);
+
+        &:hover:not(:disabled) {
+            background-color: $wisteria;
+        }
+    }
+
+    &.blue {
+        background-color: color.adjust($cerulean, $lightness: 10%);
+
+        &:hover:not(:disabled) {
+            background-color: $cerulean;
+        }
+    }
+
+    &.green {
+        background-color: color.adjust($fruit-salad, $lightness: 10%);
+
+        &:hover:not(:disabled) {
+            background-color: $fruit-salad;
+        }
+    }
+
+    &.grey {
+        background-color: color.adjust($slate-grey, $lightness: 15%);
+
+        &:hover:not(:disabled) {
+            background-color: $slate-grey;
+        }
+    }
+
+    &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+}

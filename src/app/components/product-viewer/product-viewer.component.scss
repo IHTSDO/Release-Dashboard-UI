@@ -1,5 +1,6 @@
 @use 'src/variables.scss' as *;
 @use "sass:color";
+@use '../../styles/toolbar-buttons' as toolbar;
 
 div.product-viewer {
     margin-left: 36rem;
@@ -43,56 +44,18 @@ div.product-viewer {
                     width: 1%;
                     white-space: nowrap;
                 }
-                button {
-                    color: $white;
 
-                    &.edit {
-                        background-color: color.adjust($sea-buckthorn, $lightness: 10%);
-
-                        i {
-                            color: color.adjust($sea-buckthorn, $lightness: 30%);
-                        }
-
-                        &:hover {
-                            background-color: $sea-buckthorn;
-                        }
-                    }
-
-                    &.view {
-                        background-color: color.adjust($wisteria, $lightness: 15%);
-
-                        i {
-                            color: color.adjust($wisteria, $lightness: 30%);
-                        }
-
-                        &:hover {
-                            background-color: $wisteria;
-                        }
-                    }
-
-                    &.upload {
-                        background-color: color.adjust($cerulean, $lightness: 15%);
-
-                        i {
-                            color: color.adjust($cerulean, $lightness: 30%);
-                        }
-
-                        &:hover {
-                            background-color: $cerulean;
-                        }
-                    }
-
-                    &.hide {
-                        background-color: color.adjust($slate-grey, $lightness: 15%);
-
-                        i {
-                            color: color.adjust($slate-grey, $lightness: 30%);
-                        }
-
-                        &:hover {
-                            background-color: $slate-grey;
-                        }
-                    }
+                .product-row-actions {
+                    display: inline-flex;
+                    flex-wrap: nowrap;
+                    align-items: center;
+                    justify-content: flex-end;
+                    gap: 0.5rem;
+                    white-space: nowrap;
+                    max-width: 100%;
+                }
+                button.btn {
+                    @include toolbar.toolbar-button-colors;
                 }
             }
             div.badge {
