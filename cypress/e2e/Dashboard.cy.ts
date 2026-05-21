@@ -58,7 +58,7 @@ describe('Release Dashboard', () => {
         cy.get('.centers').first().find('div').first().click()
         cy.wait(3000)
         cy.get('table button').contains('EDIT').click()
-        cy.contains('#update-product-modal h3', 'Product Configurations').should('be.visible')
+        cy.contains('h3', 'Product Configurations').should('be.visible')
     })
 
     /*it('Logout', () => {
