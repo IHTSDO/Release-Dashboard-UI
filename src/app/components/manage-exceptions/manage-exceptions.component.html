@@ -1,0 +1,211 @@
+<div class="manage-exceptions text-start">
+    <p class="text-center loading" *ngIf="isLoading()">Loading</p>
+
+    <ng-container *ngIf="!isLoading() && viewLevel === 'assertions'">
+        <h4><b>ERRORS</b></h4>
+        <table class="table table-bordered table-striped table-sortable assertion-summary-table">
+            <colgroup>
+                <col class="col-type">
+                <col class="col-assertion-id">
+                <col class="col-assertion-text">
+                <col class="col-failure-count">
+                <col class="col-exception-count">
+                <col class="col-actions">
+            </colgroup>
+            <thead>
+                <tr class="text-center">
+                    <td [appSort]="errorAssertions" (sortClick)="handleSortClick($event, 'testType', 'error')"
+                        [ngClass]="{'asc': errorTableSortingObj['testType'] === 'asc', 'desc': errorTableSortingObj['testType'] === 'desc', 'sortable': !errorTableSortingObj['testType']}"
+                        data-name="testType">Type</td>
+                    <td [appSort]="errorAssertions" (sortClick)="handleSortClick($event, 'assertionUuid', 'error')"
+                        [ngClass]="{'asc': errorTableSortingObj['assertionUuid'] === 'asc', 'desc': errorTableSortingObj['assertionUuid'] === 'desc', 'sortable': !errorTableSortingObj['assertionUuid']}"
+                        data-name="assertionUuid">Assertion ID</td>
+                    <td [appSort]="errorAssertions" (sortClick)="handleSortClick($event, 'assertionText', 'error')"
+                        [ngClass]="{'asc': errorTableSortingObj['assertionText'] === 'asc', 'desc': errorTableSortingObj['assertionText'] === 'desc', 'sortable': !errorTableSortingObj['assertionText']}"
+                        data-name="assertionText">Assertion Text</td>
+                    <td [appSort]="errorAssertions" (sortClick)="handleSortClick($event, 'failureCount', 'error')"
+                        [ngClass]="{'asc': errorTableSortingObj['failureCount'] === 'asc', 'desc': errorTableSortingObj['failureCount'] === 'desc', 'sortable': !errorTableSortingObj['failureCount']}"
+                        data-name="failureCount">Total Failures</td>
+                    <td [appSort]="errorAssertions" (sortClick)="handleSortClick($event, 'exceptionCount', 'error')"
+                        [ngClass]="{'asc': errorTableSortingObj['exceptionCount'] === 'asc', 'desc': errorTableSortingObj['exceptionCount'] === 'desc', 'sortable': !errorTableSortingObj['exceptionCount']}"
+                        data-name="exceptionCount">Active Exceptions</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" *ngIf="errorAssertions.length === 0">
+                    <td colspan="6">No errors found.</td>
+                </tr>
+                <tr *ngFor="let assertion of errorAssertions" class="assertion-row">
+                    <td class="pb-0 text-center">{{formatTestType(assertion.testType)}}</td>
+                    <td class="pb-0 text-center text-truncate" [title]="assertion.assertionUuid">{{assertion.assertionUuid}}</td>
+                    <td class="pb-0 text-start">{{assertion.assertionText}}</td>
+                    <td class="pb-0 text-center">{{formatFailureCount(assertion.failureCount)}}</td>
+                    <td class="pb-0 text-center">
+                        <span class="exception-count-badge"
+                              [class.exception-count-badge-active]="assertion.exceptionCount > 0"
+                              [class.exception-count-badge-neutral]="!assertion.exceptionCount">
+                            {{formatExceptionCountLabel(assertion.exceptionCount)}}
+                        </span>
+                    </td>
+                    <td class="pb-0 text-center">
+                        <button type="button" class="btn btn-link view-failures-btn p-0" *ngIf="assertion.failureCount > 0" (click)="viewFailures(assertion, $event)">
+                            <i class="fas fa-caret-right pe-1"></i>View failures
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br/>
+        <h4><b>WARNINGS</b></h4>
+        <table class="table table-bordered table-striped table-sortable assertion-summary-table">
+            <colgroup>
+                <col class="col-type">
+                <col class="col-assertion-id">
+                <col class="col-assertion-text">
+                <col class="col-failure-count">
+                <col class="col-exception-count">
+                <col class="col-actions">
+            </colgroup>
+            <thead>
+                <tr class="text-center">
+                    <td [appSort]="warningAssertions" (sortClick)="handleSortClick($event, 'testType', 'warning')"
+                        [ngClass]="{'asc': warningTableSortingObj['testType'] === 'asc', 'desc': warningTableSortingObj['testType'] === 'desc', 'sortable': !warningTableSortingObj['testType']}"
+                        data-name="testType">Type</td>
+                    <td [appSort]="warningAssertions" (sortClick)="handleSortClick($event, 'assertionUuid', 'warning')"
+                        [ngClass]="{'asc': warningTableSortingObj['assertionUuid'] === 'asc', 'desc': warningTableSortingObj['assertionUuid'] === 'desc', 'sortable': !warningTableSortingObj['assertionUuid']}"
+                        data-name="assertionUuid">Assertion ID</td>
+                    <td [appSort]="warningAssertions" (sortClick)="handleSortClick($event, 'assertionText', 'warning')"
+                        [ngClass]="{'asc': warningTableSortingObj['assertionText'] === 'asc', 'desc': warningTableSortingObj['assertionText'] === 'desc', 'sortable': !warningTableSortingObj['assertionText']}"
+                        data-name="assertionText">Assertion Text</td>
+                    <td [appSort]="warningAssertions" (sortClick)="handleSortClick($event, 'failureCount', 'warning')"
+                        [ngClass]="{'asc': warningTableSortingObj['failureCount'] === 'asc', 'desc': warningTableSortingObj['failureCount'] === 'desc', 'sortable': !warningTableSortingObj['failureCount']}"
+                        data-name="failureCount">Total Failures</td>
+                    <td [appSort]="warningAssertions" (sortClick)="handleSortClick($event, 'exceptionCount', 'warning')"
+                        [ngClass]="{'asc': warningTableSortingObj['exceptionCount'] === 'asc', 'desc': warningTableSortingObj['exceptionCount'] === 'desc', 'sortable': !warningTableSortingObj['exceptionCount']}"
+                        data-name="exceptionCount">Active Exceptions</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" *ngIf="warningAssertions.length === 0">
+                    <td colspan="6">No warnings found.</td>
+                </tr>
+                <tr *ngFor="let assertion of warningAssertions" class="assertion-row">
+                    <td class="pb-0 text-center">{{formatTestType(assertion.testType)}}</td>
+                    <td class="pb-0 text-center text-truncate" [title]="assertion.assertionUuid">{{assertion.assertionUuid}}</td>
+                    <td class="pb-0 text-start">{{assertion.assertionText}}</td>
+                    <td class="pb-0 text-center">{{formatFailureCount(assertion.failureCount)}}</td>
+                    <td class="pb-0 text-center">
+                        <span class="exception-count-badge"
+                              [class.exception-count-badge-active]="assertion.exceptionCount > 0"
+                              [class.exception-count-badge-neutral]="!assertion.exceptionCount">
+                            {{formatExceptionCountLabel(assertion.exceptionCount)}}
+                        </span>
+                    </td>
+                    <td class="pb-0 text-center">
+                        <button *ngIf="assertion.failureCount > 0" type="button" class="btn btn-link view-failures-btn p-0" (click)="viewFailures(assertion, $event)">
+                            <i class="fas fa-caret-right pe-1"></i>View failures
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading() && viewLevel === 'failures' && selectedAssertion">
+        <div class="failures-breadcrumb mb-3">
+            <button type="button" class="btn btn-link back-link p-0" (click)="backToAssertions()">
+                <i class="fas fa-chevron-left pe-2"></i>Back to assertion list
+            </button>
+            <div class="selected-assertion-context mt-2">
+                <span class="text-muted">{{formatTestType(selectedAssertion.testType)}}</span>
+                <span class="mx-2 text-muted">|</span>
+                <span>{{selectedAssertion.assertionUuid}}</span>
+                <span class="mx-2 text-muted">|</span>
+                <span>{{selectedAssertion.assertionText}}</span>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-striped failures-table">
+            <thead>
+                <tr class="text-center">
+                    <td>Component ID</td>
+                    <td>Description / Detail</td>
+                    <td>Exception Status</td>
+                    <td *ngIf="canManage" style="min-width: 10rem;">Actions</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center" *ngIf="getFailuresForAssertion(selectedAssertion).length === 0">
+                    <td [attr.colspan]="canManage ? 4 : 3">No individual failure details available for this assertion.</td>
+                </tr>
+                <tr *ngFor="let failure of getFailuresForAssertion(selectedAssertion)">
+                    <td class="text-center">{{failure.componentId || '—'}}</td>
+                    <td class="text-start">{{failure.detail || ''}}</td>
+                    <td class="text-start">
+                        <span *ngIf="failure.hasException && failure.whitelistItem as item" class="exception-status-summary">
+                            <i class="fas fa-check text-success pe-1"></i>{{formatExceptionStatusSummary(item)}}
+                        </span>
+                        <span *ngIf="!failure.hasException" class="text-muted"></span>
+                    </td>
+                    <td *ngIf="canManage" class="text-center">
+                        <button *ngIf="!failure.hasException" type="button" class="btn green btn-sm"
+                                (click)="openAddExceptionModal(failure)">
+                            <i class="fas fa-plus pe-1"></i>Add Exception
+                        </button>
+                        <button *ngIf="failure.hasException" type="button" class="btn red btn-sm"
+                                (click)="openRemoveExceptionModal(failure)">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </ng-container>
+</div>
+
+<app-modal id="manage-exceptions-add-modal" class="modal build-modal">
+    <h3 header class="mb-0">Add Exception</h3>
+    <div body class="text-start p-4">
+        <p *ngIf="selectedFailure"><strong>Component ID:</strong> {{selectedFailure.componentId}}</p>
+        <div class="mb-3">
+            <label class="form-label" for="exceptionReason">Reason <span class="text-danger">*</span></label>
+            <textarea id="exceptionReason" class="form-control" rows="3" [(ngModel)]="exceptionReason"
+                      placeholder="Enter the reason"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label d-block">Exception type</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="exceptionType" id="exceptionTypePermanent"
+                       value="permanent" [(ngModel)]="exceptionType">
+                <label class="form-check-label" for="exceptionTypePermanent">Permanent</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="exceptionType" id="exceptionTypeTemporary"
+                       value="temporary" [(ngModel)]="exceptionType">
+                <label class="form-check-label" for="exceptionTypeTemporary">Temporary</label>
+            </div>
+        </div>
+    </div>
+    <div footer>
+        <button type="button" class="btn" [disabled]="exceptionSaving" (click)="closeModal('manage-exceptions-add-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" [disabled]="exceptionSaving" (click)="saveException()">
+            {{exceptionSaving ? 'SAVING...' : 'SAVE'}}
+        </button>
+    </div>
+</app-modal>
+
+<app-modal id="manage-exceptions-remove-modal" class="modal build-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Are you sure you want to remove this exception?</p>
+    </div>
+    <div footer>
+        <button type="button" class="btn" [disabled]="exceptionRemoving" (click)="closeModal('manage-exceptions-remove-modal')">CANCEL</button>
+        <button type="button" class="btn reject ms-3" [disabled]="exceptionRemoving" (click)="removeException()">
+            {{exceptionRemoving ? 'REMOVING...' : 'REMOVE'}}
+        </button>
+    </div>
+</app-modal>

@@ -71,7 +71,8 @@
                                 [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)"
                                 (click)="openPublishingBuildConfirmationModal()"><i class="fas fa-paper-plane pe-2"></i>{{activeBuild.buildPublishing ? 'PUBLISHING...' : 'PUBLISH BUILD'}}</button>
                         <button type="button" *ngIf="canDeleteBuild()" class="btn red m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')"><i class="fas fa-times pe-2"></i>{{activeBuild.buildDeleting? 'DELETING...' : 'DELETE BUILD'}}</button>
-                        <button type="button" *ngIf="canGenerateJiraTicket() && activeBuild.rvfURL" class="btn blue m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="getFailureJiraAssociations(); loadRvfReport(activeBuild); openModal('generate-jira-tickets-modal')"><i class="fas fa-ticket-alt pe-2"></i>GENERATE JIRA TICKETS</button>
+                        <button type="button" *ngIf="isAdminOrManagerOrLead() && activeBuild.rvfURL" class="btn orange m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="openManageExceptionsDialog()"><i class="fas fa-shield-alt pe-2"></i>MANAGE EXCEPTIONS</button>
+                        <button type="button" *ngIf="isAdminOrManagerOrLead() && activeBuild.rvfURL" class="btn blue m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="getFailureJiraAssociations(); loadRvfReport(activeBuild); openModal('generate-jira-tickets-modal')"><i class="fas fa-ticket-alt pe-2"></i>GENERATE JIRA TICKETS</button>
                     </div>
                 </div>
             </div>
@@ -527,7 +528,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
                     <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
                     <td class="pb-0 text-start"> {{failure.assertionText}}</td>
-                    <td class="pb-0 text-center">{{failure.failureCount}}</td>
+                    <td class="pb-0 text-center">{{formatFailureCount(failure.failureCount)}}</td>
                     <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
                 </tr>
             </tbody>
@@ -554,7 +555,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                     <td class="pb-0 text-center" style="min-width: 8rem;">{{failure.testType.replace('DROOL_RULES', 'DROOLS')}}</td>
                     <td class="pb-0 text-center" style="width: 27rem;">{{failure.assertionUuid}}</td>
                     <td class="pb-0 text-start"> {{failure.assertionText}}</td>
-                    <td class="pb-0 text-center">{{failure.failureCount}}</td>
+                    <td class="pb-0 text-center">{{formatFailureCount(failure.failureCount)}}</td>
                     <td class="pb-0 text-center" style="width: 10rem;"><a href="{{failure.jiraUrl}}" *ngIf="failure.jiraUrl" (click)="$event.stopPropagation()" title="JIRA URL" target="_blank">{{failure?.jiraUrl.substring(failure.jiraUrl.lastIndexOf('/') + 1)}}</a></td>
                 </tr>
             </tbody>
@@ -563,6 +564,26 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('generate-jira-tickets-modal')">CANCEL</button>
         <button type="button" class="btn accept ms-3" (click)="validateFailuresSelection()">ACCEPT</button>
+    </div>
+</app-modal>
+
+<!--Manage Exceptions modal-->
+<app-modal id="manage-exceptions-modal" class="modal add-modal" [size]="'ultra-wide'">
+    <h3 header class="mb-0">Manage Exceptions</h3>
+    <div body class="text-start p-5">
+        <app-manage-exceptions
+            [branchPath]="getBuildBranchPath()"
+            [modalOpen]="manageExceptionsModalOpen"
+            [assertionsFailed]="assertionsFailed"
+            [assertionsWarning]="assertionsWarning"
+            [rvfReportLoading]="rvfReportLoading"
+            [canManage]="isAdminOrManagerOrLead()"
+            (errorMessage)="onManageExceptionsError($event)"
+            (successMessage)="onManageExceptionsSuccess($event)">
+        </app-manage-exceptions>
+    </div>
+    <div footer>
+        <button type="button" class="btn" (click)="closeManageExceptionsModal()">CLOSE</button>
     </div>
 </app-modal>
 

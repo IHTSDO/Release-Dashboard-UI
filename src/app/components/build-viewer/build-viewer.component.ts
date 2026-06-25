@@ -6,6 +6,8 @@ import { BuildService } from '../../services/build/build.service';
 import { ProductService } from '../../services/product/product.service';
 import { ProductDataService } from '../../services/product/product-data.service';
 import { ModalService } from '../../services/modal/modal.service';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { CommonModule, formatDate } from '@angular/common';
 import { BuildParameters } from '../../models/buildParameters';
 import { ExtensionConfig } from '../../models/extensionConfig';
@@ -37,6 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PublishStep } from '../../models/publishStep';
 import { CapitalizeFirstPipe } from 'src/app/pipes/capitalize-first.pipe';
 import { ProductActionButtonsComponent } from '../product-action-buttons/product-action-buttons.component';
+import { ManageExceptionsComponent } from '../manage-exceptions/manage-exceptions.component';
 import { isVersionedBranch } from '../../utils/branch-path.util';
 
 
@@ -54,7 +57,7 @@ export const DATE_FORMATS = {
 
 @Component({
     selector: 'app-build-viewer',
-    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule, CapitalizeFirstPipe, ProductActionButtonsComponent],
+    imports: [TextFieldModule, ReactiveFormsModule, FormsModule, CommonModule, RouterLink, ModalComponent, MatSortModule, SortDirective, MatSelectModule, MatAutocompleteModule, MatPaginatorModule, MatDatepickerModule, MatNativeDateModule, MatMomentDateModule, MatTooltipModule, MatMenuModule, CapitalizeFirstPipe, ProductActionButtonsComponent, ManageExceptionsComponent],
     templateUrl: './build-viewer.component.html',
     styleUrls: ['./build-viewer.component.scss'],
     providers: [
@@ -66,6 +69,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     @ViewChild('uploadInputFilesInput') private uploadInputFilesInput;
     @ViewChild('buildPaginator') buildPaginator: MatPaginator;
     @ViewChild('hiddenBuildPaginator') hiddenBuildPaginator: MatPaginator;
+    @ViewChild(ManageExceptionsComponent) manageExceptionsComponent: ManageExceptionsComponent;
 
 
     RF2_DATE_FORMAT = 'yyyyMMdd';
@@ -101,6 +105,9 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     action: string;
     message: string;
     rvfReportLoading = false;
+    manageExceptionsModalOpen = false;
+
+    private manageExceptionsModalClosedSubscription: Subscription;
     buildTriggering = false;
     buildsLoading = false;
     hiddenBuildsLoading = false;
@@ -181,6 +188,12 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.websocketService.messageEvent.addListener('build-status-change-event', (message) => {
             this.updateBuildStatus(JSON.parse(message.body));
         });
+
+        this.manageExceptionsModalClosedSubscription = this.modalService.modalClosed$
+            .pipe(filter(id => id === 'manage-exceptions-modal'))
+            .subscribe(() => {
+                this.manageExceptionsModalOpen = false;
+            });
     }
 
     ngOnDestroy(): void {
@@ -189,6 +202,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         }
 
         this.websocketService.messageEvent.removeListener('build-status-change-event', () => {});
+        this.manageExceptionsModalClosedSubscription?.unsubscribe();
     }
 
     constructBuildTableSortingObj(): void {
@@ -587,7 +601,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
         this.publishStatusTrackerModalSize = 'medium';
         this.openPublishStatusTrackerModal();
         this.buildService.publishBuild(this.releaseCenterKey, this.productKey, build.id).subscribe(
-            () => {                
+            () => {
                 let interval: any;
                 const checkPublishingStatus = () => {
                     this.buildService.getPublishingBuildStatus(this.releaseCenterKey, this.productKey, build.id).subscribe(
@@ -626,7 +640,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                             clearInterval(interval);
                         }
                     );
-                };               
+                };
 
                 // Get initial status immediately after publishing starts
                 checkPublishingStatus();
@@ -713,6 +727,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     confirmUnpublishedExportOnVersionedBranch() {
         this.closeModal('unpublished-export-versioned-branch-warning-modal');
         this.executeRunBuild();
+    }
+
+    formatFailureCount(count: number): string {
+        return count != null ? count.toLocaleString('en-US') : '0';
     }
 
     private executeRunBuild() {
@@ -873,41 +891,65 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     }
 
     loadRvfReport(build: Build) {
-        this.assertionsFailed = [];
-        this.assertionsWarning = [];
+        this.fetchRvfReport(build, { prepareForJiraGeneration: true });
+    }
+
+    private fetchRvfReport(build: Build, options: { prepareForJiraGeneration?: boolean } = {}) {
+        const { prepareForJiraGeneration = false } = options;
+
+        this.resetRvfAssertions();
+        if (prepareForJiraGeneration) {
+
+            this.selectAllError = false;
+            this.selectAllWarning = false;
+        }
+        if (!build.rvfURL.startsWith('https')) {
+            this.showInvalidRvfUrlError(build.rvfURL);
+            return;
+        }
         this.rvfReportLoading = true;
-        this.selectAllError = false;
-        this.selectAllWarning = false;
-        if (build.rvfURL.startsWith('https')) {
-            this.rvfServerService.getRVFReport(this.getRVFRunId(build.rvfURL), this.getRVFStorageLocation(build.rvfURL)).subscribe(
+        this.rvfServerService.getRVFReport(this.getRVFRunId(build.rvfURL), this.getRVFStorageLocation(build.rvfURL)).subscribe(
             (rvfReport) => {
                 if (rvfReport['status'] === 'COMPLETE') {
-                    this.assertionsFailed = rvfReport['rvfValidationResult']['TestResult']['assertionsFailed'];
-                    this.assertionsWarning = rvfReport['rvfValidationResult']['TestResult']['assertionsWarning'];
-                    this.assertionsFailed = this.assertionsFailed.filter(item => item['assertionUuid']);
-                    this.assertionsWarning = this.assertionsWarning.filter(item => item['assertionUuid']);
-
-                    // sorting
-                    const sort = new Sort();
-                    const defaultSortColumn = 'testType';
-                    const defaultSortDirection =  'asc';
-                    this.assertionsFailed.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
-                    this.assertionsWarning.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
-                    this.errorTableSortingObj = new Object();
-                    this.warningTableSortingObj = new Object();
-                    this.errorTableSortingObj[defaultSortColumn] = defaultSortDirection;
-                    this.warningTableSortingObj[defaultSortColumn] = defaultSortDirection;
-                    this.populateJiraUrlToFailures();
+                    this.applyRvfAssertions(rvfReport);
+                    if (prepareForJiraGeneration) {
+                        this.applyJiraGenerationPostProcessing();
+                    }
                 }
                 this.rvfReportLoading = false;
             }, () => {
                 this.rvfReportLoading = false;
-            });
-        } else {
-            this.message = build.rvfURL;
-            this.rvfReportLoading = false;
-            this.openErrorModel();
-        }
+        });
+    }
+
+    private resetRvfAssertions() {
+        this.assertionsFailed = [];
+        this.assertionsWarning = [];
+    }
+
+    private applyRvfAssertions(rvfReport: any) {
+        const testResult = rvfReport['rvfValidationResult']['TestResult'];
+        this.assertionsFailed = (testResult['assertionsFailed'] ?? []).filter(item => item['assertionUuid']);
+        this.assertionsWarning = (testResult['assertionsWarning'] ?? []).filter(item => item['assertionUuid']);
+    }
+
+    private applyJiraGenerationPostProcessing() {
+        const sort = new Sort();
+        const defaultSortColumn = 'testType';
+        const defaultSortDirection = 'asc';
+        this.assertionsFailed.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
+        this.assertionsWarning.sort(sort.startSort(defaultSortColumn, defaultSortDirection));
+        this.errorTableSortingObj = new Object();
+        this.warningTableSortingObj = new Object();
+        this.errorTableSortingObj[defaultSortColumn] = defaultSortDirection;
+        this.warningTableSortingObj[defaultSortColumn] = defaultSortDirection;
+        this.populateJiraUrlToFailures();
+    }
+
+    private showInvalidRvfUrlError(rvfUrl: string) {
+        this.message = rvfUrl;
+        this.rvfReportLoading = false;
+        this.openErrorModel();
     }
 
     handleSortClickOnBuildTable(direction: string, column: string) {
@@ -1058,6 +1100,37 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                 this.populateJiraUrlToFailures();
             }
         );
+    }
+
+    openManageExceptionsDialog(): void {
+        this.manageExceptionsModalOpen = true;
+        if (this.activeBuild?.id && this.activeBuild?.rvfURL) {
+            this.fetchRvfReport(this.activeBuild);
+        } else {
+            this.assertionsFailed = [];
+            this.assertionsWarning = [];
+            this.rvfReportLoading = false;
+        }
+        this.manageExceptionsComponent?.resetView();
+        this.openModal('manage-exceptions-modal');
+    }
+
+    closeManageExceptionsModal(): void {
+        this.closeModal('manage-exceptions-modal');
+    }
+
+    onManageExceptionsError(message: string): void {
+        this.message = message;
+        this.openErrorModel();
+    }
+
+    onManageExceptionsSuccess(message: string): void {
+        this.message = message;
+        this.openSuccessModel();
+    }
+
+    getBuildBranchPath(): string {
+        return this.activeBuild?.configuration?.branchPath ?? '';
     }
 
     populateJiraUrlToFailures() {
@@ -1269,39 +1342,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     canDeleteBuild() {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
         return this.roles && codeSystem && this.activeBuild &&
-            (!this.activeBuild.tags || this.activeBuild.tags.indexOf('PUBLISHED') === -1) && (
-                (this.roles.hasOwnProperty('GLOBAL') && (
-                        (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
-                    ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
-                    ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1
-                    )
-                )
-                || (this.roles.hasOwnProperty(codeSystem) && (
-                        (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
-                    ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
-                    ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
-                    )
-                )
-            );
-    }
-
-    canGenerateJiraTicket() {
-        const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
-        return this.roles && codeSystem
-             && (
-                (this.roles.hasOwnProperty('GLOBAL') && (
-                        (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_ADMIN') !== -1
-                    ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_MANAGER') !== -1
-                    ||  (<Array<String>> this.roles['GLOBAL']).indexOf('RELEASE_LEAD') !== -1
-                    )
-                )
-                || (this.roles.hasOwnProperty(codeSystem) && (
-                        (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_ADMIN') !== -1
-                    ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_MANAGER') !== -1
-                    ||  (<Array<String>> this.roles[codeSystem]).indexOf('RELEASE_LEAD') !== -1
-                    )
-                )
-            );
+            (!this.activeBuild.tags || this.activeBuild.tags.indexOf('PUBLISHED') === -1) && this.isAdminOrManagerOrLead();
     }
 
     private uploadInputFiles(releaseCenterKey, productKey, buildId, buildService, localInputFiles) {

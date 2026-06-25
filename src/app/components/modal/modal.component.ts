@@ -71,13 +71,29 @@ export class ModalComponent implements OnInit, OnDestroy, OnChanges {
 
     // open modal
     open(): void {
+        this.modalService.open(this.id);
+    }
+
+    show(zIndex: { background: number; dialog: number }): void {
+        document.body.appendChild(this.element);
         this.element.style.display = 'block';
-        document.body.classList.add('app-modal-open');
+
+        const dialog = this.element.querySelector('.modal-dialog') as HTMLElement | null;
+        const background = this.element.querySelector('.app-modal-background') as HTMLElement | null;
+        if (dialog) {
+            dialog.style.zIndex = String(zIndex.dialog);
+        }
+        if (background) {
+            background.style.zIndex = String(zIndex.background);
+        }
     }
 
     // close modal
     close(): void {
+        this.modalService.close(this.id);
+    }
+
+    hide(): void {
         this.element.style.display = 'none';
-        document.body.classList.remove('app-modal-open');
     }
 }
