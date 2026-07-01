@@ -315,6 +315,7 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
     saveManifestConfiguration(): void {
         this.message = '';
         this.normalizeOtherExcludedRefsetsInput();
+        this.normalizeExcludedRf2FilesInput();
         this.syncComposedExcludedRefsetsToManifest();
         this.savingProduct = true;
         this.productService.updateManifestConfiguration(this.activeReleaseCenter.id, this.editedProduct).subscribe(
@@ -343,6 +344,7 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
     viewManifestSample(): void {
         this.ensureManifestConfiguration();
         this.normalizeOtherExcludedRefsetsInput();
+        this.normalizeExcludedRf2FilesInput();
         this.syncComposedExcludedRefsetsToManifest();
         this.gereratingManifest = true;
         this.productService.generateManifest(this.activeReleaseCenter.id, this.editedProduct).subscribe(
@@ -408,6 +410,12 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
     normalizeOtherExcludedRefsetsInput(): void {
         const ids = this.parseCommaSeparatedRefsetIds(this.otherExcludedRefsets);
         this.otherExcludedRefsets = ids.length > 0 ? ids.join(', ') : '';
+    }
+
+    normalizeExcludedRf2FilesInput(): void {
+        this.ensureManifestConfiguration();
+        const prefixes = this.parsePipeDelimitedValues(this.editedProduct['manifestConfig'].excludedRf2Files);
+        this.editedProduct['manifestConfig'].excludedRf2Files = prefixes.length > 0 ? prefixes.join('|') : '';
     }
 
     get optionalManifestRefsetsFirstColumn(): OptionalManifestRefset[] {
@@ -734,6 +742,16 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
         if (mc.excludedRefsets != null && typeof mc.excludedRefsets !== 'string') {
             mc.excludedRefsets = String(mc.excludedRefsets);
         }
+        if (mc.excludedRf2Files != null && typeof mc.excludedRf2Files !== 'string') {
+            mc.excludedRf2Files = String(mc.excludedRf2Files);
+        }
+    }
+
+    private parsePipeDelimitedValues(value: string): string[] {
+        if (!value || typeof value !== 'string') {
+            return [];
+        }
+        return value.split('|').map(s => s.trim()).filter(s => s.length !== 0);
     }
 
     private openSuccessModel(): void {
