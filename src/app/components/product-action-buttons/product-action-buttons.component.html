@@ -393,6 +393,14 @@
                 </div>
             </div>
             <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Comma-separated refset identifiers for external simple refsets to include in the auto-generated manifest">Included External Simple Refsets</span>
+                    <input type="text" class="form-control"
+                        [(ngModel)]="editedProduct['manifestConfig'].includedExternalSimpleRefsets"
+                        (blur)="normalizeIncludedExternalSimpleRefsetsInput()">
+                </div>
+            </div>
+            <div class="col-12">
                 <div class="mb-3">
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
                         <span class="small" matTooltip="Standard excluded refsets for this release center; saved with Other Excluded Refsets as one comma-separated list on the product when you save">Excluded Refsets</span>

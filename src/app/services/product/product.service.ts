@@ -115,6 +115,7 @@ export class ProductService {
        
         data['excludedRefsets'] = manifestConfig.excludedRefsets ? manifestConfig.excludedRefsets : '';
         data['excludedRf2Files'] = manifestConfig.excludedRf2Files ? manifestConfig.excludedRf2Files : '';
+        data['includedExternalSimpleRefsets'] = manifestConfig.includedExternalSimpleRefsets ? manifestConfig.includedExternalSimpleRefsets : '';
         data['productName'] = manifestConfig.productName ? manifestConfig.productName : '';
         data['productNamespace'] = manifestConfig.productNamespace ? manifestConfig.productNamespace : '';   
         data['packageEffectiveTime'] = manifestConfig.packageEffectiveTime ? formatDate(manifestConfig.packageEffectiveTime, 'yyyy-MM-dd', 'en-US') : '';
@@ -147,6 +148,7 @@ export class ProductService {
        
         data['excludedRefsets'] = manifestConfig.excludedRefsets ? manifestConfig.excludedRefsets : '';
         data['excludedRf2Files'] = manifestConfig.excludedRf2Files ? manifestConfig.excludedRf2Files : '';
+        data['includedExternalSimpleRefsets'] = manifestConfig.includedExternalSimpleRefsets ? manifestConfig.includedExternalSimpleRefsets : '';
         data['productName'] = manifestConfig.productName ? manifestConfig.productName : '';
         data['productNamespace'] = manifestConfig.productNamespace ? manifestConfig.productNamespace : '';   
         data['packageEffectiveTime'] = manifestConfig.packageEffectiveTime ? formatDate(manifestConfig.packageEffectiveTime, 'yyyy-MM-dd', 'en-US') : '';

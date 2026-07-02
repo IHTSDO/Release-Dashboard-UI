@@ -316,6 +316,7 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
         this.message = '';
         this.normalizeOtherExcludedRefsetsInput();
         this.normalizeExcludedRf2FilesInput();
+        this.normalizeIncludedExternalSimpleRefsetsInput();
         this.syncComposedExcludedRefsetsToManifest();
         this.savingProduct = true;
         this.productService.updateManifestConfiguration(this.activeReleaseCenter.id, this.editedProduct).subscribe(
@@ -345,6 +346,7 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
         this.ensureManifestConfiguration();
         this.normalizeOtherExcludedRefsetsInput();
         this.normalizeExcludedRf2FilesInput();
+        this.normalizeIncludedExternalSimpleRefsetsInput();
         this.syncComposedExcludedRefsetsToManifest();
         this.gereratingManifest = true;
         this.productService.generateManifest(this.activeReleaseCenter.id, this.editedProduct).subscribe(
@@ -416,6 +418,12 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
         this.ensureManifestConfiguration();
         const prefixes = this.parsePipeDelimitedValues(this.editedProduct['manifestConfig'].excludedRf2Files);
         this.editedProduct['manifestConfig'].excludedRf2Files = prefixes.length > 0 ? prefixes.join('|') : '';
+    }
+
+    normalizeIncludedExternalSimpleRefsetsInput(): void {
+        this.ensureManifestConfiguration();
+        const ids = this.parseCommaSeparatedRefsetIds(this.editedProduct['manifestConfig'].includedExternalSimpleRefsets);
+        this.editedProduct['manifestConfig'].includedExternalSimpleRefsets = ids.length > 0 ? ids.join(',') : '';
     }
 
     get optionalManifestRefsetsFirstColumn(): OptionalManifestRefset[] {
@@ -744,6 +752,9 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
         }
         if (mc.excludedRf2Files != null && typeof mc.excludedRf2Files !== 'string') {
             mc.excludedRf2Files = String(mc.excludedRf2Files);
+        }
+        if (mc.includedExternalSimpleRefsets != null && typeof mc.includedExternalSimpleRefsets !== 'string') {
+            mc.includedExternalSimpleRefsets = String(mc.includedExternalSimpleRefsets);
         }
     }
 
