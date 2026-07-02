@@ -37,37 +37,6 @@ app-modal {
             cursor: default;
         }
 
-        .optional-refsets-columns {
-            max-height: 220px;
-            overflow-y: auto;
-        }
-
-        .modal-dialog-centered .modal-content .modal-body {
-            max-height: none;
-            overflow: visible;
-        }
-
-        .modal-dialog-centered .modal-footer {
-            justify-content: flex-start;
-
-            > [footer] {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                justify-content: flex-start;
-                width: 100%;
-                flex: 1 1 auto;
-                min-width: 0;
-            }
-
-            .manifest-configuration-footer-actions {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                margin-left: auto;
-            }
-        }
-
         button.view {
             background-color: color.adjust($wisteria, $lightness: 15%);
             color: $white !important;
@@ -79,6 +48,10 @@ app-modal {
             &:hover {
                 background-color: $wisteria;
             }
+        }
+
+        div.modal-footer {
+            justify-content: stretch;
         }
     }
 

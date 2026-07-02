@@ -337,7 +337,7 @@
 
 <app-modal [id]="modalId('manifest-configuration-modal')" class="modal manifest-configuration-modal" [size]="'xlarge'">
     <h3 header class="mb-0">Manifest Configuration</h3>
-    <div body class="p-4">
+    <div body class="p-4 pb-0">
         <div class="row mx-0">
             <div class="col-12">
                 <div class="input-group mb-3">
@@ -347,28 +347,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Product name written into the generated manifest and package metadata">Product Name</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct['manifestConfig'].productName">
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Namespace value used in manifest">Namespace</span>
                     <input type="text" class="form-control" [(ngModel)]="editedProduct['manifestConfig'].productNamespace">
                 </div>
             </div>
-            <div class="col-12">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Optional package effective date for the manifest; if set, the release package name will use this date instead of other defaults">Package Effective Time (Optional - For Derivative Products Only)</span>
-                    <input type="text" class="form-control" #packageEffectiveTimeInput matInput [matDatepicker]="packageEffectiveTimeAsPicker" (focus)="packageEffectiveTimeAsPicker.open()" [(ngModel)]="editedProduct['manifestConfig'].packageEffectiveTime" matTooltip="Select the optional package effective date">
-                    <mat-datepicker-toggle matIconSuffix [for]="packageEffectiveTimeAsPicker" [disabled]="false" matTooltip="Open calendar"></mat-datepicker-toggle>
-                    <button type="button" class="btn btn-outline-secondary ms-2" (click)="clearPackageEffectiveTime(packageEffectiveTimeInput)" matTooltip="Clear the package effective date">Clear</button>
-                    <mat-datepicker #packageEffectiveTimeAsPicker (closed)="packageEffectiveTimeInput.blur()"></mat-datepicker>
-                </div>
-            </div>
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="Mark the product as a Derivative; manifest generation may follow derivative rules">Derivative Product</span>
                     <div class="input-group-text bg-white">
@@ -376,7 +367,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Optional package effective date for the manifest; if set, the release package name will use this date instead of other defaults">Package Effective Time (Optional - For Derivatives Only)</span>
+                    <input type="text" class="form-control" #packageEffectiveTimeInput matInput [matDatepicker]="packageEffectiveTimeAsPicker" (focus)="packageEffectiveTimeAsPicker.open()" [(ngModel)]="editedProduct['manifestConfig'].packageEffectiveTime" matTooltip="Select the optional package effective date">
+                    <mat-datepicker-toggle matIconSuffix [for]="packageEffectiveTimeAsPicker" matTooltip="Open calendar"></mat-datepicker-toggle>
+                    <button type="button" class="btn btn-outline-secondary ms-2" (click)="clearPackageEffectiveTime(packageEffectiveTimeInput)" matTooltip="Clear the package effective date">Clear</button>
+                    <mat-datepicker #packageEffectiveTimeAsPicker (closed)="packageEffectiveTimeInput.blur()"></mat-datepicker>
+                </div>
+            </div>
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="When enabled, the product namespace is included in the release package naming or manifest where applicable">Include Namespace In Package</span>
                     <div class="input-group-text bg-white">
@@ -384,7 +384,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" matTooltip="When enabled, simple refsets are packaged individually in the generated manifest output">Package Simple Refsets Individually</span>
                     <div class="input-group-text bg-white">
@@ -415,7 +415,7 @@
                    <div *ngIf="optionalManifestRefsetsLoadError" class="text-danger small mb-2">{{ optionalManifestRefsetsLoadError }}</div>
                     <div class="border rounded p-2 bg-white">
                         <ng-container *ngIf="optionalManifestRefsets.length; else optionalRefsetsListEmpty">
-                            <div class="row g-2 mx-0 optional-refsets-columns">
+                            <div class="row g-2 mx-0">
                                 <div [ngClass]="optionalManifestRefsetsSecondColumn.length ? 'col-6' : 'col-12'">
                                     <div *ngFor="let ref of optionalManifestRefsetsFirstColumn" class="form-check mb-1">
                                         <input class="form-check-input" type="checkbox"
@@ -466,9 +466,9 @@
             </div>
         </div>
     </div>
-    <div footer>
+    <div footer class="d-flex w-100 justify-content-between align-items-center">
         <button type="button" class="btn view" [disabled]="gereratingManifest" (click)="viewManifestSample()" matTooltip="Generate a sample manifest XML from the current settings (does not save)">{{gereratingManifest ? 'GENERATING' : 'VIEW SAMPLE'}} <i *ngIf="gereratingManifest" class="fas fa-circle-notch fa-spin"></i></button>
-        <div class="manifest-configuration-footer-actions">
+        <div>
             <button type="button" class="btn" [disabled]="savingProduct" (click)="closeModal('manifest-configuration-modal')">CANCEL</button>
             <button type="button" class="btn accept ms-3" [disabled]="savingProduct" (click)="saveManifestConfiguration()">SAVE</button>
         </div>
