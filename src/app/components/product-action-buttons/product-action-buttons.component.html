@@ -454,7 +454,7 @@
             </div>
             <div class="col-12">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" matTooltip="Pipe-delimited RF2 file name prefixes to exclude from the auto-generated manifest (e.g. sct2_StatedRelationship|file2). Each entry is matched using starts-with against RF2 file names so one prefix covers Full, Snapshot, and Delta variants. Use this to omit deprecated content such as StatedRelationship files.">Excluded RF2 Files</span>
+                    <span class="input-group-text" matTooltip="Pipe-delimited RF2 file name prefixes to exclude from the auto-generated manifest (e.g. sct2_StatedRelationship|file2). Each entry is evaluated against RF2 file names using a substring containment check so one prefix covers Full, Snapshot, and Delta variants. Use this to omit deprecated content such as StatedRelationship files.">Excluded RF2 Files</span>
                     <textarea matInput
                         cdkTextareaAutosize
                         cdkAutosizeMinRows="1"
