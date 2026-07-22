@@ -128,9 +128,29 @@
             </div>
         </div>
 
+        <div class="d-flex justify-content-between align-items-center mb-2" *ngIf="canManage">
+            <span class="text-muted small" *ngIf="getSelectedFailureCount() > 0">
+                {{getSelectedFailureCount()}} failure{{getSelectedFailureCount() === 1 ? '' : 's'}} selected
+            </span>
+            <span *ngIf="getSelectedFailureCount() === 0"></span>
+            <button type="button" class="btn green btn-sm"
+                    [disabled]="getSelectedFailureCount() === 0"
+                    (click)="openBulkAddExceptionModal()">
+                <i class="fas fa-plus pe-1"></i>Add Exceptions
+                <span *ngIf="getSelectedFailureCount() > 0">({{getSelectedFailureCount()}})</span>
+            </button>
+        </div>
+
         <table class="table table-bordered table-striped failures-table">
             <thead>
                 <tr class="text-center">
+                    <td *ngIf="canManage" class="selection-col">
+                        <input type="checkbox"
+                               [checked]="selectAllEligibleFailures"
+                               (change)="setSelectAllEligibleFailures($any($event.target).checked)"
+                               [disabled]="getEligibleDisplayedFailures().length === 0"
+                               title="Select all failures without an exception">
+                    </td>
                     <td>Component ID</td>
                     <td>Description / Detail</td>
                     <td>Exception Status</td>
@@ -138,12 +158,37 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="text-center" *ngIf="getFailuresForAssertion(selectedAssertion).length === 0">
-                    <td [attr.colspan]="canManage ? 4 : 3">No individual failure details available for this assertion.</td>
+                <tr class="text-center" *ngIf="displayedFailures.length === 0">
+                    <td [attr.colspan]="canManage ? 5 : 3">No individual failure details available for this assertion.</td>
                 </tr>
-                <tr *ngFor="let failure of getFailuresForAssertion(selectedAssertion)">
-                    <td class="text-center">{{failure.componentId || '—'}}</td>
-                    <td class="text-start">{{failure.detail || ''}}</td>
+                <tr *ngFor="let failure of displayedFailures">
+                    <td *ngIf="canManage" class="text-center selection-col">
+                        <input *ngIf="!failure.hasException" type="checkbox"
+                               [checked]="isFailureSelected(failure)"
+                               (change)="setFailureSelection(failure, $any($event.target).checked)">
+                    </td>
+                    <td class="text-center">
+                        <div class="copyable-cell justify-content-center" *ngIf="failure.componentId; else emptyComponentId">
+                            <span class="copyable-text">{{failure.componentId}}</span>
+                            <button type="button" class="btn btn-link copy-btn p-0"
+                                    [matTooltip]="isCopiedField(failure, 'componentId') ? 'Copied!' : 'Copy Component ID'"
+                                    (click)="copyFailureField(failure, 'componentId', $event)">
+                                <i class="fas" [ngClass]="isCopiedField(failure, 'componentId') ? 'fa-check' : 'fa-copy'"></i>
+                            </button>
+                        </div>
+                        <ng-template #emptyComponentId>—</ng-template>
+                    </td>
+                    <td class="text-start">
+                        <div class="copyable-cell" *ngIf="failure.detail; else emptyDetail">
+                            <span class="copyable-text">{{failure.detail}}</span>
+                            <button type="button" class="btn btn-link copy-btn p-0"
+                                    [matTooltip]="isCopiedField(failure, 'detail') ? 'Copied!' : 'Copy Description / Detail'"
+                                    (click)="copyFailureField(failure, 'detail', $event)">
+                                <i class="fas" [ngClass]="isCopiedField(failure, 'detail') ? 'fa-check' : 'fa-copy'"></i>
+                            </button>
+                        </div>
+                        <ng-template #emptyDetail></ng-template>
+                    </td>
                     <td class="text-start">
                         <span *ngIf="failure.hasException && failure.whitelistItem as item" class="exception-status-summary">
                             <i class="fas fa-check text-success pe-1"></i>{{formatExceptionStatusSummary(item)}}
@@ -167,9 +212,12 @@
 </div>
 
 <app-modal id="manage-exceptions-add-modal" class="modal build-modal">
-    <h3 header class="mb-0">Add Exception</h3>
+    <h3 header class="mb-0">{{selectedFailuresForAdd.length > 1 ? 'Add Exceptions' : 'Add Exception'}}</h3>
     <div body class="text-start p-4">
-        <p *ngIf="selectedFailure"><strong>Component ID:</strong> {{selectedFailure.componentId}}</p>
+        <p *ngIf="selectedFailuresForAdd.length === 1"><strong>Component ID:</strong> {{selectedFailuresForAdd[0].componentId}}</p>
+        <p *ngIf="selectedFailuresForAdd.length > 1">
+            <strong>{{selectedFailuresForAdd.length}}</strong> failures will be added with the same reason.
+        </p>
         <div class="mb-3">
             <label class="form-label" for="exceptionReason">Reason <span class="text-danger">*</span></label>
             <textarea id="exceptionReason" class="form-control" rows="3" [(ngModel)]="exceptionReason"

@@ -82,6 +82,40 @@
         line-height: 1.4;
     }
 
+    .selection-col {
+        width: 3rem;
+        vertical-align: middle;
+    }
+
+    .copyable-cell {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .copyable-text {
+        flex: 1;
+        min-width: 0;
+        word-break: break-word;
+    }
+
+    .copy-btn {
+        color: $slate-grey;
+        line-height: 1;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        align-self: center;
+
+        &:hover {
+            color: $cerulean;
+        }
+
+        .fa-check {
+            color: $fruit-salad;
+        }
+    }
+
     .btn-sm {
         font-size: 0.8rem;
         padding: 0.25rem 0.55rem;

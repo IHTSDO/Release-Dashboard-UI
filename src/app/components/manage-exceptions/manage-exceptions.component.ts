@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { SortDirective } from 'src/app/directive/sort.directive';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ModalComponent } from '../modal/modal.component';
@@ -53,13 +55,20 @@ export class ManageExceptionsComponent implements OnChanges {
 
     selectedAssertion: AssertionWithFailures | null = null;
     selectedFailure: EnrichedFailureDetail | null = null;
+    selectedFailuresForAdd: EnrichedFailureDetail[] = [];
+    displayedFailures: EnrichedFailureDetail[] = [];
+    selectedFailureKeys = new Set<string>();
+    selectAllEligibleFailures = false;
     exceptionReason = '';
     exceptionType: 'permanent' | 'temporary' = 'permanent';
     exceptionSaving = false;
     exceptionRemoving = false;
+    copiedFieldKey: string | null = null;
+    private copiedFieldResetHandle: ReturnType<typeof setTimeout> | null = null;
 
     private readonly addModalId = 'manage-exceptions-add-modal';
     private readonly removeModalId = 'manage-exceptions-remove-modal';
+    private readonly allowedTestTypes = new Set(['DROOL_RULES', 'MRCM', 'TRACEABILITY', 'SQL']);
 
     constructor(private aagService: AagService,
                 private modalService: ModalService) {
@@ -79,6 +88,9 @@ export class ManageExceptionsComponent implements OnChanges {
         this.viewLevel = 'assertions';
         this.selectedAssertion = null;
         this.selectedFailure = null;
+        this.selectedFailuresForAdd = [];
+        this.displayedFailures = [];
+        this.clearFailureSelection();
     }
 
     loadWhitelistItems(): void {
@@ -116,11 +128,11 @@ export class ManageExceptionsComponent implements OnChanges {
         });
 
         this.errorAssertions = (this.assertionsFailed ?? [])
-            .filter(item => item?.assertionUuid)
+            .filter(item => item?.assertionUuid && this.isAllowedTestType(item.testType))
             .map(item => mapAssertion(item, 'error'));
 
         this.warningAssertions = (this.assertionsWarning ?? [])
-            .filter(item => item?.assertionUuid)
+            .filter(item => item?.assertionUuid && this.isAllowedTestType(item.testType))
             .map(item => mapAssertion(item, 'warning'));
 
         const sort = new Sort();
@@ -155,6 +167,10 @@ export class ManageExceptionsComponent implements OnChanges {
             if (updated) {
                 this.selectedAssertion = updated;
             }
+            if (this.viewLevel === 'failures') {
+                this.refreshDisplayedFailures();
+            }
+            this.pruneFailureSelection();
         }
     }
 
@@ -162,24 +178,54 @@ export class ManageExceptionsComponent implements OnChanges {
         event?.stopPropagation();
         this.selectedAssertion = assertion;
         this.viewLevel = 'failures';
+        this.clearFailureSelection();
+        this.refreshDisplayedFailures();
     }
 
     backToAssertions(): void {
         this.viewLevel = 'assertions';
         this.selectedAssertion = null;
+        this.displayedFailures = [];
+        this.clearFailureSelection();
     }
 
-    getFailuresForAssertion(assertion: AssertionWithFailures): EnrichedFailureDetail[] {
-        return (assertion.firstNInstances ?? []).map(failure => {
-            const whitelistItem = this.findWhitelistItem(assertion.assertionUuid, failure.componentId, failure.fullComponent ?? '');
-            return {
-                ...failure,
-                validationRuleId: assertion.assertionUuid,
-                assertionText: assertion.assertionText,
-                whitelistItem,
-                hasException: !!whitelistItem
-            };
-        });
+    getEligibleDisplayedFailures(): EnrichedFailureDetail[] {
+        return this.displayedFailures.filter(failure => !failure.hasException);
+    }
+
+    getSelectedEligibleFailures(): EnrichedFailureDetail[] {
+        return this.getEligibleDisplayedFailures()
+            .filter(failure => this.selectedFailureKeys.has(this.getFailureKey(failure)));
+    }
+
+    getSelectedFailureCount(): number {
+        return this.selectedFailureKeys.size;
+    }
+
+    isFailureSelected(failure: EnrichedFailureDetail): boolean {
+        return this.selectedFailureKeys.has(this.getFailureKey(failure));
+    }
+
+    setFailureSelection(failure: EnrichedFailureDetail, selected: boolean): void {
+        if (failure.hasException) {
+            return;
+        }
+        const key = this.getFailureKey(failure);
+        if (selected) {
+            this.selectedFailureKeys.add(key);
+        } else {
+            this.selectedFailureKeys.delete(key);
+        }
+        this.selectedFailureKeys = new Set(this.selectedFailureKeys);
+        this.syncSelectAllEligibleState();
+    }
+
+    setSelectAllEligibleFailures(selected: boolean): void {
+        const eligible = this.getEligibleDisplayedFailures();
+        this.selectAllEligibleFailures = selected;
+        this.selectedFailureKeys = selected
+            ? new Set(eligible.map(failure => this.getFailureKey(failure)))
+            : new Set();
     }
 
     findWhitelistItem(validationRuleId: string, componentId: string, fullComponent: string): WhitelistItem | undefined {
@@ -189,7 +235,21 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     openAddExceptionModal(failure: EnrichedFailureDetail): void {
+        this.selectedFailuresForAdd = [failure];
         this.selectedFailure = failure;
+        this.exceptionReason = '';
+        this.exceptionType = 'permanent';
+        this.openModal(this.addModalId);
+    }
+
+    openBulkAddExceptionModal(): void {
+        const selected = this.getSelectedEligibleFailures();
+        if (!selected.length) {
+            this.errorMessage.emit('Please select at least one failure to add as an exception.');
+            return;
+        }
+        this.selectedFailuresForAdd = selected;
+        this.selectedFailure = selected[0];
         this.exceptionReason = '';
         this.exceptionType = 'permanent';
         this.openModal(this.addModalId);
@@ -201,7 +261,7 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     saveException(): void {
-        if (!this.selectedFailure || !this.selectedAssertion) {
+        if (!this.selectedFailuresForAdd.length || !this.selectedAssertion) {
             return;
         }
         const reason = this.exceptionReason?.trim();
@@ -210,31 +270,64 @@ export class ManageExceptionsComponent implements OnChanges {
             return;
         }
 
-        const request: CreateWhitelistItemRequest = {
-            validationRuleId: this.selectedAssertion.assertionUuid,
-            componentId: this.selectedFailure.componentId,
-            conceptId: this.selectedFailure.conceptId,
-            branch: this.branchPath,
-            assertionFailureText: this.selectedAssertion.assertionText,
-            additionalFields: this.selectedFailure.fullComponent ?? '',
-            temporary: this.exceptionType === 'temporary',
-            reason
-        };
+        const temporary = this.exceptionType === 'temporary';
+        const requests = this.selectedFailuresForAdd.map(failure => {
+            const request: CreateWhitelistItemRequest = {
+                validationRuleId: this.selectedAssertion.assertionUuid,
+                componentId: failure.componentId,
+                conceptId: failure.conceptId,
+                branch: this.branchPath,
+                assertionFailureText: this.selectedAssertion.assertionText,
+                additionalFields: failure.fullComponent ?? '',
+                temporary,
+                reason
+            };
+            return this.aagService.createWhitelistItem(request).pipe(
+                catchError(errorResponse => of({ error: errorResponse } as { error: any }))
+            );
+        });
 
         this.exceptionSaving = true;
-        this.aagService.createWhitelistItem(request).subscribe(
-            savedItem => {
-                this.whitelistItems = [...this.whitelistItems, savedItem];
+        forkJoin(requests).subscribe(results => {
+            const savedItems: WhitelistItem[] = [];
+            let failedCount = 0;
+            let lastError: any = null;
+
+            results.forEach(result => {
+                if (result && 'error' in result) {
+                    failedCount++;
+                    lastError = result.error;
+                } else {
+                    savedItems.push(result as WhitelistItem);
+                }
+            });
+
+            if (savedItems.length) {
+                this.whitelistItems = [...this.whitelistItems, ...savedItems];
                 this.updateExceptionCounts();
-                this.exceptionSaving = false;
-                this.closeModal(this.addModalId);
-                this.successMessage.emit('Exception has been added successfully.');
-            },
-            errorResponse => {
-                this.exceptionSaving = false;
-                this.errorMessage.emit(this.extractErrorMessage(errorResponse, 'Failed to add exception.'));
+                this.clearFailureSelection();
             }
-        );
+
+            this.exceptionSaving = false;
+            this.closeModal(this.addModalId);
+            this.selectedFailuresForAdd = [];
+
+            if (failedCount === 0) {
+                const count = savedItems.length;
+                this.successMessage.emit(
+                    count === 1
+                        ? 'Exception has been added successfully.'
+                        : `${count} exceptions have been added successfully.`
+                );
+            } else if (savedItems.length === 0) {
+                this.errorMessage.emit(this.extractErrorMessage(lastError, 'Failed to add exception.'));
+            } else {
+                this.errorMessage.emit(
+                    `${savedItems.length} exception${savedItems.length === 1 ? '' : 's'} added, but ${failedCount} failed. `
+                    + this.extractErrorMessage(lastError, 'Failed to add exception.')
+                );
+            }
+        });
     }
 
     removeException(): void {
@@ -299,14 +392,123 @@ export class ManageExceptionsComponent implements OnChanges {
         return this.rvfReportLoading || this.whitelistLoading;
     }
 
+    getCopyFieldKey(failure: EnrichedFailureDetail, field: 'componentId' | 'detail'): string {
+        return `${this.getFailureKey(failure)}::${field}`;
+    }
+
+    isCopiedField(failure: EnrichedFailureDetail, field: 'componentId' | 'detail'): boolean {
+        return this.copiedFieldKey === this.getCopyFieldKey(failure, field);
+    }
+
+    async copyFailureField(failure: EnrichedFailureDetail, field: 'componentId' | 'detail', event?: Event): Promise<void> {
+        event?.stopPropagation();
+        const value = field === 'componentId' ? (failure.componentId ?? '') : (failure.detail ?? '');
+        if (!value) {
+            return;
+        }
+
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(value);
+            } else {
+                this.copyWithFallback(value);
+            }
+            this.markFieldCopied(this.getCopyFieldKey(failure, field));
+        } catch {
+            try {
+                this.copyWithFallback(value);
+                this.markFieldCopied(this.getCopyFieldKey(failure, field));
+            } catch {
+                this.errorMessage.emit('Failed to copy to clipboard.');
+            }
+        }
+    }
+
+    private markFieldCopied(fieldKey: string): void {
+        this.copiedFieldKey = fieldKey;
+        if (this.copiedFieldResetHandle) {
+            clearTimeout(this.copiedFieldResetHandle);
+        }
+        this.copiedFieldResetHandle = setTimeout(() => {
+            if (this.copiedFieldKey === fieldKey) {
+                this.copiedFieldKey = null;
+            }
+            this.copiedFieldResetHandle = null;
+        }, 1500);
+    }
+
+    private copyWithFallback(value: string): void {
+        const textarea = document.createElement('textarea');
+        textarea.value = value;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (!successful) {
+            throw new Error('Copy command failed');
+        }
+    }
+
+    private isAllowedTestType(testType: string): boolean {
+        return this.allowedTestTypes.has(testType);
+    }
+
+    private getFailuresForAssertion(assertion: AssertionWithFailures): EnrichedFailureDetail[] {
+        return (assertion.firstNInstances ?? []).map(failure => {
+            const whitelistItem = this.findWhitelistItem(assertion.assertionUuid, failure.componentId, failure.fullComponent ?? '');
+            return {
+                ...failure,
+                validationRuleId: assertion.assertionUuid,
+                assertionText: assertion.assertionText,
+                whitelistItem,
+                hasException: !!whitelistItem
+            };
+        });
+    }
+
+    private refreshDisplayedFailures(): void {
+        if (!this.selectedAssertion) {
+            this.displayedFailures = [];
+            return;
+        }
+        this.displayedFailures = this.getFailuresForAssertion(this.selectedAssertion);
+    }
+
+    private getFailureKey(failure: FailureDetail): string {
+        return `${failure.componentId ?? ''}||${failure.fullComponent ?? ''}`;
+    }
+
+    private clearFailureSelection(): void {
+        this.selectedFailureKeys = new Set();
+        this.selectAllEligibleFailures = false;
+    }
+
+    private syncSelectAllEligibleState(): void {
+        const eligible = this.getEligibleDisplayedFailures();
+        this.selectAllEligibleFailures = eligible.length > 0
+            && eligible.every(failure => this.selectedFailureKeys.has(this.getFailureKey(failure)));
+    }
+
+    private pruneFailureSelection(): void {
+        if (!this.selectedFailureKeys.size) {
+            this.syncSelectAllEligibleState();
+            return;
+        }
+        const eligibleKeys = new Set(
+            this.getEligibleDisplayedFailures().map(failure => this.getFailureKey(failure))
+        );
+        this.selectedFailureKeys = new Set(
+            [...this.selectedFailureKeys].filter(key => eligibleKeys.has(key))
+        );
+        this.syncSelectAllEligibleState();
+    }
+
     private getAssertionUuids(): string[] {
         const uuids = new Set<string>();
-        (this.assertionsFailed ?? []).forEach(assertion => {
-            if (assertion?.assertionUuid) {
-                uuids.add(assertion.assertionUuid);
-            }
-        });
-        (this.assertionsWarning ?? []).forEach(assertion => {
+        [...this.errorAssertions, ...this.warningAssertions].forEach(assertion => {
             if (assertion?.assertionUuid) {
                 uuids.add(assertion.assertionUuid);
             }
