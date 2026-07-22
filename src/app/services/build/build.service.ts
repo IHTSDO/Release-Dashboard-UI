@@ -66,6 +66,10 @@ export class BuildService {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/cancel', {});
   }
 
+  rerunRvf(releaseCenterKey, productKey, buildId) {
+    return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/rvf', {});
+  }
+
   uploadInputFile(releaseCenterKey, productKey, buildId, file: FormData) {
     return this.http.post('/release/centers/' + releaseCenterKey + '/products/' + productKey + '/builds/' + buildId + '/inputfiles', file);
   }

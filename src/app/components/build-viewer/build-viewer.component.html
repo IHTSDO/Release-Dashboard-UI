@@ -73,6 +73,11 @@
                         <button type="button" *ngIf="canDeleteBuild()" class="btn red m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')"><i class="fas fa-times pe-2"></i>{{activeBuild.buildDeleting? 'DELETING...' : 'DELETE BUILD'}}</button>
                         <button type="button" *ngIf="isAdminOrManagerOrLead() && activeBuild.rvfURL" class="btn orange m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="openManageExceptionsDialog()"><i class="fas fa-shield-alt pe-2"></i>MANAGE EXCEPTIONS</button>
                         <button type="button" *ngIf="isAdminOrManagerOrLead() && activeBuild.rvfURL" class="btn blue m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="getFailureJiraAssociations(); loadRvfReport(activeBuild); openModal('generate-jira-tickets-modal')"><i class="fas fa-ticket-alt pe-2"></i>GENERATE JIRA TICKETS</button>
+                        <button type="button" *ngIf="isAdminOrManagerOrLead()" class="btn purple m-2 d-block"
+                                [disabled]="!activeBuild.id || activeBuild.buildDeleting || rvfRerunning || isRvfInProgress(activeBuild)"
+                                (click)="openModal('rerun-rvf-confirmation-modal')">
+                            <i class="fas fa-redo pe-2"></i>{{rvfRerunning ? 'RE-RUNNING...' : 'RE-RUN VALIDATION'}}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -633,6 +638,21 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
     <div footer>
         <button type="button" class="btn" (click)="closeModal('stop-build-confirmation-modal')">CANCEL</button>
         <button type="button" class="btn reject ms-3" (click)="stopBuild(activeBuild)">STOP</button>
+    </div>
+</app-modal>
+
+<!--Re-run RVF confirmation-->
+<app-modal id="rerun-rvf-confirmation-modal" class="modal build-modal">
+    <h3 header class="mb-0">Confirmation</h3>
+    <div body class="text-center p-5">
+        <p>Are you sure you want to re-run validation for this build?</p>
+    </div>
+
+    <div footer>
+        <button type="button" class="btn" [disabled]="rvfRerunning" (click)="closeModal('rerun-rvf-confirmation-modal')">CANCEL</button>
+        <button type="button" class="btn accept ms-3" [disabled]="rvfRerunning" (click)="rerunRvf(activeBuild)">
+            {{rvfRerunning ? 'RE-RUNNING...' : 'RE-RUN'}}
+        </button>
     </div>
 </app-modal>
 

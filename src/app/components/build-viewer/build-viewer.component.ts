@@ -105,6 +105,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
     action: string;
     message: string;
     rvfReportLoading = false;
+    rvfRerunning = false;
     manageExceptionsModalOpen = false;
 
     private manageExceptionsModalClosedSubscription: Subscription;
@@ -1131,6 +1132,39 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
 
     getBuildBranchPath(): string {
         return this.activeBuild?.configuration?.branchPath ?? '';
+    }
+
+    isRvfInProgress(build: Build): boolean {
+        const status = build?.status;
+        return status === 'RVF_QUEUED' || status === 'RVF_RUNNING';
+    }
+
+    rerunRvf(build: Build): void {
+        if (!build?.id || this.rvfRerunning) {
+            return;
+        }
+
+        this.rvfRerunning = true;
+        this.closeModal('rerun-rvf-confirmation-modal');
+        this.openWaitingModel('Re-running RVF');
+
+        this.buildService.rerunRvf(this.releaseCenterKey, this.productKey, build.id).subscribe(
+            () => {
+                this.rvfRerunning = false;
+                this.closeWaitingModel();
+                this.message = 'RVF has been queued successfully.';
+                this.openSuccessModel();
+            },
+            errorResponse => {
+                this.rvfRerunning = false;
+                this.closeWaitingModel();
+                this.message = errorResponse?.error?.errorMessage
+                    ?? errorResponse?.error?.message
+                    ?? errorResponse?.message
+                    ?? 'Failed to re-run RVF.';
+                this.openErrorModel();
+            }
+        );
     }
 
     populateJiraUrlToFailures() {
