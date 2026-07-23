@@ -7,11 +7,11 @@
         width: 100%;
 
         col.col-type {
-            width: 10rem;
+            width: 18rem;
         }
 
         col.col-assertion-id {
-            width: 27rem;
+            width: 28rem;
         }
 
         col.col-failure-count {
@@ -24,6 +24,13 @@
 
         col.col-actions {
             width: 13rem;
+        }
+
+        td.col-type-cell,
+        td.col-assertion-id-cell {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            white-space: normal;
         }
     }
 
@@ -119,5 +126,9 @@
     .btn-sm {
         font-size: 0.8rem;
         padding: 0.25rem 0.55rem;
+    }
+
+    span[matTooltip] {
+        display: inline-block;
     }
 }

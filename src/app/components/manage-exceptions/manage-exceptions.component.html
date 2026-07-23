@@ -37,8 +37,8 @@
                     <td colspan="6">No errors found.</td>
                 </tr>
                 <tr *ngFor="let assertion of errorAssertions" class="assertion-row">
-                    <td class="pb-0 text-center">{{formatTestType(assertion.testType)}}</td>
-                    <td class="pb-0 text-center text-truncate" [title]="assertion.assertionUuid">{{assertion.assertionUuid}}</td>
+                    <td class="pb-0 text-center col-type-cell">{{formatTestType(assertion.testType)}}</td>
+                    <td class="pb-0 text-center col-assertion-id-cell">{{assertion.assertionUuid}}</td>
                     <td class="pb-0 text-start">{{assertion.assertionText}}</td>
                     <td class="pb-0 text-center">{{formatFailureCount(assertion.failureCount)}}</td>
                     <td class="pb-0 text-center">
@@ -93,8 +93,8 @@
                     <td colspan="6">No warnings found.</td>
                 </tr>
                 <tr *ngFor="let assertion of warningAssertions" class="assertion-row">
-                    <td class="pb-0 text-center">{{formatTestType(assertion.testType)}}</td>
-                    <td class="pb-0 text-center text-truncate" [title]="assertion.assertionUuid">{{assertion.assertionUuid}}</td>
+                    <td class="pb-0 text-center col-type-cell">{{formatTestType(assertion.testType)}}</td>
+                    <td class="pb-0 text-center col-assertion-id-cell">{{assertion.assertionUuid}}</td>
                     <td class="pb-0 text-start">{{assertion.assertionText}}</td>
                     <td class="pb-0 text-center">{{formatFailureCount(assertion.failureCount)}}</td>
                     <td class="pb-0 text-center">
@@ -133,12 +133,15 @@
                 {{getSelectedFailureCount()}} failure{{getSelectedFailureCount() === 1 ? '' : 's'}} selected
             </span>
             <span *ngIf="getSelectedFailureCount() === 0"></span>
-            <button type="button" class="btn green btn-sm"
-                    [disabled]="getSelectedFailureCount() === 0"
-                    (click)="openBulkAddExceptionModal()">
-                <i class="fas fa-plus pe-1"></i>Add Exceptions
-                <span *ngIf="getSelectedFailureCount() > 0">({{getSelectedFailureCount()}})</span>
-            </button>
+            <span [matTooltip]="!canAddExceptionsForSelectedAssertion() ? exceptionDisallowedReason : ''"
+                  [matTooltipDisabled]="canAddExceptionsForSelectedAssertion()">
+                <button type="button" class="btn green btn-sm"
+                        [disabled]="!canAddExceptionsForSelectedAssertion() || getSelectedFailureCount() === 0"
+                        (click)="openBulkAddExceptionModal()">
+                    <i class="fas fa-plus pe-1"></i>Add Exceptions
+                    <span *ngIf="getSelectedFailureCount() > 0">({{getSelectedFailureCount()}})</span>
+                </button>
+            </span>
         </div>
 
         <table class="table table-bordered table-striped failures-table">
@@ -148,8 +151,8 @@
                         <input type="checkbox"
                                [checked]="selectAllEligibleFailures"
                                (change)="setSelectAllEligibleFailures($any($event.target).checked)"
-                               [disabled]="getEligibleDisplayedFailures().length === 0"
-                               title="Select all failures without an exception">
+                               [disabled]="!canAddExceptionsForSelectedAssertion() || getEligibleDisplayedFailures().length === 0"
+                               [title]="!canAddExceptionsForSelectedAssertion() ? exceptionDisallowedReason : 'Select all failures without an exception'">
                     </td>
                     <td>Component ID</td>
                     <td>Description / Detail</td>
@@ -165,6 +168,8 @@
                     <td *ngIf="canManage" class="text-center selection-col">
                         <input *ngIf="!failure.hasException" type="checkbox"
                                [checked]="isFailureSelected(failure)"
+                               [disabled]="!canAddExceptionsForSelectedAssertion()"
+                               [title]="!canAddExceptionsForSelectedAssertion() ? exceptionDisallowedReason : ''"
                                (change)="setFailureSelection(failure, $any($event.target).checked)">
                     </td>
                     <td class="text-center">
@@ -196,10 +201,15 @@
                         <span *ngIf="!failure.hasException" class="text-muted"></span>
                     </td>
                     <td *ngIf="canManage" class="text-center">
-                        <button *ngIf="!failure.hasException" type="button" class="btn green btn-sm"
-                                (click)="openAddExceptionModal(failure)">
-                            <i class="fas fa-plus pe-1"></i>Add Exception
-                        </button>
+                        <span *ngIf="!failure.hasException"
+                              [matTooltip]="!canAddExceptionsForSelectedAssertion() ? exceptionDisallowedReason : ''"
+                              [matTooltipDisabled]="canAddExceptionsForSelectedAssertion()">
+                            <button type="button" class="btn green btn-sm"
+                                    [disabled]="!canAddExceptionsForSelectedAssertion()"
+                                    (click)="openAddExceptionModal(failure)">
+                                <i class="fas fa-plus pe-1"></i>Add Exception
+                            </button>
+                        </span>
                         <button *ngIf="failure.hasException" type="button" class="btn red btn-sm"
                                 (click)="openRemoveExceptionModal(failure)">
                             Remove

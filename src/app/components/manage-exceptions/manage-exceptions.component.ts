@@ -68,7 +68,11 @@ export class ManageExceptionsComponent implements OnChanges {
 
     private readonly addModalId = 'manage-exceptions-add-modal';
     private readonly removeModalId = 'manage-exceptions-remove-modal';
+    /** Test types that may be added to the exception list. */
     private readonly allowedTestTypes = new Set(['DROOL_RULES', 'MRCM', 'TRACEABILITY', 'SQL']);
+    /** Visible in Manage Exceptions, but exceptions cannot be added (critical). */
+    private readonly criticalTestTypes = new Set(['ARCHIVE_STRUCTURAL']);
+    readonly exceptionDisallowedReason = 'Critical failures are not allowed to be added to the exception list';
 
     constructor(private aagService: AagService,
                 private modalService: ModalService) {
@@ -128,11 +132,11 @@ export class ManageExceptionsComponent implements OnChanges {
         });
 
         this.errorAssertions = (this.assertionsFailed ?? [])
-            .filter(item => item?.assertionUuid && this.isAllowedTestType(item.testType))
+            .filter(item => item?.assertionUuid && this.isVisibleTestType(item.testType))
             .map(item => mapAssertion(item, 'error'));
 
         this.warningAssertions = (this.assertionsWarning ?? [])
-            .filter(item => item?.assertionUuid && this.isAllowedTestType(item.testType))
+            .filter(item => item?.assertionUuid && this.isVisibleTestType(item.testType))
             .map(item => mapAssertion(item, 'warning'));
 
         const sort = new Sort();
@@ -190,6 +194,9 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     getEligibleDisplayedFailures(): EnrichedFailureDetail[] {
+        if (!this.canAddExceptionsForSelectedAssertion()) {
+            return [];
+        }
         return this.displayedFailures.filter(failure => !failure.hasException);
     }
 
@@ -202,12 +209,20 @@ export class ManageExceptionsComponent implements OnChanges {
         return this.selectedFailureKeys.size;
     }
 
+    canAddExceptionsForTestType(testType: string): boolean {
+        return this.allowedTestTypes.has(testType);
+    }
+
+    canAddExceptionsForSelectedAssertion(): boolean {
+        return !!this.selectedAssertion && this.canAddExceptionsForTestType(this.selectedAssertion.testType);
+    }
+
     isFailureSelected(failure: EnrichedFailureDetail): boolean {
         return this.selectedFailureKeys.has(this.getFailureKey(failure));
     }
 
     setFailureSelection(failure: EnrichedFailureDetail, selected: boolean): void {
-        if (failure.hasException) {
+        if (failure.hasException || !this.canAddExceptionsForSelectedAssertion()) {
             return;
         }
         const key = this.getFailureKey(failure);
@@ -221,6 +236,10 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     setSelectAllEligibleFailures(selected: boolean): void {
+        if (!this.canAddExceptionsForSelectedAssertion()) {
+            this.clearFailureSelection();
+            return;
+        }
         const eligible = this.getEligibleDisplayedFailures();
         this.selectAllEligibleFailures = selected;
         this.selectedFailureKeys = selected
@@ -235,6 +254,9 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     openAddExceptionModal(failure: EnrichedFailureDetail): void {
+        if (!this.canAddExceptionsForSelectedAssertion()) {
+            return;
+        }
         this.selectedFailuresForAdd = [failure];
         this.selectedFailure = failure;
         this.exceptionReason = '';
@@ -243,6 +265,9 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     openBulkAddExceptionModal(): void {
+        if (!this.canAddExceptionsForSelectedAssertion()) {
+            return;
+        }
         const selected = this.getSelectedEligibleFailures();
         if (!selected.length) {
             this.errorMessage.emit('Please select at least one failure to add as an exception.');
@@ -261,7 +286,7 @@ export class ManageExceptionsComponent implements OnChanges {
     }
 
     saveException(): void {
-        if (!this.selectedFailuresForAdd.length || !this.selectedAssertion) {
+        if (!this.selectedFailuresForAdd.length || !this.selectedAssertion || !this.canAddExceptionsForSelectedAssertion()) {
             return;
         }
         const reason = this.exceptionReason?.trim();
@@ -456,6 +481,10 @@ export class ManageExceptionsComponent implements OnChanges {
         return this.allowedTestTypes.has(testType);
     }
 
+    private isVisibleTestType(testType: string): boolean {
+        return this.allowedTestTypes.has(testType) || this.criticalTestTypes.has(testType);
+    }
+
     private getFailuresForAssertion(assertion: AssertionWithFailures): EnrichedFailureDetail[] {
         return (assertion.firstNInstances ?? []).map(failure => {
             const whitelistItem = this.findWhitelistItem(assertion.assertionUuid, failure.componentId, failure.fullComponent ?? '');
@@ -509,7 +538,7 @@ export class ManageExceptionsComponent implements OnChanges {
     private getAssertionUuids(): string[] {
         const uuids = new Set<string>();
         [...this.errorAssertions, ...this.warningAssertions].forEach(assertion => {
-            if (assertion?.assertionUuid) {
+            if (assertion?.assertionUuid && this.isAllowedTestType(assertion.testType)) {
                 uuids.add(assertion.assertionUuid);
             }
         });
