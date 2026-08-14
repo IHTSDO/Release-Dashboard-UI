@@ -57,8 +57,13 @@ describe('Release Dashboard', () => {
     it(`Open the product config modal`, () => {
         cy.get('.centers').first().find('div').first().click()
         cy.wait(3000)
-        cy.get('table button').contains('EDIT').click()
-        cy.contains('h3', 'Product Configurations').should('be.visible')
+        cy.get('.table').find('.product').first().within(() => {
+            cy.get('td').first().as('product');
+            cy.get('button').contains('EDIT').click();
+        });
+        cy.get('@product').invoke('text').then((text) => {
+            cy.contains('h2', text).should('be.visible');
+        });
     })
 
     /*it('Logout', () => {
