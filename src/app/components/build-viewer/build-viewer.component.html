@@ -802,6 +802,14 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="Indicates that this product builds a non-RF2 release package. RF2-specific validations (such as release package information JSON) will be skipped.">Non-RF2 Release</span>
+                        <div class="input-group-text bg-white">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.nonRf2Release">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Custom Refset Composite Keys</span>
