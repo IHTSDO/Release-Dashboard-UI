@@ -93,7 +93,6 @@ export class ProductService {
             conceptPreferredTerms : product.buildConfiguration.conceptPreferredTerms,
             customRefsetCompositeKeys : customRefsetCompositeKeys,
             previousPublishedPackage : product.buildConfiguration.previousPublishedPackage,
-            extensionDependencyRelease : product.buildConfiguration.extensionConfig.dependencyRelease,
             overriddenSnomedCtProduct : product.overriddenSnomedCtProduct
         };
         if (product.buildConfiguration.extensionConfig &&

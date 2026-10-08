@@ -80,11 +80,8 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
     codeSystems: CodeSystem[];
     codeSystemToReleasePackageMap = {};
     previousReleaseOptions: string[] = [];
-    dependentReleaseOptions: string[] = [];
     previousReleaseInputControl = new FormControl('');
-    dependentReleaseInputControl = new FormControl('');
     filteredPreviousReleaseOptions: Observable<string[]>;
-    filteredDependentReleaseOptions: Observable<string[]>;
 
     constructor(
         private productService: ProductService,
@@ -450,7 +447,6 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
     private applySharedReleasePackages(): void {
         if (this.releasePackageMap && Object.keys(this.releasePackageMap).length > 0) {
             this.codeSystemToReleasePackageMap = this.releasePackageMap;
-            this.setDependantReleaseOptions();
             this.loadingReleasePackagesDone = true;
         } else if (this.loadingReleasePackagesDone) {
             this.loadingReleasePackagesDone = true;
@@ -525,10 +521,6 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
             startWith(''),
             map(value => this.filterReleases(this.previousReleaseOptions, value || ''))
         );
-        this.filteredDependentReleaseOptions = this.dependentReleaseInputControl.valueChanges.pipe(
-            startWith(''),
-            map(value => this.filterReleases(this.dependentReleaseOptions, value || ''))
-        );
     }
 
     private filterReleases(options: string[], value: string): string[] {
@@ -544,12 +536,6 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
         const codeSystemShortname = codeSystem === 'SNOMEDCT' ? 'INT' : codeSystem.substr(codeSystem.indexOf('-') + 1);
         if (this.codeSystemToReleasePackageMap.hasOwnProperty(codeSystemShortname)) {
             this.previousReleaseOptions = this.getSortedFilenames(this.codeSystemToReleasePackageMap[codeSystemShortname]);
-        }
-    }
-
-    private setDependantReleaseOptions(): void {
-        if (this.codeSystemToReleasePackageMap.hasOwnProperty('INT')) {
-            this.dependentReleaseOptions = this.getSortedFilenames(this.codeSystemToReleasePackageMap['INT']);
         }
     }
 
@@ -571,7 +557,6 @@ export class ProductActionButtonsComponent implements OnInit, OnChanges {
 
     private handleReleasePackages(data: any): void {
         this.codeSystemToReleasePackageMap = data;
-        this.setDependantReleaseOptions();
         this.loadingReleasePackagesDone = true;
     }
 
