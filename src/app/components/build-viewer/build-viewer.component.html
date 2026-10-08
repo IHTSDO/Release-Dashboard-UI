@@ -66,10 +66,14 @@
 
                     <div class="col-3 px-5">
                         <h3 class="my-3 mx-5"><b>RESULT</b></h3>
-                        <button type="button" class="btn green m-2 d-block"
-                                *ngIf="canPublishBuild()"
-                                [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1)"
-                                (click)="openPublishingBuildConfirmationModal()"><i class="fas fa-paper-plane pe-2"></i>{{activeBuild.buildPublishing ? 'PUBLISHING...' : 'PUBLISH BUILD'}}</button>
+                        <span class="d-inline-block" *ngIf="canPublishBuild()"
+                              [matTooltip]="getPublishBlockedReason(activeBuild)"
+                              [matTooltipDisabled]="!getPublishBlockedReason(activeBuild)">
+                            <button type="button" class="btn green m-2 d-block"
+                                    [class.pe-none]="!!getPublishBlockedReason(activeBuild)"
+                                    [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing || (activeBuild.status!== 'RELEASE_COMPLETE' && activeBuild.status!== 'RELEASE_COMPLETE_WITH_WARNINGS') || (activeBuild.tags && activeBuild.tags.indexOf('PUBLISHED') !== -1) || !!getPublishBlockedReason(activeBuild)"
+                                    (click)="openPublishingBuildConfirmationModal()"><i class="fas fa-paper-plane pe-2"></i>{{activeBuild.buildPublishing ? 'PUBLISHING...' : 'PUBLISH BUILD'}}</button>
+                        </span>
                         <button type="button" *ngIf="canDeleteBuild()" class="btn red m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting || activeBuild.buildPublishing" (click)="openModal('delete-confirmation-modal')"><i class="fas fa-times pe-2"></i>{{activeBuild.buildDeleting? 'DELETING...' : 'DELETE BUILD'}}</button>
                         <button type="button" *ngIf="isAdminOrManagerOrLead() && activeBuild.rvfURL" class="btn orange m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="openManageExceptionsDialog()"><i class="fas fa-shield-alt pe-2"></i>MANAGE EXCEPTIONS</button>
                         <button type="button" *ngIf="isAdminOrManagerOrLead() && activeBuild.rvfURL" class="btn blue m-2 d-block" [disabled]="!activeBuild.id || activeBuild.buildDeleting" (click)="getFailureJiraAssociations(); loadRvfReport(activeBuild); openModal('generate-jira-tickets-modal')"><i class="fas fa-ticket-alt pe-2"></i>GENERATE JIRA TICKETS</button>

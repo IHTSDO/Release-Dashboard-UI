@@ -1373,6 +1373,23 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             );
     }
 
+    getPublishBlockedReason(build: Build): string {
+        const configuration = build?.configuration;
+        if (!configuration) {
+            return '';
+        }
+        const reasons: string[] = [];
+        if (configuration.loadTermServerData && configuration.exportType === 'UNPUBLISHED') {
+            reasons.push('Export Type is Unpublished');
+        }
+        if (configuration.betaRelease) {
+            reasons.push('Beta Release is enabled');
+        }
+        return reasons.length > 0
+            ? 'PreProduction, Beta and Alpha builds cannot be published (' + reasons.join(' and ') + ')'
+            : '';
+    }
+
     canDeleteBuild() {
         const codeSystem = this.activeReleaseCenter && this.activeReleaseCenter.codeSystem ? this.activeReleaseCenter.codeSystem : '';
         return this.roles && codeSystem && this.activeBuild &&
