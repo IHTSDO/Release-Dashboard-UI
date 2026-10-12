@@ -10,7 +10,7 @@ export const authenticationInterceptor: HttpInterceptorFn = (req, next) => {
             return event;
         }),
         catchError(err => {
-            if (err.status === 403) {
+            if (err.status === 401) {
                 let config: any = {};
                 authoringService.getUIConfiguration().subscribe(data => {
                     config = data;
