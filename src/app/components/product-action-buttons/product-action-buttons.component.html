@@ -149,6 +149,14 @@
                     </div>
                 </div>
             </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" matTooltip="Indicates that this product is used for Frequent Releases, where no PreProduction builds are created. Traceability Validation will be enabled by default for Published Export types.">Frequent Release</span>
+                    <div class="input-group-text bg-white">
+                        <input type="checkbox" [(ngModel)]="editedProduct.buildConfiguration.frequentRelease">
+                    </div>
+                </div>
+            </div>
             <div class="col-12">
                 <div class="input-group mb-3">
                     <span class="input-group-text">Custom Refset Composite Keys</span>

@@ -868,6 +868,7 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
             }
             this.buildParams.exportType = 'PUBLISHED';
             this.buildParams.maxFailureExport = 100;
+            this.buildParams.enableTraceabilityValidation = this.isTraceabilityValidationEnabledByDefault(this.buildParams.exportType);
         } else {
             const buildConfiguration = this.activeBuild.configuration;
             const qaTestConfig = this.activeBuild.qaTestConfig;
@@ -889,6 +890,10 @@ export class BuildViewerComponent implements OnInit, OnDestroy {
                                                             qaTestConfig.enableTraceabilityValidation : false;
         }
         this.openBuildModal();
+    }
+
+    isTraceabilityValidationEnabledByDefault(exportType: string): boolean {
+        return exportType !== 'PUBLISHED' || !!this.activeProduct?.buildConfiguration?.frequentRelease;
     }
 
     loadRvfReport(build: Build) {

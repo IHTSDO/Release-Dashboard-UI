@@ -386,7 +386,7 @@
 Use &quot;Published&quot; to retrieve all Production data that has been versioned with the &quot;Effective Time&quot;.
 Use &quot;Unpublished&quot; to retrieve all data from the term server regardless of versioned dates.
 Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch (Fix02, Fix03, etc) + the Production data in the Release Branch that has been versioned with the &quot;Effective Time&quot;.">Export Type</span>
-                <select [disabled]="buildTriggering" class="form-select" (change)="buildParams.enableTraceabilityValidation= (buildParams.exportType === 'PUBLISHED' ? false : true)" [(ngModel)]="buildParams.exportType">
+                <select [disabled]="buildTriggering" class="form-select" (change)="buildParams.enableTraceabilityValidation = isTraceabilityValidationEnabledByDefault(buildParams.exportType)" [(ngModel)]="buildParams.exportType">
                     <option value="PUBLISHED">Published</option>
                     <option value="UNPUBLISHED">Unpublished</option>
                     <option value="FEEDBACK_FIX">Feedback Fix</option>
@@ -417,9 +417,9 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
 
         <div *ngIf="!useLocalInputFiles" class="col-12">
             <div class="input-group mb-3">
-                <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
+                <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. Enabled by default for non Published Export types, and for Published Export types when the product is a Frequent Release.">Enable Traceability Validation</span>
                 <div class="input-group-text bg-white">
-                    <input type="checkbox" [disabled]="buildParams.exportType === 'PUBLISHED'" [(ngModel)]="buildParams.enableTraceabilityValidation">
+                    <input type="checkbox" [disabled]="buildTriggering" [(ngModel)]="buildParams.enableTraceabilityValidation">
                 </div>
             </div>
         </div>
@@ -814,6 +814,14 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                         </div>
                     </div>
                 </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" matTooltip="Indicates that this product is used for Frequent Releases, where no PreProduction builds are created. Traceability Validation will be enabled by default for Published Export types.">Frequent Release</span>
+                        <div class="input-group-text bg-white">
+                            <input type="checkbox" disabled [ngModel]="selectedBuild.configuration.frequentRelease">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Custom Refset Composite Keys</span>
@@ -913,7 +921,7 @@ Use &quot;Feedback Fix&quot; to retrieve all data from the latest HotFix branch 
                 </div>
                 <div class="col-3">
                     <div class="input-group mb-3">
-                        <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. This option is only available for non Published Export types">Enable Traceability Validation</span>
+                        <span class="input-group-text" matTooltip="Passes to RVF to enable Traceability Validation. Enabled by default for non Published Export types, and for Published Export types when the product is a Frequent Release.">Enable Traceability Validation</span>
                         <div class="input-group-text bg-white">
                             <input type="checkbox" disabled [ngModel]="selectedBuild.qaTestConfig.enableTraceabilityValidation">
                         </div>
