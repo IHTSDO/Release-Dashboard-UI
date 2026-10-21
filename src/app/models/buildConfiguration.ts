@@ -6,7 +6,6 @@ export class BuildConfiguration {
     useClassifierPreConditionChecks: boolean;
     createLegacyIds: boolean;
     dailyBuild: boolean;
-    nonRf2Release: boolean;
     frequentRelease: boolean;
     firstTimeRelease: boolean;
     betaRelease: boolean;
