@@ -79,6 +79,7 @@ export class ProductService {
             releaseExtensionAsAnEdition: product.buildConfiguration.extensionConfig.releaseAsAnEdition,
             dailyBuild: product.buildConfiguration.dailyBuild,
             frequentRelease: product.buildConfiguration.frequentRelease,
+            excludeAdditionalRelationships: product.buildConfiguration.excludeAdditionalRelationships,
             standAloneProduct: product.standAloneProduct,
             enableDrools: product.qaTestConfig.enableDrools,
             enableMRCMValidation: product.qaTestConfig.enableMRCMValidation,

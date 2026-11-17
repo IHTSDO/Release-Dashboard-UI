@@ -7,6 +7,7 @@ export class BuildConfiguration {
     createLegacyIds: boolean;
     dailyBuild: boolean;
     frequentRelease: boolean;
+    excludeAdditionalRelationships = true;
     firstTimeRelease: boolean;
     betaRelease: boolean;
     conceptPreferredTerms: string;
